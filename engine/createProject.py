@@ -15,12 +15,16 @@ from kivy.uix.dropdown import DropDown
 from kivy.metrics import dp, sp, pt
 from kivy.core.window import Window
 
+from engine.editor.layout import EngineLayout
+
 class CreateProject(BoxLayout):
 
     def createProjectFiles(self, instance):
         print("Good")
+        # input_filter
         self.mylayout.clear_widgets()
         self.remove_widget(self.mylayout)
+        self.add_widget(EngineLayout(size=(500, 500)))
 
     def CreateNewInstance(self, instance):
         print("CreateNewInstance   BLAB BLAB" )
@@ -39,7 +43,7 @@ class CreateProject(BoxLayout):
         
     def __init__(self, **kwargs):
         super(CreateProject, self).__init__(**kwargs)
-        Window.size = (sp(1200), sp(768))
+        #Window.size = (sp(1200), sp(768))
         Window.fullscreen = True
         self.cols = 1
 
@@ -49,7 +53,9 @@ class CreateProject(BoxLayout):
         # When adding widgets, we need to specify the height manually
         # (disabling the size_hint_y) so the dropdown can calculate
         # the area it needs.
-        btn = Button(text='Create new project', size_hint=(None, None), height=30, width=200)
+        btn = Button(text='Create new project',
+                     color=(11, 222, 122, 1),
+                     size_hint=(None, None), height=30, width=200)
         dropdown.add_widget(btn)
         self.add_widget(dropdown)
 
@@ -59,11 +65,8 @@ class CreateProject(BoxLayout):
         #btn.bind(on_release=lambda btn: dropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstance)
         
-        
         # then add the button inside the dropdown
         
-
-
         mainbutton = Button(text='Application', size_hint=(None, None), height=30, width=200)
 
         # show the dropdown menu when the main button is released
