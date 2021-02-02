@@ -14,8 +14,13 @@ class EngineLayout(FloatLayout):
     def __init__(self, **kwargs):
         super(EngineLayout, self).__init__(**kwargs)
 
+        print("WHAT ", self.size )
         #self.cols = 1
-        self.add_widget(Label(text='User Name'))
+        self.TITLE1 = Label(text='User Name', size=(100, 100),  pos=(0,0), size_hint=(.5, .25), color=(1,0,0,1) )
+        self.add_widget(self.TITLE1)
+        self.TITLE1.bgColor=(1.0, 0.3, 0.3, 1.0)
+        self.TITLE1.color=(11, 222, 122, 1)
+         
         #self.username = TextInput(multiline=False)
         #self.add_widget(self.username)
         #self.add_widget(Label(text='password'))

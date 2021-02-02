@@ -45,6 +45,8 @@ class CreateProject(BoxLayout):
         super(CreateProject, self).__init__(**kwargs)
         #Window.size = (sp(1200), sp(768))
         Window.fullscreen = True
+        Window.clearcolor = (1, 0.5, 0.5, 1)
+
         self.cols = 1
 
         dropdown = DropDown()
