@@ -20,5 +20,5 @@ class LoginScreen(GridLayout):
         self.password = TextInput(password=True, multiline=False)
         self.add_widget(self.password)
 
-        self.button = Button(size_hint=(None, None), text='plop', on_press=self.action_engine_create_project)
+        self.button = Button(size_hint=(None, None), text='COMPONENT STAFF', on_press=self.action_engine_create_project)
         self.add_widget(self.button)

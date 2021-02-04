@@ -14,67 +14,66 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.metrics import dp, sp, pt
 from kivy.core.window import Window
-
 from engine.editor.layout import EngineLayout
+from engine.config import EngineConfig
 
-class CreateProject(BoxLayout):
+class EditorMain(BoxLayout):
 
     def createProjectFiles(self, instance):
         print("Good")
         # input_filter
         self.mylayout.clear_widgets()
         self.remove_widget(self.mylayout)
-        self.add_widget(EngineLayout(size=(500, 500)))
+        self.add_widget(EngineLayout(size=(1048, 768)))
 
     def CreateNewInstance(self, instance):
-        print("CreateNewInstance   BLAB BLAB" )
-        #self.rows = 2
+        print("CreateNewInstance ..." )
+        #self.rows = 2  row_force_default=True, row_default_height=10
 
-        self.mylayout = GridLayout(padding= 50, cols=3, row_force_default=True, row_default_height=40)
+        self.mylayout = GridLayout(padding= 0 , rows=5, row_force_default=True, row_default_height=50)
         self.add_widget(self.mylayout)
 
-        self.newProjectBtn = Button(text='Create', size_hint=(.5, 0.5), height=30, width=200,
+        self.mylayout.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
+        
+        self.mylayout.add_widget(Button(text='0.1.0', size=(60, 100), size_hint=(None, None) ))
+
+
+        self.newProjectBtn = Button(text='Create new', size_hint=(.1, .2),
           on_press=self.createProjectFiles)
-        self.mylayout.add_widget(self.newProjectBtn)
-        self.newProjectTitle = Label(text='Project name:', height=30, width=200)
+        
+        self.newProjectTitle = Label(text='Project name:')
+         
         self.mylayout.add_widget(self.newProjectTitle)
-        self.projectName = TextInput(multiline=False, height=30, width=200)
+        self.projectName = TextInput(multiline=False, size_hint=(.1, .1))
         self.mylayout.add_widget(self.projectName)
+
+        self.mylayout.add_widget(self.newProjectBtn)
         
     def __init__(self, **kwargs):
-        super(CreateProject, self).__init__(**kwargs)
+        super(EditorMain, self).__init__(**kwargs)
+
+        self.engineConfig = EngineConfig()
+        self.engineConfig.getVersion()
         #Window.size = (sp(1200), sp(768))
-        Window.fullscreen = True
-        Window.clearcolor = (1, 0.5, 0.5, 1)
+        #Window.fullscreen = True
+        Window.clearcolor = (1, 0, 0.5, 1)
 
         self.cols = 1
 
         dropdown = DropDown()
         dropdown.dismiss()
 
-        # When adding widgets, we need to specify the height manually
-        # (disabling the size_hint_y) so the dropdown can calculate
-        # the area it needs.
         btn = Button(text='Create new project',
-                     color=(11, 222, 122, 1),
+                     color=(1, 0, 0.2, 1),
                      size_hint=(None, None), height=30, width=200)
         dropdown.add_widget(btn)
         self.add_widget(dropdown)
 
-        # for each button, attach a callback that will call the select() method
-        # on the dropdown. We'll pass the text of the button as the data of the
-        # selection.
         #btn.bind(on_release=lambda btn: dropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstance)
         
-        # then add the button inside the dropdown
-        
         mainbutton = Button(text='Application', size_hint=(None, None), height=30, width=200)
 
-        # show the dropdown menu when the main button is released
-        # note: all the bind() calls pass the instance of the caller (here, the
-        # mainbutton instance) as the first argument of the callback (here,
-        # dropdown.open.).
         mainbutton.bind(on_release=dropdown.open)
         self.add_widget(mainbutton)
         
