@@ -15,23 +15,29 @@ class EngineLayout(BoxLayout):
 
     def __init__(self, **kwargs):
         super(EngineLayout, self).__init__(**kwargs)
-        pass
+
         print("Testing layout size: ", self.size )
         print("Testing layout pos: ", self.pos )
 
-        self.engineTitle = Label(text='TEXT COMPONENT', size_hint=(.5, .1), color=(1,0,1,1) )
+        self.appRenderElementsArray = [Label(text='TEXT COMPONENT', size_hint=(.5, .1), color=(1,0,1,1) )]
 
-        self.add_widget(self.engineTitle)
+        for i in range(len(self.appRenderElementsArray)):
+            self.add_widget(self.appRenderElementsArray[i])
+
+        # self.engineTitle = 
+
+        # self.add_widget(self.engineTitle)
          
         self.button = Button(text='plop', pos=(1,1),size_hint=(.5, .1), on_press=self.action_engine_create_project)
         self.add_widget(self.button)
 
         with self.canvas.before:
-            Color(0.3, 0.1, 0.6, 1)  # green; colors range from 0-1 instead of 0-255
+            Color(0.3, 0.1, 0.6, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
 
         self.bind(size=self._update_rect, pos=self._update_rect)
 
+    # Definition for update call bg
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size

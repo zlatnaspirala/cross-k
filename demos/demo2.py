@@ -1,5 +1,4 @@
-#!/usr/bin/kivy
-# -*- coding: utf-8 -*-
+
 
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout

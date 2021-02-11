@@ -20,7 +20,8 @@ class MyApp(App):
         print("-----------------------------------------------")
         
     def build(self):
-        self.title = 'CrossK game engine test'
+        self.title = 'CrossK game engine beta test'
+
         return EditorMain()
 
 if __name__ == '__main__':
