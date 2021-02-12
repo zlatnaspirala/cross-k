@@ -54,5 +54,3 @@ class AlignedTextInput(TextInput):
 
         self.padding_x = px
         self.padding_y = py
-
-        

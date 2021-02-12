@@ -15,10 +15,10 @@ from engine.editor_main import EditorMain
 class MyApp(App):
 
     def aboutCrossK(self, instance):
-        print("-----------------------------------------------")
-        print("I have a good feeling about this. Python Roles.")
-        print("-----------------------------------------------")
-        
+        print("-------------------------------------------------")
+        print("-I have a good feeling about this. Python Roles.-")
+        print("-------------------------------------------------")
+
     def build(self):
         self.title = 'CrossK game engine beta test'
 
