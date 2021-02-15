@@ -17,7 +17,7 @@ from engine.editor.layout import EngineLayout
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI
-from engine.common.operations import addNewButtonGUIOperation
+from engine.common.operations import EditorOperationAdd
 
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
@@ -229,11 +229,6 @@ class EditorMain(BoxLayout):
         #    print('Looking data intro project files .... ', elements)
         
         # store.get('tito')['age'])
-        print('Looking data intro project files .... ', self.store.get('renderComponentArray')['elements'] )
-
-        addNewButtonGUIOperation()
-
-        # calculatedElements = [ Button(text='0.1.0', size=(60, 100), size_hint=(None, None) ) ]
-        calculatedElements = [ "Button(text='0.1.0', size=(60, 100), size_hint=(None, None) )" ]
-        self.store.put('renderComponentArray', elements=calculatedElements)
-        print('Looking data intro project files ....')
+        print('..................................... ', self.store.get('renderComponentArray')['elements'] )
+        operationAddTest = EditorOperationAdd(store=self.store, test=2)
+        print('.....................................')
