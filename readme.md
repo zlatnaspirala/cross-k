@@ -6,7 +6,11 @@
     UX layouts 
 
 ## This is the beginning of a beautiful friendship
+![](https://github.com/zlatnaspirala/cross-k/blob/master/engine/assets/logo/logo.png)
 
+### You need before everything to run:
+
+Windows command line
 ```cmd
 python -m virtualenv kivy_venv
 ```
@@ -15,11 +19,15 @@ python -m virtualenv kivy_venv
 kivy_venv\Scripts\activate
 ```
 
+Bash command
 ```bash
 source kivy_venv/Scripts/activate
-python3 main.py
 ```
 
+Run Engine:
+```
+python3 main.py
+```
 
 ## Install and Uninstall
 
@@ -44,5 +52,8 @@ python3 -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew
 python3 -m pip install kivy
 ```
 
+### Android
 
+```
 pip install python-for-android
+```
