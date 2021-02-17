@@ -14,9 +14,10 @@ from kivy.uix.dropdown import DropDown
 from kivy.metrics import dp, sp, pt
 from kivy.core.window import Window
 from engine.editor.layout import EngineLayout
+from engine.editor.sceneGUICOntainer import SceneGUIContainer
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
-from engine.common.commons import getAboutGUI
+from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operations import EditorOperationAdd
 
 from kivy.storage.jsonstore import JsonStore
@@ -55,10 +56,19 @@ class EditorMain(BoxLayout):
         self.createLoadProjectLayoutEditor.add_widget(self.newProjectBtn)
 
     def loadProjectFiles(self, instance):
-        print("test")
-        # self.
 
-    def createProjectFiles(self, instance):
+        CURRENT_PATH = os.path.abspath(
+          os.path.join(os.path.dirname(__file__), '../projects/' + self.projectName.text + "/")
+        )
+        if not os.path.exists(CURRENT_PATH):
+            getMessageBoxYesNo(
+                "Not exist project with name `" + self.projectName.text + "`. Please look at /projects/ root folder. Subfolder name is project name.",
+                "OK",
+                "null"
+            )
+            return 0
+
+        print("LOAD PROJECT PROCEDURE")
 
         ###############################################################
         # App root layout instance
@@ -68,9 +78,89 @@ class EditorMain(BoxLayout):
         # Step : runtime setup project global data.
         # ProjectName and ProjectPath root , also setup config.
         self.engineConfig.currentProjectName = self.projectName.text
-        self.engineConfig.currentProjectPath = os.path.abspath(
+        self.engineConfig.currentProjectPath = CURRENT_PATH
+        self.engineLayout.currentProjectPath=self.engineConfig.currentProjectPath
+        self.engineLayout.currentProjectName=self.engineConfig.currentProjectName
+
+        # help
+        self.fullProjectStorePath = self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json'
+        print("Project name:", self.engineConfig.currentProjectName )
+        print("Project root:", self.engineConfig.currentProjectPath )
+
+        ###############################################################
+        # Project files definition
+        ###############################################################
+        # copyfile("./engine/editor/layout.py", "./projects/test1.py")
+        # Clear and remove engine editor widget
+        # self.createNewProjectLayoutEditor.clear_widgets()
+
+        self.remove_widget(self.createLoadProjectLayoutEditor)
+        self.add_widget(self.engineLayout)
+
+        # Loading RENDER ELEMETS
+        self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
+        loadElements = self.store.get('renderComponentArray')['elements']
+
+        for item in loadElements:
+            # print("......", item['type'])
+            if item['type'] == 'BUTTON':
+                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+                self.engineLayout.add_widget( Button(
+                    text=item['text'],
+                    color=item['color'],
+                    size_hint=(None, None),
+                    height=item['height'],
+                    width=item['width'])
+                )
+        
+        # Sync call SceneGUIContainer constructor
+        # pass store path like arg to get clear updated data intro sceneGUIContainer...
+        self.sceneGUIContainer = SceneGUIContainer(storePath=self.fullProjectStorePath) # orientation="vertical"
+        self.editorMenuLayout.add_widget(self.sceneGUIContainer)
+
+        # print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
+        # error
+        # put some values , date=datetime.now()
+        
+        # self.store.put('projectInfo', name=self.projectName.text, version='beta')
+        # self.store.put('defaultLayout', layoutType='boxLayout', orientation='horizontal')
+        # self.store.put('renderComponentArray', elements=[])
+
+        # get a value using a index key and key
+        # print('tito is', store.get('tito')['age'])
+
+        # or guess the key/entry for a part of the key
+        #for item in store.find(name='Gabriel'):
+        #    print('tshirtmans index key is', item[0])
+        #    print('his key value pairs are', str(item[1]))
+        print("CrossK project with name -> ", self.projectName.text, " -> loaded.")
+
+    def createProjectFiles(self, instance):
+
+        CURRENT_PATH = os.path.abspath(
           os.path.join(os.path.dirname(__file__), '../projects/' + self.projectName.text + "/")
         )
+        if not os.path.exists(CURRENT_PATH):
+            os.mkdir(CURRENT_PATH)
+        else:
+            getMessageBoxYesNo(
+                "Already exist project with name `" + self.projectName.text + "`. Please change project name.",
+                "OK",
+                "null"
+            )
+            return 0
+
+        print("NEW PROJECT PROCEDURE")
+
+        ###############################################################
+        # App root layout instance
+        ###############################################################
+        self.engineLayout = EngineLayout()
+
+        # Step : runtime setup project global data.
+        # ProjectName and ProjectPath root , also setup config.
+        self.engineConfig.currentProjectName = self.projectName.text
+        self.engineConfig.currentProjectPath = CURRENT_PATH
         self.engineLayout.currentProjectPath=self.engineConfig.currentProjectPath
         self.engineLayout.currentProjectName=self.engineConfig.currentProjectName
 
@@ -89,8 +179,6 @@ class EditorMain(BoxLayout):
         self.add_widget(self.engineLayout)
 
         # Loading RENDER ELEMETS
-        if not os.path.exists(self.engineLayout.currentProjectPath):
-            os.mkdir(self.engineLayout.currentProjectPath)
 
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
 
@@ -101,9 +189,6 @@ class EditorMain(BoxLayout):
         self.store.put('projectInfo', name=self.projectName.text, version='beta')
         self.store.put('defaultLayout', layoutType='boxLayout', orientation='horizontal')
         self.store.put('renderComponentArray', elements=[])
-
-        # get a value using a index key and key
-        # print('tito is', store.get('tito')['age'])
 
         # or guess the key/entry for a part of the key
         #for item in store.find(name='Gabriel'):
@@ -119,7 +204,7 @@ class EditorMain(BoxLayout):
         self.add_widget(self.createNewProjectLayoutEditor)
 
         self.createNewProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
-        self.createNewProjectLayoutEditor.add_widget(Button(text='0.1.0', size=(60, 100), size_hint=(None, None) ))
+        self.createNewProjectLayoutEditor.add_widget(Button(text='Cancel', size=(70, 70), size_hint=(None, None), on_press=self.createNewProjectGUICancel ))
 
         self.newProjectBtn = Button(text='Create new', size_hint=(.1, .2),
           on_press=self.createProjectFiles)
@@ -131,7 +216,10 @@ class EditorMain(BoxLayout):
 
         self.createNewProjectLayoutEditor.add_widget(self.projectName)
         self.createNewProjectLayoutEditor.add_widget(self.newProjectBtn)
-        
+
+    def createNewProjectGUICancel(self, instance):
+        self.remove_widget(self.createNewProjectLayoutEditor)
+
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
 
@@ -188,22 +276,22 @@ class EditorMain(BoxLayout):
         self.editorMenuLayout.add_widget(currentProjectMenuDropdown)
 
         # Application Menu Drop menu
-        appMenuDropdown = DropDown()
-        appMenuDropdown.dismiss()
+        self.appMenuDropdown = DropDown()
+        self.appMenuDropdown.dismiss()
 
         btn = Button(text='Create new project',
                      color=(txtColor),
                      size_hint=(None, None), height=30, width=200)
-        appMenuDropdown.add_widget(btn)
+        self.appMenuDropdown.add_widget(btn)
 
         loadBtn = Button(text='Load project',
                      color=(txtColor),
                      size_hint=(None, None), height=30, width=200)
-        appMenuDropdown.add_widget(loadBtn)
+        self.appMenuDropdown.add_widget(loadBtn)
 
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
-        self.editorMenuLayout.add_widget(appMenuDropdown)
+        self.editorMenuLayout.add_widget(self.appMenuDropdown)
 
         #btn.bind(on_release=lambda btn: appMenuDropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
@@ -213,22 +301,20 @@ class EditorMain(BoxLayout):
         self.editorMenuLayout.add_widget(editorTools)
 
         mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]', color=(txtColor), size_hint=(None, None), height=30, width=200)
-        mainbutton.bind(on_release=appMenuDropdown.open)
+        # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
+        mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
-        
+
+    def openApplicationMenuBtn(self, instance):
+        #self.appMenuDropdown.open(self)
+        print("test >!>>!, self.appMenuDropdown", self.appMenuDropdown)
+
     def get_input(self, v, h):
         # Test stage for this
         return AlignedTextInput(text='Project1', halign=h, valign=v, height=100)
 
     def addNewButtonGUI(self, instance):
-
         # for item in self.store.find(name='renderComponentArray'):
         #    print('Looking data intro project files .... ', item)
-
-        # for elements in self.store.find(name='renderComponentArray'):
-        #    print('Looking data intro project files .... ', elements)
-        
-        # store.get('tito')['age'])
-        print('..................................... ', self.store.get('renderComponentArray')['elements'] )
-        operationAddTest = EditorOperationAdd(store=self.store, test=2)
-        print('.....................................')
+        # print('..................................... ', self.store.get('renderComponentArray')['elements'] )
+        operationAddTest = EditorOperationAdd(store=self.store, engineLayout=self.engineLayout)
