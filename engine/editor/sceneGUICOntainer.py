@@ -17,22 +17,26 @@ class SceneGUIContainer(BoxLayout):
     def __init__(self, **kwargs):
         super(SceneGUIContainer, self).__init__()
         self.storePath = kwargs.get("storePath", "null")
+
+        self.engineRoot = kwargs.get("engineRoot")
+
+        print(self.orientation + " <<<<<<<<<<<<<<<<<<<<<<<" )
+        self.orientation = 'vertical'
         self.myStore = JsonStore(self.storePath)
         print("Testing myStore: ", self.myStore )
 
         loadElements = self.myStore.get('renderComponentArray')['elements']
         for item in loadElements:
             print("......", item['type'])
-            if item['type'] == 'BUTTON1':
+            if item['type'] == 'BUTTON':
                 print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
 
                 self.add_widget( Button(
                     text=item['text'],
                     color=item['color'],
-                    size_hint=(None, None),
-                    height=item['height'],
-                    width=item['width'])
-                )
+                    on_press=self.engineRoot.showDetails
+                    #size_hint=(0.1, 1))
+                ))
         ######################################################
         # Test loader 
  
@@ -69,6 +73,6 @@ class SceneGUIContainer(BoxLayout):
         self.clear_widgets()
 
     # Definition for update call bg
-    def _update_rect(self, instance, value):
-        self.rect.pos = instance.pos
-        self.rect.size = instance.size
+    #def _update_rect(self, instance, value):
+    #    self.rect.pos = instance.pos
+    #    self.rect.size = instance.size

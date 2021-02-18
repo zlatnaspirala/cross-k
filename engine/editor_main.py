@@ -7,6 +7,7 @@ kivy.require('2.0.0')
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -19,11 +20,13 @@ from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operations import EditorOperationAdd
+from kivy.uix.image import Image, AsyncImage 
 
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
 #from datetime import datetime
 import os
+
 
 
 # Storage/Files operations
@@ -115,7 +118,13 @@ class EditorMain(BoxLayout):
         
         # Sync call SceneGUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
-        self.sceneGUIContainer = SceneGUIContainer(storePath=self.fullProjectStorePath) # orientation="vertical"
+        self.sceneGUIContainer = SceneGUIContainer(
+            storePath=self.fullProjectStorePath,
+            orientation='vertical',
+            engineRoot=self
+            #size=(100, 300) 
+        )
+        # orientation="vertical"
         self.editorMenuLayout.add_widget(self.sceneGUIContainer)
 
         # print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
@@ -234,14 +243,13 @@ class EditorMain(BoxLayout):
 
         #Window.size = (sp(1200), sp(768))
         #Window.fullscreen = True
-        Window.clearcolor = (0, 0, 0.5, 1)
-        
+        Window.clearcolor = (0, 0, 0, 1)
+       
         # Run time schortcut vars
         txtColor = (self.engineConfig.getThemeTextColor()["r"] , self.engineConfig.getThemeTextColor()["b"], self.engineConfig.getThemeTextColor()["g"], 1)
 
         #self.orientation='vertical'
-
-        self.cols = 1
+        # self.cols = 2
 
         """  # Get path to SD card Android
         try:
@@ -292,7 +300,7 @@ class EditorMain(BoxLayout):
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
         self.editorMenuLayout.add_widget(self.appMenuDropdown)
-
+ 
         #btn.bind(on_release=lambda btn: appMenuDropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
 
@@ -318,3 +326,15 @@ class EditorMain(BoxLayout):
         #    print('Looking data intro project files .... ', item)
         # print('..................................... ', self.store.get('renderComponentArray')['elements'] )
         operationAddTest = EditorOperationAdd(store=self.store, engineLayout=self.engineLayout)
+
+    def showDetails(self, engineRoot):
+        print("TEST DETAILS")
+        ## TEST DETAILS
+        self.editorElementDetails = FloatLayout()
+        self.editorElementDetails.add_widget(
+            Button(
+                text="COOL",
+                size_hint=(.4, 1),
+                pos_hint={'x': 0.6, 'y':.0})
+            )
+        engineRoot.add_widget(self.editorElementDetails)

@@ -1,5 +1,6 @@
 
 import kivy
+from kivy.config import Config  
 
 print(kivy.__version__)
 
@@ -11,6 +12,8 @@ from kivy.uix.button import Button
 
 from components.main_form.layout import LoginScreen
 from engine.editor_main import EditorMain
+
+Config.set('graphics', 'resizable', True) 
 
 class MyApp(App):
 
