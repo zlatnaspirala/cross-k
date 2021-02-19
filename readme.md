@@ -8,6 +8,9 @@
 ## This is the beginning of a beautiful friendship
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/engine/assets/logo/logo.png)
 
+### Actual buggies
+https://stackoverflow.com/questions/66283282/kivy-bind-dinamic-button-event-return-always-only-last-item-values
+
 ### You need before everything to run:
 
 Windows command line

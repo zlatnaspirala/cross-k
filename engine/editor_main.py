@@ -21,6 +21,7 @@ from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operations import EditorOperationAdd
 from kivy.uix.image import Image, AsyncImage 
+from kivy.uix.textinput import TextInput
 
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
@@ -121,8 +122,8 @@ class EditorMain(BoxLayout):
         self.sceneGUIContainer = SceneGUIContainer(
             storePath=self.fullProjectStorePath,
             orientation='vertical',
-            engineRoot=self
-            #size=(100, 300) 
+            engineRoot=self,
+            size_hint=(1, 1),
         )
         # orientation="vertical"
         self.editorMenuLayout.add_widget(self.sceneGUIContainer)
@@ -267,6 +268,9 @@ class EditorMain(BoxLayout):
         ################################################################
         self.editorMenuLayout = BoxLayout(orientation='vertical', size_hint=(None, 1), width=300 )
         self.add_widget(self.editorMenuLayout)
+
+        # predefined var for Details
+        self.editorElementDetails = None
         
         currentProjectMenuDropdown = DropDown()
         currentProjectMenuDropdown.dismiss()
@@ -327,14 +331,35 @@ class EditorMain(BoxLayout):
         # print('..................................... ', self.store.get('renderComponentArray')['elements'] )
         operationAddTest = EditorOperationAdd(store=self.store, engineLayout=self.engineLayout)
 
-    def showDetails(self, engineRoot):
-        print("TEST DETAILS")
+    def showDetails(self, instance, name, ElementId):
+        print("TEST DETAILS  test name-> ", name)
+        print("TEST DETAILS  test id-> ", ElementId)
+
+        # Clear
+        try: self.editorElementDetails
+        except NameError: self.editorElementDetails = None
+
+        if self.editorElementDetails is None:
+            print("..ISISISISIIISISISISI.")
+        else:
+            self.remove_widget(self.editorElementDetails)
+            print("..ISISISISIRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRIISISISISI.")
+        
         ## TEST DETAILS
-        self.editorElementDetails = FloatLayout()
+        self.editorElementDetails = BoxLayout( orientation='vertical')
+        self.detailsButtonNameText = TextInput(text='EMPTY', size_hint=(1, .1))
+        self.editorElementDetails.add_widget(self.detailsButtonNameText)
+
         self.editorElementDetails.add_widget(
             Button(
-                text="COOL",
-                size_hint=(.4, 1),
-                pos_hint={'x': 0.6, 'y':.0})
+                text="Name(Tag) " + name,
+                size_hint=(1,.1) )
             )
-        engineRoot.add_widget(self.editorElementDetails)
+
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Text " + str(ElementId),
+                size_hint=(1,.1) )
+    )
+        self.add_widget(self.editorElementDetails)

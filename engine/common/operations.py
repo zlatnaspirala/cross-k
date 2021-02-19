@@ -1,10 +1,11 @@
 import re
+import uuid
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from engine.common.modifycation import AlignedTextInput
 from kivy.uix.popup import Popup
 from kivy.uix.colorpicker import ColorPicker
+from engine.common.modifycation import AlignedTextInput
 
 class EditorOperationAdd():
 
@@ -24,6 +25,9 @@ class EditorOperationAdd():
         content = BoxLayout(orientation="vertical")
         clrPickerTextColor = ColorPicker()
         clrPickerBackgroundColor = ColorPicker()
+        content.add_widget(Label(text='Button Name(Tag)'))
+        self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
+        content.add_widget(self.buttonNameText)
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Button text color'))
@@ -41,8 +45,8 @@ class EditorOperationAdd():
         self.popup = Popup(title='Add new button editor box', content=content, auto_dismiss=False)
 
         # Events attach
-        clrPickerTextColor.bind(color=self.on_color)
-        clrPickerBackgroundColor.bind(color=self.on_bgcolor)
+        clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
+        clrPickerBackgroundColor.bind(color=self.on_bgcolor) # pylint: disable=no-member
         # Open popup
         self.popup.open()
 
@@ -56,7 +60,19 @@ class EditorOperationAdd():
         ####################################################
         print("instance on local call -> ", self.newBtnColor)
 
+
+        calculatedButtonData = {
+            "id": str(uuid.uuid4()),
+            "name": self.buttonNameText.text,
+            "type": "BUTTON",
+            "text": self.buttonText.text,
+            "color": self.newBtnColor,
+            "width": self.buttonWidthText.text,
+            "height": self.buttonHeightText.text
+        }
+
         calculatedElement = Button(
+            crossKMeta=calculatedButtonData,
             text=self.buttonText.text,
             color=self.newBtnColor,
             width=self.buttonWidthText.text,
@@ -66,14 +82,6 @@ class EditorOperationAdd():
             background_color= self.newBtnBgColor
             # size_hint_x size_hint_y
         )
-
-        calculatedButtonData = {
-            "type": "BUTTON",
-            "text": self.buttonText.text,
-            "color": self.newBtnColor,
-            "width": self.buttonWidthText.text,
-            "height": self.buttonHeightText.text
-        }
 
         print("instance on local call -> ", calculatedElement)
 

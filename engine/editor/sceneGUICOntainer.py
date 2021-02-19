@@ -17,26 +17,57 @@ class SceneGUIContainer(BoxLayout):
     def __init__(self, **kwargs):
         super(SceneGUIContainer, self).__init__()
         self.storePath = kwargs.get("storePath", "null")
-
         self.engineRoot = kwargs.get("engineRoot")
-
         print(self.orientation + " <<<<<<<<<<<<<<<<<<<<<<<" )
         self.orientation = 'vertical'
+        self.cols = 1
+
         self.myStore = JsonStore(self.storePath)
         print("Testing myStore: ", self.myStore )
+
+        # call theme
+        txtColor = (
+            self.engineRoot.engineConfig.getThemeTextColor()["r"],
+            self.engineRoot.engineConfig.getThemeTextColor()["b"],
+            self.engineRoot.engineConfig.getThemeTextColor()["g"],
+            1
+        )
+
+        # Title box label
+        self.add_widget( Button(
+                    markup=True,
+                    text='[Scene]',
+                    color=txtColor,
+                    size_hint=(1, None),
+                    height=35
+                    )
+                )
 
         loadElements = self.myStore.get('renderComponentArray')['elements']
         for item in loadElements:
             print("......", item['type'])
             if item['type'] == 'BUTTON':
                 print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+                # make it
+                nameLoc =  item['name']
+                idLoc = item['id']
 
-                self.add_widget( Button(
-                    text=item['text'],
+                self.add_widget(Button(
+                    markup=True,
+                    text='[Button] [b]' + item['name'] + '[b]',
                     color=item['color'],
-                    on_press=self.engineRoot.showDetails
-                    #size_hint=(0.1, 1))
+                    on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
+                    size_hint=(1, None),
+                    height=30
                 ))
+
+        self.add_widget( Button(
+            markup=True,
+            text='[Scene space]',
+            color=txtColor,
+            size_hint=(1, 1)
+            )
+        )
         ######################################################
         # Test loader 
  
