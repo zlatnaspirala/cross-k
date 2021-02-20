@@ -4,6 +4,7 @@ from kivy.config import Config
 print(kivy.__version__)
 kivy.require('2.0.0')
 
+from functools import partial
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -22,6 +23,7 @@ from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operations import EditorOperationAdd
 from kivy.uix.image import Image, AsyncImage 
 from kivy.uix.textinput import TextInput
+from kivy.uix.colorpicker import ColorPicker
 
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
@@ -112,6 +114,8 @@ class EditorMain(BoxLayout):
                 self.engineLayout.add_widget( Button(
                     text=item['text'],
                     color=item['color'],
+                    background_normal= '',
+                    background_color= item['bgColor'],
                     size_hint=(None, None),
                     height=item['height'],
                     width=item['width'])
@@ -131,14 +135,8 @@ class EditorMain(BoxLayout):
         # print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
         # error
         # put some values , date=datetime.now()
-        
-        # self.store.put('projectInfo', name=self.projectName.text, version='beta')
-        # self.store.put('defaultLayout', layoutType='boxLayout', orientation='horizontal')
-        # self.store.put('renderComponentArray', elements=[])
-
         # get a value using a index key and key
         # print('tito is', store.get('tito')['age'])
-
         # or guess the key/entry for a part of the key
         #for item in store.find(name='Gabriel'):
         #    print('tshirtmans index key is', item[0])
@@ -247,7 +245,6 @@ class EditorMain(BoxLayout):
         Window.clearcolor = (0, 0, 0, 1)
        
         # Run time schortcut vars
-        txtColor = (self.engineConfig.getThemeTextColor()["r"] , self.engineConfig.getThemeTextColor()["b"], self.engineConfig.getThemeTextColor()["g"], 1)
 
         #self.orientation='vertical'
         # self.cols = 2
@@ -272,32 +269,32 @@ class EditorMain(BoxLayout):
         # predefined var for Details
         self.editorElementDetails = None
         
-        currentProjectMenuDropdown = DropDown()
-        currentProjectMenuDropdown.dismiss()
+        self.currentProjectMenuDropdown = DropDown()
+        self.currentProjectMenuDropdown.dismiss()
         
         toolsAddBtn = Button(text='Add button',
-                      color=(txtColor),
+                      color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=200,
                       on_press=self.addNewButtonGUI)
         toolsAddText = Button(text='Add text',
-                      color=(txtColor),
+                      color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=200)
-        currentProjectMenuDropdown.add_widget(toolsAddBtn)
-        currentProjectMenuDropdown.add_widget(toolsAddText)
+        self.currentProjectMenuDropdown.add_widget(toolsAddBtn)
+        self.currentProjectMenuDropdown.add_widget(toolsAddText)
 
-        self.editorMenuLayout.add_widget(currentProjectMenuDropdown)
+        self.editorMenuLayout.add_widget(self.currentProjectMenuDropdown)
 
         # Application Menu Drop menu
         self.appMenuDropdown = DropDown()
         self.appMenuDropdown.dismiss()
 
         btn = Button(text='Create new project',
-                     color=(txtColor),
+                     color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=200)
         self.appMenuDropdown.add_widget(btn)
 
         loadBtn = Button(text='Load project',
-                     color=(txtColor),
+                     color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=200)
         self.appMenuDropdown.add_widget(loadBtn)
 
@@ -308,11 +305,11 @@ class EditorMain(BoxLayout):
         #btn.bind(on_release=lambda btn: appMenuDropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
 
-        editorTools = Button(text='Tools', color=(txtColor), size_hint=(None, None), height=30, width=200)
-        editorTools.bind(on_release=currentProjectMenuDropdown.open)
+        editorTools = Button(text='Tools', color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=200)
+        editorTools.bind(on_release=self.currentProjectMenuDropdown.open)
         self.editorMenuLayout.add_widget(editorTools)
 
-        mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]', color=(txtColor), size_hint=(None, None), height=30, width=200)
+        mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]', color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=200)
         # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
@@ -330,36 +327,181 @@ class EditorMain(BoxLayout):
         #    print('Looking data intro project files .... ', item)
         # print('..................................... ', self.store.get('renderComponentArray')['elements'] )
         operationAddTest = EditorOperationAdd(store=self.store, engineLayout=self.engineLayout)
-
-    def showDetails(self, instance, name, ElementId):
-        print("TEST DETAILS  test name-> ", name)
-        print("TEST DETAILS  test id-> ", ElementId)
-
+ 
+    def showDetails(self, detailData, instance):
+        print("TEST DETAILS  test name-> ", instance)
+        print("TEST DETAILS  test detailData-> ", detailData)
         # Clear
         try: self.editorElementDetails
         except NameError: self.editorElementDetails = None
 
         if self.editorElementDetails is None:
-            print("..ISISISISIIISISISISI.")
+            print(".first time.")
         else:
             self.remove_widget(self.editorElementDetails)
-            print("..ISISISISIRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRIISISISISI.")
+            print(".clear.")
         
         ## TEST DETAILS
-        self.editorElementDetails = BoxLayout( orientation='vertical')
-        self.detailsButtonNameText = TextInput(text='EMPTY', size_hint=(1, .1))
+        self.editorElementDetails = GridLayout( orientation='lr-tb')
+        self.editorElementDetails.cols = 2
+
+        # Type
+        self.editorElementDetails.add_widget(
+            Button(
+                text="TYPE " + str(detailData['type']),
+                size_hint=(1,None),
+                height=50 )
+        )
+        # ID
+        self.editorElementDetails.add_widget(
+            Button(
+                text=str(detailData['id']),
+                size_hint=(1,None),
+                height=50 )
+        )
+        # name
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Name(Tag) " + detailData['name'],
+                size_hint=(1,None),
+                height=50 )
+            )
+        self.detailsButtonNameText = TextInput(
+            text=detailData['name'],
+            size_hint=(1, None),
+            height=50
+        )
         self.editorElementDetails.add_widget(self.detailsButtonNameText)
+        # text
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Button Text",
+                size_hint=(1,None),
+                height=50 )
+            )
+        self.detailsButtonText = TextInput(text=detailData['text'], size_hint=(1, None), height=50)
+        self.editorElementDetails.add_widget(self.detailsButtonText)
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Name(Tag) " + name,
-                size_hint=(1,.1) )
+                text="Button Width",
+                size_hint=(1,None),
+                height=50 )
+            )
+        self.detailsButtonWidth = TextInput(text=detailData['width'], size_hint=(1, None), height=50)
+        self.editorElementDetails.add_widget(self.detailsButtonWidth)
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Button Height",
+                size_hint=(1,None),
+                height=50 )
+            )
+        self.detailsButtonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=50)
+        self.editorElementDetails.add_widget(self.detailsButtonHeight)
+
+        clrPickerTextColor = ColorPicker(color=(detailData['color']))
+        clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']))
+
+        self.editorElementDetails.add_widget(clrPickerBackgroundColor)
+        self.editorElementDetails.add_widget(clrPickerTextColor)
+
+        self.add_widget(self.editorElementDetails)
+
+        # Bind 
+
+        clrPickerTextColor.bind(color=self.on_details_color) # pylint: disable=no-member
+        clrPickerBackgroundColor.bind(color=self.on_details_bgcolor) # pylint: disable=no-member
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Save changes",
+                size_hint=(1,None),
+                height=120,
+                on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
             )
 
+    # Save details fast solution for now
+    def saveDetails(self, elementID, elementType,  instance):
 
-        self.editorElementDetails.add_widget(
-            Button(
-                text="Text " + str(ElementId),
-                size_hint=(1,.1) )
-    )
-        self.add_widget(self.editorElementDetails)
+        print(">>>>>>>>>>>>" , elementID)
+        print("is simple ", self.detailsButtonNameText.text)
+        # predef
+        calculatedButtonData = {
+            "id": elementID,
+            "name": self.detailsButtonNameText.text, # tag
+            "type": elementType,
+            "text": self.detailsButtonText.text,
+            "color": self.newDetailsColor,
+            "bgColor": self.newDetailsBgColor,
+            "width": self.detailsButtonWidth.text,
+            "height": self.detailsButtonHeight.text
+        }
+        # Collect data
+        print(calculatedButtonData)
+
+        # SAVES - fresh data
+        self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
+        loadElements = self.store.get('renderComponentArray')['elements']
+        # elementID
+
+        localCounter = 0
+
+        for index, item in enumerate(loadElements):
+            print("index", index)
+            if item['id'] == elementID:
+                print('I FOUND REFS ', item['id'])
+                loadElements[index] = calculatedButtonData
+
+        self.updateScene(loadElements)
+    
+        self.remove_widget(self.editorElementDetails)
+
+        self.currentProjectMenuDropdown.open(self)
+        # determinated element
+        #for detailsGUIData in self.editorElementDetails.children:
+        #    print(detailsGUIData, "detailsGUIData")
+        #    try:
+        #        print(detailsGUIData.id)
+        #        if detailsGUIData.id.find("details-name") == -1:
+        #            print("not button type")
+        #        else:
+        #            print("I find details name value")
+                    # collect
+        #    except:
+        #        print("NO text prop")
+
+        #  calculatedButtonData = {
+        #    "id": str(uuid.uuid4()),
+        #    "name": self.buttonNameText.text,
+        #    "type": "BUTTON",
+        #    "text": self.buttonText.text,
+        #    "color": self.newBtnColor,
+        #    "width": self.buttonWidthText.text,
+        #    "height": self.buttonHeightText.text
+        #  } """
+        print("save details now")
+
+    # Details box
+    def on_details_color(self, instance, value):
+        self.newDetailsColor = (value[0], value[1], value[2], 1 )
+    def on_details_bgcolor(self, instance, value):
+        self.newDetailsBgColor = (value[0], value[1], value[2], 1 )
+
+    def updateScene(self, loadElements):
+
+        self.engineLayout.clear_widgets()
+
+        for item in loadElements:
+            print("..........", item)
+            if item['type'] == 'BUTTON':
+                print('its button , coming from EDIT.->>>')
+                self.engineLayout.add_widget( Button(
+                    text=item['text'],
+                    color=item['color'],
+                    background_normal= '',
+                    background_color=(item['bgColor']),
+                    size_hint=(None, None),
+                    height=item['height'],
+                    width=item['width'])
+                )

@@ -67,12 +67,13 @@ class EditorOperationAdd():
             "type": "BUTTON",
             "text": self.buttonText.text,
             "color": self.newBtnColor,
+            "bgColor": self.newBtnBgColor,
             "width": self.buttonWidthText.text,
             "height": self.buttonHeightText.text
         }
 
         calculatedElement = Button(
-            crossKMeta=calculatedButtonData,
+            # id=calculatedButtonData,
             text=self.buttonText.text,
             color=self.newBtnColor,
             width=self.buttonWidthText.text,
@@ -83,7 +84,7 @@ class EditorOperationAdd():
             # size_hint_x size_hint_y
         )
 
-        print("instance on local call -> ", calculatedElement)
+        print("calculatedButtonData on local call -> ", calculatedButtonData)
 
         localStagedElements = []
 

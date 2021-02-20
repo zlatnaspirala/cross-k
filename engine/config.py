@@ -47,7 +47,12 @@ class EngineConfig:
           "r" : 1,
           "b" : 1,
           "g" : 1,
-        }
+        },
+        "sceneGUIbgBTN": {
+          "r" : 0.55,
+          "b" : 0.65,
+          "g" : 0.45,
+        },
       },
       "black" : {
         "background": {
@@ -59,15 +64,38 @@ class EngineConfig:
           "r" : 0,
           "b" : 0,
           "g" : 0,
-        }
+        },
+        "sceneGUIbgBTN": {
+          "r" : 0.45,
+          "b" : 0.55,
+          "g" : 0.65,
+        },
       },
+    
     }
 
   def getTheme(self):
     return self.themes[self.currentTheme]
 
-  def getThemeTextColor(self):
+  def getThemeTextColorByComp(self, test):
     return self.themes[self.currentTheme]["maintext"]
+
+  def getThemeTextColor(self):
+    print("TEST COLOR ")
+    return (
+      self.getThemeTextColorByComp("maintext")["r"],
+      self.getThemeTextColorByComp("maintext")["b"],
+      self.getThemeTextColorByComp("maintext")["g"],
+      1
+    )
+
+  def getThemeBackgroundColor(self):
+    return (
+      self.getThemeTextColorByComp()["r"],
+      self.getThemeTextColorByComp()["b"],
+      self.getThemeTextColorByComp()["g"],
+      1
+    )
 
   def getVersion(self):
     print("Current CrossK version :" + self.version)

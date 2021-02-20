@@ -1,4 +1,5 @@
 from kivy.app import App
+from functools import partial
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -7,7 +8,8 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
-from kivy.properties import StringProperty, ObjectProperty
+# pylint: disable=no-name-in-module
+from kivy.properties import StringProperty, ObjectProperty 
 
 class SceneGUIContainer(BoxLayout):
 
@@ -16,28 +18,25 @@ class SceneGUIContainer(BoxLayout):
 
     def __init__(self, **kwargs):
         super(SceneGUIContainer, self).__init__()
+
         self.storePath = kwargs.get("storePath", "null")
         self.engineRoot = kwargs.get("engineRoot")
-        print(self.orientation + " <<<<<<<<<<<<<<<<<<<<<<<" )
+
+        # Reset
         self.orientation = 'vertical'
         self.cols = 1
 
         self.myStore = JsonStore(self.storePath)
-        print("Testing myStore: ", self.myStore )
+        print("Testing myStore: ", self.myStore)
 
-        # call theme
-        txtColor = (
-            self.engineRoot.engineConfig.getThemeTextColor()["r"],
-            self.engineRoot.engineConfig.getThemeTextColor()["b"],
-            self.engineRoot.engineConfig.getThemeTextColor()["g"],
-            1
-        )
+        # call theme, improve aplha arg
+ 
 
         # Title box label
         self.add_widget( Button(
                     markup=True,
-                    text='[Scene]',
-                    color=txtColor,
+                    text='[Scene-Root]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
                     size_hint=(1, None),
                     height=35
                     )
@@ -48,15 +47,13 @@ class SceneGUIContainer(BoxLayout):
             print("......", item['type'])
             if item['type'] == 'BUTTON':
                 print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
-                # make it
-                nameLoc =  item['name']
-                idLoc = item['id']
-
+                # pass it
                 self.add_widget(Button(
                     markup=True,
                     text='[Button] [b]' + item['name'] + '[b]',
-                    color=item['color'],
-                    on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    # on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
+                    on_press=partial(self.engineRoot.showDetails, item),
                     size_hint=(1, None),
                     height=30
                 ))
@@ -64,7 +61,7 @@ class SceneGUIContainer(BoxLayout):
         self.add_widget( Button(
             markup=True,
             text='[Scene space]',
-            color=txtColor,
+            color=self.engineRoot.engineConfig.getThemeTextColor(),
             size_hint=(1, 1)
             )
         )
