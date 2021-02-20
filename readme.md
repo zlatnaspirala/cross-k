@@ -12,7 +12,7 @@
 https://stackoverflow.com/questions/66283282/kivy-bind-dinamic-button-event-return-always-only-last-item-values
 
 ### After cloning this project only need to install python3 , pip3 and kivy framework
-### You need first time to create `background_normal` :
+### You need first time to create `kivy_venv` :
 Windows command line
 ```cmd
 python -m c kivy_venv
@@ -60,23 +60,38 @@ python3 main.py
 # [TODO]
 
 ##  [2D-KIVY_BASED]
+<pre>
+
+[EDITOR]
  - Add option solution for dimension ref system
    (use pixels or percents)
- - Manage scene element
+ - Manage scene element 
+     - Details box with save options
+     - SceneContainer to select
  - Add other type:
        - Label element
        - Image element
        - Layouts (dinamic with props) element
  - Layouts - Handle sub components
 
-  [PACKAGE-SYSTEM]
+[PACKAGE-SYSTEM]
  - Package for windows
 
-  [TEST-ANDROID]
+[PLATFORM-WINDOWS]
+  - Test
+
+[PLATFORM-LINUX]
+  - Test
+
+[PLATFORM-MACOS]
+  - Test
+
+[PLATFORM-ANDROID]
  - Test kivy solution
  - Test canvas solution (if ti posible)
  - Test opengles2/3
-
+ 
+</pre>
 
 
 
