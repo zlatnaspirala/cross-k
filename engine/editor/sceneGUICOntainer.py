@@ -8,10 +8,11 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
+from kivy.uix.scrollview import ScrollView
 # pylint: disable=no-name-in-module
 from kivy.properties import StringProperty, ObjectProperty 
 
-class SceneGUIContainer(BoxLayout):
+class SceneGUIContainer(ScrollView):
 
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
@@ -23,42 +24,58 @@ class SceneGUIContainer(BoxLayout):
         self.engineRoot = kwargs.get("engineRoot")
 
         # Reset
-        self.orientation = 'vertical'
+        self.orientation = 'horizontal'
         self.cols = 1
+
+        self.size_hint = (1,1)
+        self.pos_hint = {'center_x':0.5,'top': 1}
 
         self.myStore = JsonStore(self.storePath)
         print("Testing myStore: ", self.myStore)
 
         # call theme, improve aplha arg
  
+        self.sceneScroller = BoxLayout(size_hint=(1, None) , height=300)
+        
 
+        self.sceneScroller.cols = 1
+        self.sceneScroller.size_hint_y= None
+        self.sceneScroller.spacing = 10
+        self.sceneScroller.orientation = 'vertical'
         # Title box label
-        self.add_widget( Button(
+        print(self.engineRoot.engineConfig.getThemeBgSceneBoxColor() , "<<<<<<<<<<<")
+        self.sceneScroller.add_widget( Button(
                     markup=True,
                     text='[Scene-Root]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     size_hint=(1, None),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
                     height=35
                     )
                 )
 
+ 
+        self.add_widget(self.sceneScroller)
         loadElements = self.myStore.get('renderComponentArray')['elements']
         for item in loadElements:
             print("......", item['type'])
             if item['type'] == 'BUTTON':
                 print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
                 # pass it
-                self.add_widget(Button(
+                self.sceneScroller.add_widget(Button(
                     markup=True,
                     text='[Button] [b]' + item['name'] + '[b]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
                     # on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
                     on_press=partial(self.engineRoot.showDetails, item),
                     size_hint=(1, None),
                     height=30
                 ))
 
-        self.add_widget( Button(
+        self.sceneScroller.add_widget( Button(
             markup=True,
             text='[Scene space]',
             color=self.engineRoot.engineConfig.getThemeTextColor(),

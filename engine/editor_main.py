@@ -421,12 +421,19 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
             )
 
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Cancel",
+                size_hint=(1,None),
+                height=120,
+                on_press=self.cloaseWithNoSaveDetails
+            ))
+
     # Save details fast solution for now
     def saveDetails(self, elementID, elementType,  instance):
 
-        print(">>>>>>>>>>>>" , elementID)
-        print("is simple ", self.detailsButtonNameText.text)
-        # predef
+        print("Save detail for ->" , elementID)
+        # predefinition
         calculatedButtonData = {
             "id": elementID,
             "name": self.detailsButtonNameText.text, # tag
@@ -444,8 +451,6 @@ class EditorMain(BoxLayout):
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
         # elementID
-
-        localCounter = 0
 
         for index, item in enumerate(loadElements):
             print("index", index)
@@ -487,6 +492,10 @@ class EditorMain(BoxLayout):
         self.newDetailsColor = (value[0], value[1], value[2], 1 )
     def on_details_bgcolor(self, instance, value):
         self.newDetailsBgColor = (value[0], value[1], value[2], 1 )
+
+    def cloaseWithNoSaveDetails(self, instance):
+        self.remove_widget(self.editorElementDetails)
+        self.currentProjectMenuDropdown.open(self)
 
     def updateScene(self, loadElements):
 

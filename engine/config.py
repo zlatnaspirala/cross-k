@@ -77,8 +77,8 @@ class EngineConfig:
   def getTheme(self):
     return self.themes[self.currentTheme]
 
-  def getThemeTextColorByComp(self, test):
-    return self.themes[self.currentTheme]["maintext"]
+  def getThemeTextColorByComp(self, flag):
+    return self.themes[self.currentTheme][flag]
 
   def getThemeTextColor(self):
     print("TEST COLOR ")
@@ -91,9 +91,17 @@ class EngineConfig:
 
   def getThemeBackgroundColor(self):
     return (
-      self.getThemeTextColorByComp()["r"],
-      self.getThemeTextColorByComp()["b"],
-      self.getThemeTextColorByComp()["g"],
+      self.getThemeTextColorByComp("background")["r"],
+      self.getThemeTextColorByComp("background")["b"],
+      self.getThemeTextColorByComp("background")["g"],
+      1
+    )
+
+  def getThemeBgSceneBoxColor(self):
+    return (
+      self.getThemeTextColorByComp("sceneGUIbgBTN")["r"],
+      self.getThemeTextColorByComp("sceneGUIbgBTN")["b"],
+      self.getThemeTextColorByComp("sceneGUIbgBTN")["g"],
       1
     )
 

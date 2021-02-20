@@ -5,6 +5,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.colorpicker import ColorPicker
+from kivy.uix.checkbox import CheckBox
 from engine.common.modifycation import AlignedTextInput
 
 class EditorOperationAdd():
@@ -22,9 +23,9 @@ class EditorOperationAdd():
         print("Access store -> ", self.store)
 
         # Prepare content
-        content = BoxLayout(orientation="vertical")
-        clrPickerTextColor = ColorPicker()
-        clrPickerBackgroundColor = ColorPicker()
+        content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
+        clrPickerTextColor = ColorPicker(size_hint=(1, 5))
+        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
         content.add_widget(Label(text='Button Name(Tag)'))
         self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
         content.add_widget(self.buttonNameText)
@@ -35,13 +36,30 @@ class EditorOperationAdd():
         content.add_widget(Label(text='Text'))
         self.buttonText = AlignedTextInput(text='My Button Text', halign="middle", valign="center")
         content.add_widget(self.buttonText)
-        content.add_widget(Label(text='Dimensions'))
+
+
+        
+        myCheckDimSys = BoxLayout()
+        myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
+        content.add_widget(myCheckDimSys)
+        checkbox = CheckBox()
+        # content.add_widget(checkbox)
+        myCheckDimSys.add_widget(checkbox)
+        checkbox.bind(active=self.on_checkbox_active) # pylint disable=no-member
+
+        content.add_widget(Label(text='Use Pixel Dimensions'))
         self.buttonWidthText = AlignedTextInput(text='200', halign="middle", valign="center")
         content.add_widget(self.buttonWidthText)
         self.buttonHeightText = AlignedTextInput(text='100', halign="middle", valign="center")
         content.add_widget(self.buttonHeightText)
 
-        # Popup
+        content.add_widget(Label(text='Use percent dimensions.'))
+        self.buttonHintX = AlignedTextInput(text='None', halign="middle", valign="center")
+        content.add_widget(self.buttonHintX)
+        self.buttonHintY = AlignedTextInput(text='None', halign="middle", valign="center")
+        content.add_widget(self.buttonHintY)
+
+        # Popup 
         self.popup = Popup(title='Add new button editor box', content=content, auto_dismiss=False)
 
         # Events attach
@@ -60,7 +78,6 @@ class EditorOperationAdd():
         ####################################################
         print("instance on local call -> ", self.newBtnColor)
 
-
         calculatedButtonData = {
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
@@ -69,7 +86,9 @@ class EditorOperationAdd():
             "color": self.newBtnColor,
             "bgColor": self.newBtnBgColor,
             "width": self.buttonWidthText.text,
-            "height": self.buttonHeightText.text
+            "height": self.buttonHeightText.text,
+            "size_hint_x": self.buttonHintX.text,
+            "size_hint_y": self.buttonHintY.text,
         }
 
         calculatedElement = Button(
@@ -128,9 +147,13 @@ class EditorOperationAdd():
         print("Operation add.")
         self.popup.dismiss()
 
-    def updateScene(self):
-        print("empty")
-
-
+    def on_checkbox_active(checkbox, instance, value):
+        print(" 1 ", checkbox)
+        print(" 1 ", value)
+        print(" 1 ", instance)
+        if value:
+            print('The dimensions checkbox', checkbox, 'is active')
+        else:
+            print('The dimensions checkbox', checkbox, 'is inactive')
 
 
