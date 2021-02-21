@@ -23,7 +23,7 @@ class EngineConfig:
     }
 
     # Themes
-    self.currentTheme = "light"
+    self.currentTheme = "black"
     self.setupThemes()
 
     # RUNTIME - Predefinitions
@@ -39,37 +39,47 @@ class EngineConfig:
     self.themes = {
       "light" : {
         "background": {
-          "r" : 0,
-          "b" : 0,
-          "g" : 0,
-        },
-        "maintext": {
           "r" : 1,
           "b" : 1,
           "g" : 1,
         },
+        "maintext": {
+          "r" : 0,
+          "b" : 0,
+          "g" : 0,
+        },
         "sceneGUIbgBTN": {
-          "r" : 0.55,
-          "b" : 0.65,
-          "g" : 0.45,
+          "r" : 0.6,
+          "b" : 0.2,
+          "g" : 0.2,
+        },
+        "sceneGUIbgWidget": {
+          "r" : 0.9,
+          "b" : 0.2,
+          "g" : 0.9,
         },
       },
       "black" : {
         "background": {
-          "r" : 1,
-          "b" : 1,
-          "g" : 1,
-        },
-        "maintext": {
           "r" : 0,
           "b" : 0,
           "g" : 0,
         },
-        "sceneGUIbgBTN": {
-          "r" : 0.45,
-          "b" : 0.55,
-          "g" : 0.65,
+        "maintext": {
+          "r" : 1,
+          "b" : 1,
+          "g" : 1,
         },
+        "sceneGUIbgBTN": {
+          "r" : 0.2,
+          "b" : 0.2,
+          "g" : 0.6,
+        },
+        "sceneGUIbgWidget": {
+          "r" : 0.2,
+          "b" : 0.2,
+          "g" : 0.9,
+        }
       },
     
     }
@@ -81,7 +91,7 @@ class EngineConfig:
     return self.themes[self.currentTheme][flag]
 
   def getThemeTextColor(self):
-    print("TEST COLOR ")
+    # print("TEST COLOR ")
     return (
       self.getThemeTextColorByComp("maintext")["r"],
       self.getThemeTextColorByComp("maintext")["b"],
@@ -97,11 +107,19 @@ class EngineConfig:
       1
     )
 
-  def getThemeBgSceneBoxColor(self):
+  def getThemeBgSceneBtnColor(self):
     return (
       self.getThemeTextColorByComp("sceneGUIbgBTN")["r"],
       self.getThemeTextColorByComp("sceneGUIbgBTN")["b"],
       self.getThemeTextColorByComp("sceneGUIbgBTN")["g"],
+      1
+    )
+
+  def getThemeBgSceneBoxColor(self):
+    return (
+      self.getThemeTextColorByComp("sceneGUIbgWidget")["r"],
+      self.getThemeTextColorByComp("sceneGUIbgWidget")["b"],
+      self.getThemeTextColorByComp("sceneGUIbgWidget")["g"],
       1
     )
 

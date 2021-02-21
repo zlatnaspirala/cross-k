@@ -52,14 +52,6 @@ class EngineLayout(BoxLayout):
 
         self.bind(size=self._update_rect, pos=self._update_rect)
 
-
-    # Update render elements 
-    def updateScene():
-        self.clear_widgets()
-        for i in range(len(self.appRenderElementsArray)):
-            self.add_widget(self.appRenderElementsArray[i])
-
-
     # Definition for update call bg
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos

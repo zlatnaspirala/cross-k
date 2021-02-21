@@ -17,18 +17,9 @@ class SceneGUIContainer(ScrollView):
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
 
-    def __init__(self, **kwargs):
-        super(SceneGUIContainer, self).__init__()
+    def selfUpdate(self):
 
-        self.storePath = kwargs.get("storePath", "null")
-        self.engineRoot = kwargs.get("engineRoot")
-
-        # Reset
-        self.orientation = 'horizontal'
-        self.cols = 1
-
-        self.size_hint = (1,1)
-        self.pos_hint = {'center_x':0.5,'top': 1}
+        self.clear_widgets()
 
         self.myStore = JsonStore(self.storePath)
         print("Testing myStore: ", self.myStore)
@@ -43,14 +34,14 @@ class SceneGUIContainer(ScrollView):
         self.sceneScroller.spacing = 10
         self.sceneScroller.orientation = 'vertical'
         # Title box label
-        print(self.engineRoot.engineConfig.getThemeBgSceneBoxColor() , "<<<<<<<<<<<")
+        # print(self.engineRoot.engineConfig.getThemeBgSceneBoxColor() , "<<<<<<<<<<<")
         self.sceneScroller.add_widget( Button(
                     markup=True,
                     text='[Scene-Root]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     size_hint=(1, None),
                     background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
                     height=35
                     )
                 )
@@ -61,14 +52,14 @@ class SceneGUIContainer(ScrollView):
         for item in loadElements:
             print("......", item['type'])
             if item['type'] == 'BUTTON':
-                print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
                 # pass it
                 self.sceneScroller.add_widget(Button(
                     markup=True,
                     text='[Button] [b]' + item['name'] + '[b]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
                     # on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
                     on_press=partial(self.engineRoot.showDetails, item),
                     size_hint=(1, None),
@@ -82,6 +73,21 @@ class SceneGUIContainer(ScrollView):
             size_hint=(1, 1)
             )
         )
+    
+    def __init__(self, **kwargs):
+        super(SceneGUIContainer, self).__init__()
+
+        self.storePath = kwargs.get("storePath", "null")
+        self.engineRoot = kwargs.get("engineRoot")
+
+        # Reset
+        self.orientation = 'horizontal'
+        self.cols = 1
+
+        self.size_hint = (1,1)
+        self.pos_hint = {'center_x':0.5,'top': 1}
+
+        self.selfUpdate()
         ######################################################
         # Test loader 
  
@@ -111,11 +117,6 @@ class SceneGUIContainer(ScrollView):
         #    self.rect = Rectangle(size=self.size, pos=self.pos)
 
         #self.bind(size=self._update_rect, pos=self._update_rect)
-
-
-    # Update render elements 
-    def updateScene(self):
-        self.clear_widgets()
 
     # Definition for update call bg
     #def _update_rect(self, instance, value):

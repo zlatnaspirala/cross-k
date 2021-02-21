@@ -24,13 +24,17 @@ from engine.common.operations import EditorOperationAdd
 from kivy.uix.image import Image, AsyncImage 
 from kivy.uix.textinput import TextInput
 from kivy.uix.colorpicker import ColorPicker
+from kivy.uix.checkbox import CheckBox
 
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
 #from datetime import datetime
 import os
 
-
+# Selected source
+#from win32api import GetSystemMetrics
+#print("Width =", GetSystemMetrics(0))
+#print("Height =", GetSystemMetrics(1))
 
 # Storage/Files operations
 # from jnius import autoclass  # SDcard Android
@@ -79,7 +83,7 @@ class EditorMain(BoxLayout):
         ###############################################################
         # App root layout instance
         ###############################################################
-        self.engineLayout = EngineLayout()
+        self.engineLayout = EngineLayout(orientation="vertical")
 
         # Step : runtime setup project global data.
         # ProjectName and ProjectPath root , also setup config.
@@ -111,16 +115,65 @@ class EditorMain(BoxLayout):
             # print("......", item['type'])
             if item['type'] == 'BUTTON':
                 # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
-                self.engineLayout.add_widget( Button(
-                    text=item['text'],
-                    color=item['color'],
-                    background_normal= '',
-                    background_color= item['bgColor'],
-                    size_hint=(None, None),
-                    height=item['height'],
-                    width=item['width'])
-                )
-        
+                local_size_hintX = None
+                local_size_hintY= None
+
+                if item['dimensionRole'] == "pixel":
+                    local_size_hintX = None
+                    local_size_hintY= None
+                    self.engineLayout.add_widget( Button(
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= '',
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    )
+                elif item['dimensionRole'] == "hint":
+
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+
+                    self.engineLayout.add_widget( Button(
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= '',
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY)
+                    )
+                elif item['dimensionRole'] == "combine":
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    self.engineLayout.add_widget( Button(
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= '',
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    )
+
         # Sync call SceneGUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
         self.sceneGUIContainer = SceneGUIContainer(
@@ -240,15 +293,17 @@ class EditorMain(BoxLayout):
         # Initial call for aboutGUI
         getAboutGUI()
 
-        #Window.size = (sp(1200), sp(768))
+        Window.size = (sp(1200), sp(768))
+        # Window.size = (1200, 768)
+        # print("WHAT IS P S " , Window.size[0] )
+        #Window.top = 10
+        #Window.left = 500
         #Window.fullscreen = True
         Window.clearcolor = (0, 0, 0, 1)
        
         # Run time schortcut vars
-
         #self.orientation='vertical'
-        # self.cols = 2
-
+        # self.cols = 1
         """  # Get path to SD card Android
         try:
             Environment = autoclass('android.os.Environment')
@@ -341,7 +396,7 @@ class EditorMain(BoxLayout):
             self.remove_widget(self.editorElementDetails)
             print(".clear.")
         
-        ## TEST DETAILS
+        # DETAILS BOX BTN 
         self.editorElementDetails = GridLayout( orientation='lr-tb')
         self.editorElementDetails.cols = 2
 
@@ -382,23 +437,90 @@ class EditorMain(BoxLayout):
         self.detailsButtonText = TextInput(text=detailData['text'], size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsButtonText)
 
+
+        ## 
+        #myCheckPerSys = BoxLayout()
+        self.editorElementDetails.add_widget(Label(
+            text='Use Pixel Dimensions', size_hint=(1,None),
+                height=50, color=self.engineConfig.getThemeTextColor()))
+       
+        if detailData['dimensionRole'] == "pixel":
+
+            _isActiveCheckBoxPix = True
+            _isActiveCheckBoxPer = False
+            _isActiveCheckBoxCombine = False
+
+        elif detailData['dimensionRole'] == "hint":
+
+            _isActiveCheckBoxPix = False
+            _isActiveCheckBoxPer = True
+            _isActiveCheckBoxCombine = False
+
+        else:
+            
+            _isActiveCheckBoxPix = False
+            _isActiveCheckBoxPer = False
+            _isActiveCheckBoxCombine = True
+
+
+        print("WHAT I S BOOL ", _isActiveCheckBoxPer)
+
+        self.checkboxDim = CheckBox(active=_isActiveCheckBoxPix,size_hint=(1,None),
+                height=50 )
+        self.editorElementDetails.add_widget(self.checkboxDim)
+
         self.editorElementDetails.add_widget(
             Button(
                 text="Button Width",
                 size_hint=(1,None),
-                height=50 )
+                height=50,
+                color=self.engineConfig.getThemeTextColor()
+                )
             )
-        self.detailsButtonWidth = TextInput(text=detailData['width'], size_hint=(1, None), height=50)
+        self.detailsButtonWidth = TextInput(text=str(detailData['width']), size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsButtonWidth)
 
         self.editorElementDetails.add_widget(
             Button(
                 text="Button Height",
                 size_hint=(1,None),
-                height=50 )
+                height=50,
+                color=self.engineConfig.getThemeTextColor() )
             )
         self.detailsButtonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsButtonHeight)
+
+
+        #myCheckDimSys = BoxLayout()
+        self.editorElementDetails.add_widget(Label(text='Use Percent Dimensions', 
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+        self.checkboxPer = CheckBox(active=_isActiveCheckBoxPer, size_hint=(1,None),
+                height=50)
+        self.editorElementDetails.add_widget(self.checkboxPer)
+ 
+        self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
+        self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
+        #partial(self.saveDetails, 
+
+
+
+        self.editorElementDetails.add_widget(Label(text='Use Combine Dimensions (None for disable)', 
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+        self.checkboxCombine = CheckBox(active=_isActiveCheckBoxCombine, size_hint=(1,None),
+                height=50)
+        self.editorElementDetails.add_widget(self.checkboxCombine)
+ 
+        self.checkboxCombine.bind(active=self.on_checkbox_combine_active) # pylint disable=no-member
+
+ 
+        self.buttonHintXDetail = TextInput(text=str(detailData['size_hint_x']), size_hint=(1,None),
+                height=50)
+        self.editorElementDetails.add_widget(self.buttonHintXDetail)
+        self.buttonHintYDetail = TextInput(text=str(detailData['size_hint_y']), size_hint=(1,None),
+                height=50)
+        self.editorElementDetails.add_widget(self.buttonHintYDetail)
+ 
+        ##
 
         clrPickerTextColor = ColorPicker(color=(detailData['color']))
         clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']))
@@ -418,6 +540,7 @@ class EditorMain(BoxLayout):
                 text="Save changes",
                 size_hint=(1,None),
                 height=120,
+                color=self.engineConfig.getThemeTextColor(),
                 on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
             )
 
@@ -434,6 +557,41 @@ class EditorMain(BoxLayout):
 
         print("Save detail for ->" , elementID)
         # predefinition
+
+        
+        dimensionRole = "pixel"
+        if self.checkboxDim.active == True: 
+            local_size_hintX = None
+            local_size_hintY = None
+            print(" SET HINT NONE ")
+            # self.buttonHintX.text, self.buttonHintY.text
+        elif self.checkboxPer.active == True:
+            print(" SET HINT ")
+            if self.buttonHintXDetail.text == "None":
+                local_size_hintX = None
+            else:
+                local_size_hintX = float(self.buttonHintXDetail.text)
+
+            if self.buttonHintYDetail.text == "None":
+                local_size_hintY = None
+            else:
+                local_size_hintY = float(self.buttonHintYDetail.text)
+ 
+            dimensionRole = "hint"
+        elif self.checkboxCombine.active == True:
+            print(" SET COMBINE ")
+            if self.buttonHintXDetail.text == "None":
+                local_size_hintX = None
+            else:
+                local_size_hintX = float(self.buttonHintXDetail.text)
+
+            if self.buttonHintYDetail.text == "None":
+                local_size_hintY = None
+            else:
+                local_size_hintY = float(self.buttonHintYDetail.text)
+                
+            dimensionRole = "combine"
+
         calculatedButtonData = {
             "id": elementID,
             "name": self.detailsButtonNameText.text, # tag
@@ -442,10 +600,14 @@ class EditorMain(BoxLayout):
             "color": self.newDetailsColor,
             "bgColor": self.newDetailsBgColor,
             "width": self.detailsButtonWidth.text,
-            "height": self.detailsButtonHeight.text
+            "height": self.detailsButtonHeight.text,
+            "size_hint_x": self.buttonHintXDetail.text,
+            "size_hint_y": self.buttonHintYDetail.text,
+            "dimensionRole": dimensionRole
         }
+
         # Collect data
-        print(calculatedButtonData)
+        print(" CONSTRUCTED " , calculatedButtonData)
 
         # SAVES - fresh data
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
@@ -455,11 +617,17 @@ class EditorMain(BoxLayout):
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
-                print('I FOUND REFS ', item['id'])
+                print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
                 loadElements[index] = calculatedButtonData
+
+        # SAVE 
+        print("SAVE SAVE ################# " , loadElements)
+        self.store.put('renderComponentArray', elements=loadElements )
 
         self.updateScene(loadElements)
     
+        self.sceneGUIContainer.selfUpdate()
+
         self.remove_widget(self.editorElementDetails)
 
         self.currentProjectMenuDropdown.open(self)
@@ -493,6 +661,39 @@ class EditorMain(BoxLayout):
     def on_details_bgcolor(self, instance, value):
         self.newDetailsBgColor = (value[0], value[1], value[2], 1 )
 
+    def on_checkbox_active(instance, value1, value):
+        print(" 1 : ", instance)
+        print(" 2 ", value1)
+        print(" 3 ", value)
+        if value:
+            print('The dimensions checkbox', value1, 'is active')
+            instance.checkboxPer.active = False
+            instance.checkboxCombine.active = False
+
+        else:
+            print('The dimensions checkbox', value1, 'is inactive')
+
+    def on_checkbox_per_active(instance, value1, value):
+        print(" input percent ", value)
+        print(" acess ", instance)
+        if value:
+            print('The dimensions checkbox', value1, 'is active')
+            instance.checkboxDim.active = False
+            instance.checkboxCombine.active = False
+        else:
+            print('The dimensions checkbox', value1, 'is inactive')
+
+    def on_checkbox_combine_active(instance, value1, value):
+        print(" input percent ", value)
+        print(" acess ", instance)
+        if value:
+            print('The dimensions checkbox', value1, 'is active')
+            instance.checkboxDim.active = False
+            instance.checkboxPer.active = False
+        else:
+            print('The dimensions checkbox', value1, 'is inactive')
+
+
     def cloaseWithNoSaveDetails(self, instance):
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
@@ -500,17 +701,67 @@ class EditorMain(BoxLayout):
     def updateScene(self, loadElements):
 
         self.engineLayout.clear_widgets()
+        self.engineLayout.clear_widgets()
+        print('UPDATE SCENE .......................................->>>')
 
+        self.engineLayout.clear_widgets()
         for item in loadElements:
-            print("..........", item)
             if item['type'] == 'BUTTON':
-                print('its button , coming from EDIT.->>>')
-                self.engineLayout.add_widget( Button(
-                    text=item['text'],
-                    color=item['color'],
-                    background_normal= '',
-                    background_color=(item['bgColor']),
-                    size_hint=(None, None),
-                    height=item['height'],
-                    width=item['width'])
-                )
+
+                print('UPDATE SCENE ELEMENT  ->>>')
+                print(' data ->>>', item)
+                
+                if item['dimensionRole'] == 'pixel': 
+                    local_size_hintX = None
+                    local_size_hintY = None
+                    print(" SET HINT NONE ")
+                    self.engineLayout.add_widget( Button(
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= '',
+                        background_color=(item['bgColor']),
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    )
+                    # self.buttonHintX.text, self.buttonHintY.text
+                elif item['dimensionRole'] == "hint":
+                    print(" SET HINT ")
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+                    dimensionRole = "hint"
+                    self.engineLayout.add_widget( Button(
+                            text=item['text'],
+                            color=item['color'],
+                            background_normal= '',
+                            background_color=(item['bgColor']),
+                            size_hint_x=local_size_hintX,
+                            size_hint_y=local_size_hintY)
+                            )
+                elif item['dimensionRole'] == "combine":
+                    print(" SET COMBINE ")
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+                    self.engineLayout.add_widget( Button(
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= '',
+                        background_color=(item['bgColor']),
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    )
