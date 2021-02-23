@@ -21,6 +21,7 @@ from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operations import EditorOperationAdd
+from engine.common.enginePackage import PackagePopup
 from kivy.uix.image import Image, AsyncImage 
 from kivy.uix.textinput import TextInput
 from kivy.uix.colorpicker import ColorPicker
@@ -281,6 +282,10 @@ class EditorMain(BoxLayout):
     def createNewProjectGUICancel(self, instance):
         self.remove_widget(self.createNewProjectLayoutEditor)
 
+    def packageWinApp(self, instance):
+        test = PackagePopup(engineConfig=self.engineConfig)
+        print("Package application for windows started")
+        
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
 
@@ -289,7 +294,9 @@ class EditorMain(BoxLayout):
         ####################################################
         self.engineConfig = EngineConfig()
         self.engineConfig.getVersion()
-       
+
+        # self.packageWinApp()
+
         # Initial call for aboutGUI
         getAboutGUI()
 
@@ -324,6 +331,23 @@ class EditorMain(BoxLayout):
         # predefined var for Details
         self.editorElementDetails = None
         
+        self.packageDropdown = DropDown()
+        self.packageDropdown.dismiss()
+
+        # 
+        packWindows = Button(text='Make package for windows',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(None, None),  height=30, width=200,
+                      on_press=self.packageWinApp)
+        packLinux = Button(text='Make package for Linux',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(None, None),  height=30, width=200,
+                      on_press=self.packageWinApp)
+        self.packageDropdown.add_widget(packWindows)
+        self.packageDropdown.add_widget(packLinux)
+        self.editorMenuLayout.add_widget(self.packageDropdown)
+
+        #
         self.currentProjectMenuDropdown = DropDown()
         self.currentProjectMenuDropdown.dismiss()
         
@@ -352,13 +376,19 @@ class EditorMain(BoxLayout):
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=200)
         self.appMenuDropdown.add_widget(loadBtn)
-
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
         self.editorMenuLayout.add_widget(self.appMenuDropdown)
  
         #btn.bind(on_release=lambda btn: appMenuDropdown.select(btn.text))
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
+ 
+        MakePackageBtn = Button(text='Make package',
+                     color=(self.engineConfig.getThemeTextColor()),
+                     size_hint=(None, None), height=30, width=200)
+        MakePackageBtn.bind(on_release=self.packageDropdown.open)
+        self.editorMenuLayout.add_widget(MakePackageBtn)
+
 
         editorTools = Button(text='Tools', color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=200)
         editorTools.bind(on_release=self.currentProjectMenuDropdown.open)
@@ -414,7 +444,7 @@ class EditorMain(BoxLayout):
                 size_hint=(1,None),
                 height=50 )
         )
-        # name
+        # name - tag
         self.editorElementDetails.add_widget(
             Button(
                 text="Name(Tag) " + detailData['name'],
@@ -436,35 +466,27 @@ class EditorMain(BoxLayout):
             )
         self.detailsButtonText = TextInput(text=detailData['text'], size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsButtonText)
-
-
-        ## 
-        #myCheckPerSys = BoxLayout()
+        # Checkbox use pixel dimesion system
         self.editorElementDetails.add_widget(Label(
             text='Use Pixel Dimensions', size_hint=(1,None),
                 height=50, color=self.engineConfig.getThemeTextColor()))
        
         if detailData['dimensionRole'] == "pixel":
-
             _isActiveCheckBoxPix = True
             _isActiveCheckBoxPer = False
             _isActiveCheckBoxCombine = False
 
         elif detailData['dimensionRole'] == "hint":
-
             _isActiveCheckBoxPix = False
             _isActiveCheckBoxPer = True
             _isActiveCheckBoxCombine = False
 
         else:
-            
             _isActiveCheckBoxPix = False
             _isActiveCheckBoxPer = False
             _isActiveCheckBoxCombine = True
 
-
-        print("WHAT I S BOOL ", _isActiveCheckBoxPer)
-
+        # Checkbox Pixel dimensions
         self.checkboxDim = CheckBox(active=_isActiveCheckBoxPix,size_hint=(1,None),
                 height=50 )
         self.editorElementDetails.add_widget(self.checkboxDim)
@@ -490,28 +512,24 @@ class EditorMain(BoxLayout):
         self.detailsButtonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsButtonHeight)
 
-
-        #myCheckDimSys = BoxLayout()
+        # Percent dimensions
         self.editorElementDetails.add_widget(Label(text='Use Percent Dimensions', 
                 color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
         self.checkboxPer = CheckBox(active=_isActiveCheckBoxPer, size_hint=(1,None),
                 height=50)
         self.editorElementDetails.add_widget(self.checkboxPer)
- 
-        self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
-        self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
-        #partial(self.saveDetails, 
 
-
-
+        # Combine dimensions
         self.editorElementDetails.add_widget(Label(text='Use Combine Dimensions (None for disable)', 
                 color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
         self.checkboxCombine = CheckBox(active=_isActiveCheckBoxCombine, size_hint=(1,None),
                 height=50)
         self.editorElementDetails.add_widget(self.checkboxCombine)
- 
-        self.checkboxCombine.bind(active=self.on_checkbox_combine_active) # pylint disable=no-member
 
+        # Bind checkboxs for details box
+        self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
+        self.checkboxDim.bind(active=self.on_checkbox_pixel_active) # pylint disable=no-member
+        self.checkboxCombine.bind(active=self.on_checkbox_combine_active) # pylint disable=no-member
  
         self.buttonHintXDetail = TextInput(text=str(detailData['size_hint_x']), size_hint=(1,None),
                 height=50)
@@ -520,18 +538,17 @@ class EditorMain(BoxLayout):
                 height=50)
         self.editorElementDetails.add_widget(self.buttonHintYDetail)
  
-        ##
-
+        # Colors elements
         clrPickerTextColor = ColorPicker(color=(detailData['color']))
         clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']))
 
         self.editorElementDetails.add_widget(clrPickerBackgroundColor)
         self.editorElementDetails.add_widget(clrPickerTextColor)
 
+        # Add all
         self.add_widget(self.editorElementDetails)
 
-        # Bind 
-
+        # Bind
         clrPickerTextColor.bind(color=self.on_details_color) # pylint: disable=no-member
         clrPickerBackgroundColor.bind(color=self.on_details_bgcolor) # pylint: disable=no-member
 
@@ -557,26 +574,21 @@ class EditorMain(BoxLayout):
 
         print("Save detail for ->" , elementID)
         # predefinition
-
-        
         dimensionRole = "pixel"
         if self.checkboxDim.active == True: 
             local_size_hintX = None
             local_size_hintY = None
-            print(" SET HINT NONE ")
-            # self.buttonHintX.text, self.buttonHintY.text
+            # print("SET HINT NONE")
         elif self.checkboxPer.active == True:
-            print(" SET HINT ")
+            # print(" SET HINT ")
             if self.buttonHintXDetail.text == "None":
                 local_size_hintX = None
             else:
                 local_size_hintX = float(self.buttonHintXDetail.text)
-
             if self.buttonHintYDetail.text == "None":
                 local_size_hintY = None
             else:
                 local_size_hintY = float(self.buttonHintYDetail.text)
- 
             dimensionRole = "hint"
         elif self.checkboxCombine.active == True:
             print(" SET COMBINE ")
@@ -584,14 +596,13 @@ class EditorMain(BoxLayout):
                 local_size_hintX = None
             else:
                 local_size_hintX = float(self.buttonHintXDetail.text)
-
             if self.buttonHintYDetail.text == "None":
                 local_size_hintY = None
             else:
                 local_size_hintY = float(self.buttonHintYDetail.text)
-                
             dimensionRole = "combine"
 
+        # CrossK Element Data Interface
         calculatedButtonData = {
             "id": elementID,
             "name": self.detailsButtonNameText.text, # tag
@@ -609,51 +620,23 @@ class EditorMain(BoxLayout):
         # Collect data
         print(" CONSTRUCTED " , calculatedButtonData)
 
-        # SAVES - fresh data
+        # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
-        # elementID
-
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
                 print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
                 loadElements[index] = calculatedButtonData
 
-        # SAVE 
-        print("SAVE SAVE ################# " , loadElements)
+        print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
 
         self.updateScene(loadElements)
-    
         self.sceneGUIContainer.selfUpdate()
 
         self.remove_widget(self.editorElementDetails)
-
         self.currentProjectMenuDropdown.open(self)
-        # determinated element
-        #for detailsGUIData in self.editorElementDetails.children:
-        #    print(detailsGUIData, "detailsGUIData")
-        #    try:
-        #        print(detailsGUIData.id)
-        #        if detailsGUIData.id.find("details-name") == -1:
-        #            print("not button type")
-        #        else:
-        #            print("I find details name value")
-                    # collect
-        #    except:
-        #        print("NO text prop")
-
-        #  calculatedButtonData = {
-        #    "id": str(uuid.uuid4()),
-        #    "name": self.buttonNameText.text,
-        #    "type": "BUTTON",
-        #    "text": self.buttonText.text,
-        #    "color": self.newBtnColor,
-        #    "width": self.buttonWidthText.text,
-        #    "height": self.buttonHeightText.text
-        #  } """
-        print("save details now")
 
     # Details box
     def on_details_color(self, instance, value):
@@ -661,38 +644,32 @@ class EditorMain(BoxLayout):
     def on_details_bgcolor(self, instance, value):
         self.newDetailsBgColor = (value[0], value[1], value[2], 1 )
 
-    def on_checkbox_active(instance, value1, value):
-        print(" 1 : ", instance)
-        print(" 2 ", value1)
-        print(" 3 ", value)
+    def on_checkbox_pixel_active(instance, value1, value):
+        # print(" 1 : ", instance) print(" 2 ", value1) print(" 3 ", value)
         if value:
-            print('The dimensions checkbox', value1, 'is active')
+            print('The dimensions pixel', value1, 'is active')
             instance.checkboxPer.active = False
             instance.checkboxCombine.active = False
-
         else:
-            print('The dimensions checkbox', value1, 'is inactive')
+            print('The dimensions pixel', value1, 'is inactive')
 
     def on_checkbox_per_active(instance, value1, value):
-        print(" input percent ", value)
-        print(" acess ", instance)
+        # print(" input percent ", value) print(" acess ", instance)
         if value:
-            print('The dimensions checkbox', value1, 'is active')
+            print('The dimensions percent', value1, 'is active')
             instance.checkboxDim.active = False
             instance.checkboxCombine.active = False
         else:
-            print('The dimensions checkbox', value1, 'is inactive')
+            print('The dimensions percent', value1, 'is inactive')
 
     def on_checkbox_combine_active(instance, value1, value):
-        print(" input percent ", value)
-        print(" acess ", instance)
+        # print(" input percent ", value) print(" acess ", instance)
         if value:
             print('The dimensions checkbox', value1, 'is active')
             instance.checkboxDim.active = False
             instance.checkboxPer.active = False
         else:
             print('The dimensions checkbox', value1, 'is inactive')
-
 
     def cloaseWithNoSaveDetails(self, instance):
         self.remove_widget(self.editorElementDetails)
@@ -700,17 +677,13 @@ class EditorMain(BoxLayout):
 
     def updateScene(self, loadElements):
 
+        print('CLEAR, UPDATE SCENE [engineLayout]')
+        print('----------------------------------')
         self.engineLayout.clear_widgets()
-        self.engineLayout.clear_widgets()
-        print('UPDATE SCENE .......................................->>>')
-
         self.engineLayout.clear_widgets()
         for item in loadElements:
             if item['type'] == 'BUTTON':
-
-                print('UPDATE SCENE ELEMENT  ->>>')
-                print(' data ->>>', item)
-                
+                print('UPDATE SCENE ELEMENT TYOE BUTTON ->>>', item)
                 if item['dimensionRole'] == 'pixel': 
                     local_size_hintX = None
                     local_size_hintY = None
@@ -725,7 +698,6 @@ class EditorMain(BoxLayout):
                         height=item['height'],
                         width=item['width'])
                     )
-                    # self.buttonHintX.text, self.buttonHintY.text
                 elif item['dimensionRole'] == "hint":
                     print(" SET HINT ")
                     if item['size_hint_x'] == "None":
@@ -765,3 +737,5 @@ class EditorMain(BoxLayout):
                         height=item['height'],
                         width=item['width'])
                     )
+        print('----------------------------------')
+

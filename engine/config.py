@@ -124,4 +124,5 @@ class EngineConfig:
     )
 
   def getVersion(self):
-    print("Current CrossK version :" + self.version)
+    print("Current CrossK version: " + self.version)
+    return "current version: " + self.version

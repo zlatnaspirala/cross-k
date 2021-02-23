@@ -1,4 +1,6 @@
 
+
+import os
 import kivy
 from kivy.config import Config  
 
@@ -10,7 +12,7 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
-from components.main_form.layout import LoginScreen
+#from components.main_form.layout import LoginScreen
 from engine.editor_main import EditorMain
 
 Config.set('graphics', 'resizable', True) 
@@ -19,7 +21,7 @@ class MyApp(App):
 
     def aboutCrossK(self, instance):
         print("-------------------------------------------------")
-        print("-I have a good feeling about this. Python Roles.-")
+        print("-CrossK engine 0.1.0                           .-")
         print("-------------------------------------------------")
 
     def build(self):

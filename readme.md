@@ -37,8 +37,12 @@ python3 -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew
 python3 -m pip install kivy.deps.gstreamer
 python3 -m pip install kivy.deps.angle
 python3 -m pip install kivy
-
 pip3.9 install docutils pygments pypiwin32 kivy.deps.sdl2
+
+python3 -m pip install pyinstaller
+
+pip3 install --upgrade pyinstaller
+pip3.9 install pyinstaller
 
 python3 -m pip uninstall kivy
 python3 -m pip uninstall kivy.deps.sdl2
@@ -56,6 +60,20 @@ python3 -m pip install kivy
 ```
 python3 main.py
 ```
+
+# Package
+
+```
+ pip3 install --upgrade pyinstaller
+```
+
+[WINDOWS]
+
+Package whole engine:
+```
+kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name NIKI --distpath packages/projectTest --workpath .cache/ main.py
+```
+
 
 # [TODO]
 

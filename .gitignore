@@ -1,3 +1,4 @@
 
+.cache/
 components/__pycache__/layout.cpython-39.pyc
 *.pyc
