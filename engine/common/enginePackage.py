@@ -6,7 +6,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
 from engine.common.commons import Picture
 from kivy.uix.popup import Popup
+from kivy.uix.textinput import TextInput
 import os
+import io
 
 class PackagePopup():
 
@@ -18,7 +20,7 @@ class PackagePopup():
       print("showWindowsPackPopup....")
       box = BoxLayout(orientation="vertical")
 
-      infoBtn = Button(text='Cancel')
+      self.infoBtn = Button(text='Cancel')
 
       box.add_widget(Label(markup=True,
                           text="""[b]win64[b]"""))
@@ -34,14 +36,17 @@ class PackagePopup():
       self.makeWinPackBtn = Button(text='Make Package')
 
       box.add_widget(self.makeWinPackBtn)
-      box.add_widget(infoBtn)
+      box.add_widget(self.infoBtn)
 
       _local = 'CrossK ' + self.engineConfig.getVersion()
       popup = Popup(title=_local , content=box, auto_dismiss=False)
 
-      infoBtn.bind(on_press=popup.dismiss)
+      self.infoBtn.bind(on_press=popup.dismiss)
       
       self.makeWinPackBtn.bind(on_press=lambda a:self.makeWinPack())
+
+      self.LOGS = TextInput()
+      box.add_widget(self.LOGS)
 
       popup.open()
 
@@ -56,11 +61,35 @@ class PackagePopup():
         else:
             print("PACK DIR EXIST...")
 
-        bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " +
-            self.engineConfig.currentProjectName + " --distpath " + "projects/" +
-            self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
-
+        bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
         import subprocess
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output, error = process.communicate()
+        #  stdout=PIPE, stderr=STDOUT
+        process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        #with process.stdout:
+        #    self.log_subprocess_output(process.stdout)
+        myLogs = []
+        for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
+            myLogs.append( str(line) )
+            print(str(line))
+        # print('got line from subprocess: %r', line)
+        # print('Take one line:', myLogs[30])
+        #while True:
+        #    line = process.stdout.readline()
+        #    if line != '':
+        #        test_str = str(subprocess.check_output(["echo", line]))
+        #        # self.LOGS.text =+ test_str
+        #        print(subprocess.check_output(["echo", line]))
+        #    else:
+        #        break
+
+        # output, error = process.communicate()
         print("Package application for windows ended.")
+
+    def log_subprocess_output(self, pipe):
+
+        for line in io.TextIOWrapper(pipe, encoding="utf-8"):
+           self.LOGS.text = self.infoBtn.text + line
+
+        #for line in iter(pipe.readline, b''): # b'\n'-separated lines
+        #    self.infoBtn.text = str(line)
+        #    print('got line from subprocess: %r', line)
