@@ -58,6 +58,11 @@ class EngineConfig:
           "b" : 0.2,
           "g" : 0.9,
         },
+        "consoleText": {
+          "r" : 0,
+          "b" : 1,
+          "g" : 0,
+        },
       },
       "black" : {
         "background": {
@@ -79,7 +84,12 @@ class EngineConfig:
           "r" : 0.2,
           "b" : 0.2,
           "g" : 0.9,
-        }
+        },
+        "consoleText": {
+          "r" : 0,
+          "b" : 1,
+          "g" : 0,
+        },
       },
     
     }
@@ -89,6 +99,15 @@ class EngineConfig:
 
   def getThemeTextColorByComp(self, flag):
     return self.themes[self.currentTheme][flag]
+
+  def getThemeCustomColor(self, key):
+    # print("TEST COLOR ")
+    return (
+      self.getThemeTextColorByComp(key)["r"],
+      self.getThemeTextColorByComp(key)["b"],
+      self.getThemeTextColorByComp(key)["g"],
+      1
+    )
 
   def getThemeTextColor(self):
     # print("TEST COLOR ")

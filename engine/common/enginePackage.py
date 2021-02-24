@@ -9,6 +9,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 import os
 import io
+import threading
 
 class PackagePopup():
 
@@ -17,39 +18,48 @@ class PackagePopup():
       self.showWindowsPackPopup()
 
     def showWindowsPackPopup(self):
-      print("showWindowsPackPopup....")
-      box = BoxLayout(orientation="vertical")
+        print("showWindowsPackPopup....")
+        box = BoxLayout(orientation="vertical")
 
-      self.infoBtn = Button(text='Cancel')
+        self.infoBtn = Button(text='Cancel')
+        Picture(injectWidget=box, accessAssets="logo")
+        box.add_widget(Label(text='Make windows app.exe final application package.'))
 
-      box.add_widget(Label(markup=True,
-                          text="""[b]win64[b]"""))
-      Picture(injectWidget=box, accessAssets="logo")
+        _local1 = '[b]Relative path:[b] ' + self.engineConfig.currentProjectName
+        box.add_widget(Label(markup=True, text=_local1))
+        _local0 = '[b]Package EXE destination path:[b] ' + self.engineConfig.currentProjectPath
+        box.add_widget(Label( markup=True, text=_local0 ))
+    
+        self.makeWinPackBtn = Button(markup=True, text='[b]Make Package[b]')
 
-      box.add_widget(Label(text='Make windows app.exe final application package.'))
+        self.LOGS = TextInput(text='', foreground_color=(0,1,0,1) ,
+            background_color=self.engineConfig.getThemeBackgroundColor())
 
-      _local1 = 'Relative path: ' + self.engineConfig.currentProjectName
-      box.add_widget(Label(text=_local1))
-      _local0 = 'Package EXE destination path: ' + self.engineConfig.currentProjectPath
-      box.add_widget(Label(text=_local0 ))
+        box.add_widget(Label(markup=True,
+                            text="""[b]Debug logs[b]"""))
+        box.add_widget(self.LOGS)
+
+        box.add_widget(self.makeWinPackBtn)
+        box.add_widget(self.infoBtn)
+
+        _local = 'CrossK ' + self.engineConfig.getVersion()
+        popup = Popup(title=_local , content=box, auto_dismiss=False)
+
+        self.infoBtn.bind(on_press=popup.dismiss)
+        
+        self.makeWinPackBtn.bind(on_press=lambda a:self.runInNewThread())
+        # color=self.engineConfig.getThemeCustomColor('consoleText')
+
+
+        popup.open()
+
+    def runInNewThread(self):
+        t = threading.Thread(target=self.makeWinPack)
+        t.start()
+        print('started')
+        t.join()
+        print('finished')
   
-      self.makeWinPackBtn = Button(text='Make Package')
-
-      box.add_widget(self.makeWinPackBtn)
-      box.add_widget(self.infoBtn)
-
-      _local = 'CrossK ' + self.engineConfig.getVersion()
-      popup = Popup(title=_local , content=box, auto_dismiss=False)
-
-      self.infoBtn.bind(on_press=popup.dismiss)
-      
-      self.makeWinPackBtn.bind(on_press=lambda a:self.makeWinPack())
-
-      self.LOGS = TextInput()
-      box.add_widget(self.LOGS)
-
-      popup.open()
-
     def makeWinPack(self):
 
         CURRENT_PACK_PATH = os.path.abspath(
@@ -67,22 +77,11 @@ class PackagePopup():
         process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         #with process.stdout:
         #    self.log_subprocess_output(process.stdout)
-        myLogs = []
+        self.myLogs = []
         for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
-            myLogs.append( str(line) )
-            print(str(line))
-        # print('got line from subprocess: %r', line)
-        # print('Take one line:', myLogs[30])
-        #while True:
-        #    line = process.stdout.readline()
-        #    if line != '':
-        #        test_str = str(subprocess.check_output(["echo", line]))
-        #        # self.LOGS.text =+ test_str
-        #        print(subprocess.check_output(["echo", line]))
-        #    else:
-        #        break
-
-        # output, error = process.communicate()
+            test = str(line)
+            print ("PACKAGE:",  str(line))
+            self.LOGS.text = '>>>' + test
         print("Package application for windows ended.")
 
     def log_subprocess_output(self, pipe):
