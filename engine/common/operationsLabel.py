@@ -9,37 +9,50 @@ from kivy.uix.checkbox import CheckBox
 from engine.common.modifycation import AlignedTextInput
 from kivy.uix.textinput import TextInput
 
-class EditorOperationAdd():
+class EditorOperationLabel():
 
     def __init__(self, **kwargs):
 
         # Definitions defaults - config implementation later!
-        self.newBtnColor = (0, 0, 0, 1)
-        self.newBtnBgColor = (1, 1, 1, 1)
-        self.newBtnWidth = 200
-        self.newBtnHeight = 80
+        self.newLabelColor = (0, 0, 0, 1)
+        self.newLabelBgColor = (1, 1, 1, 1)
+        self.newLabelWidth = 200
+        self.newLabelHeight = 80
 
         self.store = kwargs.get("store")
         self.engineLayout = kwargs.get("engineLayout")
+        self.engineRoot = kwargs.get("engineRoot")
         print("Access store -> ", self.store)
 
         # Prepare content
         content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
         clrPickerTextColor = ColorPicker(size_hint=(1, 5))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
-        content.add_widget(Label(text='Button Name(Tag)'))
-        self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
+        content.add_widget(Label(text='Label Name(Tag)'))
+        self.buttonNameText = AlignedTextInput(text='MyLabel', halign="middle", valign="center")
         content.add_widget(self.buttonNameText)
-        content.add_widget(Label(text='Button background color'))
+        content.add_widget(Label(text='Label background color'))
         content.add_widget(clrPickerBackgroundColor)
-        content.add_widget(Label(text='Button text color'))
+        content.add_widget(Label(text='Label text color'))
         content.add_widget(clrPickerTextColor)
         content.add_widget(Label(text='Text'))
-        self.buttonText = AlignedTextInput(text='My Button Text', halign="middle", valign="center")
+        self.buttonText = AlignedTextInput(text='My Label Text', halign="middle", valign="center")
         content.add_widget(self.buttonText)
 
+        content.add_widget(Label(text='Font size'))
+        self.fontSizeBtn = AlignedTextInput(text='', halign="middle", valign="center")
+        content.add_widget(self.fontSizeBtn)
 
-        
+        # Bold check box
+        myCheckBold = BoxLayout()
+        myCheckBold.add_widget(Label(text='Use Bold'))
+        content.add_widget(myCheckBold)
+        self.checkBoxBold = CheckBox()
+        myCheckBold.add_widget(self.checkBoxBold)
+
+        self.checkBoxBold.bind(active=self.on_checkbox_bold_active) # pylint disable=no-member
+
+
         myCheckDimSys = BoxLayout()
         myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
         content.add_widget(myCheckDimSys)
@@ -47,7 +60,6 @@ class EditorOperationAdd():
         myCheckDimSys.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
-        #partial(self.saveDetails, 
 
         content.add_widget(Label(text='Use Pixel Dimensions'))
         self.buttonWidthText = TextInput(text='200')
@@ -69,7 +81,7 @@ class EditorOperationAdd():
         content.add_widget(self.buttonHintY)
 
         # Popup 
-        self.popup = Popup(title='Add new button editor box', content=content, auto_dismiss=False)
+        self.popup = Popup(title='Add new label editor box', content=content, auto_dismiss=False)
 
         # Events attach
         clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
@@ -78,14 +90,14 @@ class EditorOperationAdd():
         self.popup.open()
 
         # Bind elements
-        infoBtn2 = Button(text='Add new button', on_press=lambda a:self.oAddBtn(self))
+        infoBtn2 = Button(text='Add new label', on_press=lambda a:self.oAdd(self))
         content.add_widget(infoBtn2)
 
-    def oAddBtn(self, instance):
+    def oAdd(self, instance):
         ####################################################
         # Operation `Add`
         ####################################################
-        print("instance on local call -> ", self.newBtnColor)
+        print("instance on local call -> ", self.newLabelColor)
 
         dimensionRole = "pixel"
         if self.checkboxDim.active == True: 
@@ -123,13 +135,15 @@ class EditorOperationAdd():
             dimensionRole = "combine"
 
    
-        calculatedButtonData = {
+        calculatedLabelData = {
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
-            "type": "BUTTON",
+            "type": "LABEL",
             "text": self.buttonText.text,
-            "color": self.newBtnColor,
-            "bgColor": self.newBtnBgColor,
+            "fontSize": self.fontSizeBtn.text,
+            "bold": str(self.checkBoxBold.active),
+            "color": self.newLabelColor,
+            "bgColor": self.newLabelBgColor,
             "width": self.buttonWidthText.text,
             "height": self.buttonHeightText.text,
             "size_hint_x": str(self.buttonHintX.text),
@@ -139,31 +153,33 @@ class EditorOperationAdd():
     
 
         if self.checkboxPer.active == True: 
-            calculatedElement = Button(
+            calculatedElement = Label(
                 text=self.buttonText.text,
-                color=self.newBtnColor,
+                color=self.newLabelColor,
+                font_size=float(self.fontSizeBtn.text),
                 #width=self.buttonWidthText.text,
                 #height=self.buttonHeightText.text,
                 size_hint_x=local_size_hintX,
                 size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
+                #background_normal= '',
+                #background_color= self.newLabelBgColor
                 # size_hint_x size_hint_y
             )
         else:
-            calculatedElement = Button(
+            calculatedElement = Label(
                 text=self.buttonText.text,
-                color=self.newBtnColor,
+                color=self.newLabelColor,
+                font_size=self.fontSizeBtn.text,
                 width=self.buttonWidthText.text,
                 height=self.buttonHeightText.text,
                 size_hint_x=local_size_hintX,
                 size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
+                #background_normal= '',
+                # background_color= self.newLabelBgColor
                 # size_hint_x size_hint_y
             )
 
-        print("calculatedButtonData on local call -> ", calculatedButtonData)
+        print("calculatedLabelData on local call -> ", calculatedLabelData)
 
         localStagedElements = []
 
@@ -175,7 +191,7 @@ class EditorOperationAdd():
             for item in localStagedElements:
                 print('Staged element text  -> ', item['text'])
 
-            localStagedElements.append(calculatedButtonData)
+            localStagedElements.append(calculatedLabelData)
             #store.delete('tito')
 
         # Final
@@ -183,24 +199,18 @@ class EditorOperationAdd():
         
         print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
         self.engineLayout.add_widget(calculatedElement)
+
+        self.engineRoot.updateScene(localStagedElements)
+        self.engineRoot.sceneGUIContainer.selfUpdate()
+        
         self.popup.dismiss()
 
-    # To monitor changes, we can bind to color property changes
     def on_color(self, instance, value):
-
-        self.newBtnColor = str(value)
-        # print( "RGBA = ", (value[0], value[1], value[2], 1 )) #  or instance.color
-        self.newBtnColor = (value[0], value[1], value[2], 1 )
-        # print( "HSV = ", str(instance.hsv))
-        # print( "HEX = ", str(instance.hex_color))
+        self.newLabelColor = str(value)
+        self.newLabelColor = (value[0], value[1], value[2], 1 )
 
     def on_bgcolor(self, instance, value):
-
-        print( str(value) , ' ,,,,, color')
-        # print( "RGBA = ", (value[0], value[1], value[2], 1 )) #  or instance.color
-        self.newBtnBgColor = (value[0], value[1], value[2], 1 )
-        # print( "HSV = ", str(instance.hsv))
-        # print( "HEX = ", str(instance.hex_color))
+        self.newLabelBgColor = (value[0], value[1], value[2], 1 )
 
     def DissmisPopup(self, instance):
         print("Operation add.")
@@ -216,6 +226,17 @@ class EditorOperationAdd():
 
         else:
             print('The dimensions checkbox', value1, 'is inactive')
+
+    def on_checkbox_bold_active(instance, value1, value):
+        print(" 1 : ", instance)
+        print(" 2 ", value1)
+        print(" 3 ", value)
+        if value:
+            print('The bold checkbox', value1, 'is active')
+            # instance.checkboxPer.active = False
+
+        else:
+            print('The bold checkbox', value1, 'is inactive')
 
     def on_checkbox_per_active(instance, value1, value):
         print(" input percent ", value)

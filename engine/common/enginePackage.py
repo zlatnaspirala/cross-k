@@ -79,9 +79,10 @@ class PackagePopup():
         #    self.log_subprocess_output(process.stdout)
         self.myLogs = []
         for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
-            test = str(line)
-            print ("PACKAGE:",  str(line))
-            self.LOGS.text = '>>>' + test
+            self.LOGS.text = str(line)
+            # print ("PACKAGE:",  str(line))
+            # self.LOGS.text = '->' + test
+
         print("Package application for windows ended.")
 
     def log_subprocess_output(self, pipe):

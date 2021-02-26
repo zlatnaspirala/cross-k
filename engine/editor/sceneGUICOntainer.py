@@ -25,14 +25,16 @@ class SceneGUIContainer(ScrollView):
         print("Testing myStore: ", self.myStore)
 
         # call theme, improve aplha arg
- 
-        self.sceneScroller = BoxLayout(size_hint=(1, None) , height=300)
+        self.sceneScroller = GridLayout(
+            orientation='lr-tb',
+            size_hint=(1, None),
+            height=600
+        )
         
-
         self.sceneScroller.cols = 1
         self.sceneScroller.size_hint_y= None
-        self.sceneScroller.spacing = 10
-        self.sceneScroller.orientation = 'vertical'
+        self.sceneScroller.spacing = 1
+        # self.sceneScroller.orientation = 'vertical'
         # Title box label
         # print(self.engineRoot.engineConfig.getThemeBgSceneBoxColor() , "<<<<<<<<<<<")
         self.sceneScroller.add_widget( Button(
@@ -46,7 +48,6 @@ class SceneGUIContainer(ScrollView):
                     )
                 )
 
- 
         self.add_widget(self.sceneScroller)
         loadElements = self.myStore.get('renderComponentArray')['elements']
         for item in loadElements:
@@ -60,17 +61,33 @@ class SceneGUIContainer(ScrollView):
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
-                    # on_press=lambda *args: self.engineRoot.showDetails(nameLoc, idLoc, *args),  # self.engineRoot.showDetails(item),
-                    on_press=partial(self.engineRoot.showDetails, item),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                ))
+
+            if item['type'] == 'LABEL':
+                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+                # pass it
+                self.sceneScroller.add_widget( Button(
+                    markup=True,
+                    text='[Label] [b]' + item['name'] + '[b]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
                     size_hint=(1, None),
                     height=30
                 ))
 
         self.sceneScroller.add_widget( Button(
             markup=True,
-            text='[Scene space]',
+            text='[Scene-Root]',
             color=self.engineRoot.engineConfig.getThemeTextColor(),
-            size_hint=(1, 1)
+            size_hint=(1, None),
+            background_normal= '',
+            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+            height=35
             )
         )
     
