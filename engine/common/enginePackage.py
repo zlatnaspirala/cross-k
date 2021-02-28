@@ -31,7 +31,8 @@ class PackagePopup():
         box.add_widget(Label( markup=True, text=_local0 ))
     
         self.makeWinPackBtn = Button(markup=True, text='[b]Make Package[b]')
-
+        
+        self.testLog = "test log"
         self.LOGS = TextInput(text='', foreground_color=(0,1,0,1) ,
             background_color=self.engineConfig.getThemeBackgroundColor())
 
@@ -79,8 +80,9 @@ class PackagePopup():
         #    self.log_subprocess_output(process.stdout)
         self.myLogs = []
         for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
-            self.LOGS.text = str(line)
-            # print ("PACKAGE:",  str(line))
+            self.testLog = str(line)
+            self.LOGS.text = self.testLog
+            print ("PACKAGE:",  self.testLog)
             # self.LOGS.text = '->' + test
 
         print("Package application for windows ended.")

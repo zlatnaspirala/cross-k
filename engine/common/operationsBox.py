@@ -1,15 +1,38 @@
 import re
 import uuid
-from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.colorpicker import ColorPicker
 from kivy.uix.checkbox import CheckBox
-from engine.common.modifycation import AlignedTextInput
+from kivy.uix.dropdown import DropDown
 from kivy.uix.textinput import TextInput
+#Anchor layout:
+from kivy.uix.anchorlayout import AnchorLayout
+#Box layout: 
+from kivy.uix.boxlayout import BoxLayout
+#Float layout:
+from kivy.uix.floatlayout import FloatLayout
+#Grid layout:
+from kivy.uix.gridlayout import GridLayout
+#Page Layout:
+from kivy.uix.pagelayout import PageLayout
+#Relative layout:
+from kivy.uix.relativelayout import RelativeLayout
+#Scatter layout:
+from kivy.uix.scatterlayout import ScatterLayout
+# Stack layout: 
+from kivy.uix.stacklayout import StackLayout
+from engine.common.modifycation import AlignedTextInput
+from functools import partial
 
-class EditorOperationButton():
+class EditorOperationBox():
+
+
+    def __setLayoutType(self, instance):
+        print("..........", instance)
+        self.selectBtn.text = instance.text
+        self.layoutTypeList.select(self.btnBox.text)
 
     def __init__(self, **kwargs):
 
@@ -29,16 +52,75 @@ class EditorOperationButton():
         content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
         clrPickerTextColor = ColorPicker(size_hint=(1, 5))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
-        content.add_widget(Label(text='Button Name(Tag)'))
+        
+        content.add_widget(Label(text='Layout Name(Tag)'))
         self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
         content.add_widget(self.buttonNameText)
+
+        content.add_widget(Label(text='Layout Type(Visual type)'))
+        # self.buttonNameText = AlignedTextInput(text='utton', halign="middle", valign="center")
+
+        self.layoutTypeList = DropDown()
+        self.selectBtn = Button(text='Select layout type', on_press=self.layoutTypeList.open)
+        content.add_widget(self.selectBtn)
+        
+        #Anchor layout:
+        #Box layout: 
+        #Float layout:
+        #Grid layout:
+        #Page Layout:
+        #Relative layout:
+        #Scatter layout:
+        # Stack layout: 
+
+        self.btnBox = Button(text='Box', size_hint_y=None, height=44 )
+        self.btnBox.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnBox)
+
+        self.btnFloat = Button(text='Float', size_hint_y=None, height=44)
+        self.btnFloat.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnFloat)
+
+        self.btnGrid = Button(text='Grid', size_hint_y=None, height=44)
+        self.btnGrid.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnGrid)
+
+        self.btnPage = Button(text='Page', size_hint_y=None, height=44)
+        self.btnPage.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnPage)
+
+        self.btnRelative = Button(text='Relative', size_hint_y=None, height=44)
+        self.btnRelative.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnRelative)
+
+        self.btnScatter = Button(text='Scatter', size_hint_y=None, height=44)
+        self.btnScatter.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnScatter)
+
+        self.btnStack = Button(text='Stack', size_hint_y=None, height=44)
+        self.btnStack.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnStack)
+
+        content.add_widget(self.layoutTypeList)
+
+
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Button text color'))
         content.add_widget(clrPickerTextColor)
-        content.add_widget(Label(text='Text'))
-        self.buttonText = AlignedTextInput(text='My Button Text', halign="middle", valign="center")
-        content.add_widget(self.buttonText)
+
+
+        content.add_widget(Label(text='Orientation'))
+        self.orientation = AlignedTextInput(text='vertical', halign="middle", valign="center")
+        content.add_widget(self.orientation)
+
+        content.add_widget(Label(text='Padding'))
+        self.padding = AlignedTextInput(text='vertical', halign="middle", valign="center")
+        content.add_widget(self.padding)
+
+        content.add_widget(Label(text='Spacing'))
+        self.spacing = AlignedTextInput(text='vertical', halign="middle", valign="center")
+        content.add_widget(self.spacing)
 
         myCheckDimSys = BoxLayout()
         myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
@@ -69,7 +151,7 @@ class EditorOperationButton():
         content.add_widget(self.buttonHintY)
 
         # Popup 
-        self.popup = Popup(title='Add new button editor box', content=content, auto_dismiss=False)
+        self.popup = Popup(title='Add new layout editor box', content=content, auto_dismiss=False)
 
         # Events attach
         clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
@@ -78,10 +160,10 @@ class EditorOperationButton():
         self.popup.open()
 
         # Bind elements
-        infoBtn2 = Button(text='Add new button', on_press=lambda a:self.oAddBtn(self))
+        infoBtn2 = Button(text='Add new Layout', on_press=lambda a:self.oAddBox(self))
         content.add_widget(infoBtn2)
 
-    def oAddBtn(self, instance):
+    def oAddBox(self, instance):
         ####################################################
         # Operation `Add`
         ####################################################
@@ -95,7 +177,6 @@ class EditorOperationButton():
             # self.buttonHintX.text, self.buttonHintY.text
         elif self.checkboxPer.active == True: 
             print(" SET HINT ")
-
             if self.buttonHintX.text == "None":
                 local_size_hintX = None
             else:
@@ -105,8 +186,7 @@ class EditorOperationButton():
                 local_size_hintY = None
             else:
                 local_size_hintY = self.buttonHintY.text
-                
-            
+
             dimensionRole = "hint"
         elif self.checkboxCombine.active == True: 
             print(" SET COMBINE ")
@@ -114,20 +194,21 @@ class EditorOperationButton():
                 local_size_hintX = None
             else:
                 local_size_hintX = float(self.buttonHintX.text)
-
             if self.buttonHintY.text == "None":
                 local_size_hintY = None
             else:
                 local_size_hintY = self.buttonHintY.text
-                
             dimensionRole = "combine"
 
-   
         calculatedButtonData = {
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
-            "type": "BUTTON",
-            "text": self.buttonText.text,
+            "type": "LAYOUT",
+            "layoutType": self.selectBtn.text,
+            "items": "[1,2,3]",
+            "orientation": self.orientation.text,
+            "padding": self.padding.text,
+            "spacing": self.spacing.text,
             "color": self.newBtnColor,
             "bgColor": self.newBtnBgColor,
             "width": self.buttonWidthText.text,
@@ -137,32 +218,57 @@ class EditorOperationButton():
             "dimensionRole": dimensionRole
         } 
     
-
-        if self.checkboxPer.active == True: 
-            calculatedElement = Button(
-                text=self.buttonText.text,
-                color=self.newBtnColor,
-                #width=self.buttonWidthText.text,
-                #height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
-                # size_hint_x size_hint_y
-            )
-        else:
-            calculatedElement = Button(
-                text=self.buttonText.text,
-                color=self.newBtnColor,
+        Attacher = BoxLayout
+        # determinate type
+        if self.selectBtn.text == "Box":
+            Attacher = BoxLayout
+            calculatedElement = Attacher(
+                #text=self.orientation.text,
+                #color=self.newBtnColor,
                 width=self.buttonWidthText.text,
                 height=self.buttonHeightText.text,
                 size_hint_x=local_size_hintX,
                 size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
-                # size_hint_x size_hint_y
+                #background_normal= '',
+                #background_color= self.newBtnBgColor
             )
+        elif self.selectBtn.text == "Anchor":
+            Attacher = AnchorLayout
+        elif self.selectBtn.text == "Float":
+            Attacher = FloatLayout
+        elif self.selectBtn.text == "Grid":
+            Attacher = GridLayout
+        elif self.selectBtn.text == "Page":
+            Attacher = PageLayout
+        elif self.selectBtn.text == "Relative":
+            Attacher = Relative
+        elif self.selectBtn.text == "Scatter":
+            Attacher = Scatter
+        elif self.selectBtn.text == "Stack":
+            Attacher = Stack
 
+        if self.checkboxPer.active == True: 
+
+            print('what is the type of layout', self.selectBtn.text)
+            #Anchor layout:
+            #Box layout: 
+            #Float layout:
+            #Grid layout:
+            #Page Layout:
+            #Relative layout:
+            #Scatter layout:
+            #Stack layout: 
+            #calculatedElement = Attacher(
+                #text=self.orientation.text,
+                #color=self.newBtnColor,
+                #width=self.buttonWidthText.text,
+                #height=self.buttonHeightText.text,
+                #size_hint_x=local_size_hintX,
+                #size_hint_y=local_size_hintY,
+                # background_normal= '',
+                # background_color= self.newBtnBgColor
+                # size_hint_x size_hint_y
+            #)
         print("calculatedButtonData on local call -> ", calculatedButtonData)
 
         localStagedElements = []
@@ -174,7 +280,7 @@ class EditorOperationButton():
             
             for item in localStagedElements:
                 print('Added new button')
-                print('Staged element text  -> ', item['type'])
+                print('Staged element text  -> ', item['layoutType'])
 
             localStagedElements.append(calculatedButtonData)
             # store.delete('')

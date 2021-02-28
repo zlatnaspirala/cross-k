@@ -48,6 +48,21 @@ class EngineConfig:
           "b" : 0,
           "g" : 0,
         },
+        "engineBtnsBackground": {
+          "r" : 0.3,
+          "b" : 0.3,
+          "g" : 0.3,
+        },
+        "warn": {
+          "r" : 1,
+          "b" : 0.5,
+          "g" : 0.5,
+        },
+        "alert": {
+          "r" : 1,
+          "b" : 0.1,
+          "g" : 0.1,
+        },
         "sceneGUIbgBTN": {
           "r" : 0.6,
           "b" : 0.2,
@@ -74,6 +89,21 @@ class EngineConfig:
           "r" : 1,
           "b" : 1,
           "g" : 1,
+        },
+        "engineBtnsBackground": {
+          "r" : 0.2,
+          "b" : 0.2,
+          "g" : 0.2,
+        },
+        "warn": {
+          "r" : 0.5,
+          "b" : 0,
+          "g" : 0.5,
+        },
+        "alert": {
+          "r" : 1,
+          "b" : 0.3,
+          "g" : 0.3,
         },
         "sceneGUIbgBTN": {
           "r" : 0.2,

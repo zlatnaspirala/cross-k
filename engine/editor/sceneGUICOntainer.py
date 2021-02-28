@@ -80,6 +80,20 @@ class SceneGUIContainer(ScrollView):
                     height=30
                 ))
 
+            if item['type'] == 'LAYOUT':
+                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+                # pass it
+                self.sceneScroller.add_widget( Button(
+                    markup=True,
+                    text='[Layout] [b]' + item['name'] + '[b]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    on_press=partial(self.engineRoot.showCommonLayoutDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                ))
+
         self.sceneScroller.add_widget( Button(
             markup=True,
             text='[Scene-Root]',
