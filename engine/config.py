@@ -22,20 +22,17 @@ class EngineConfig:
       'password': 'admin'
     }
 
-    # Themes
+    # Define Themes black/light
     self.currentTheme = "black"
+
     self.setupThemes()
 
-    # RUNTIME - Predefinitions
+    # RUNTIME USAGE IN APP LEVEL - PreDefinitions
     self.currentProjectPath = 'mynull'
     self.currentProjectName = 'mynull'
-    print("Engine config getVersion test." )
-    
-    print("Engine config loaded.", )
 
   def setupThemes(self):
 
-    print("Setup init colors shema.")
     self.themes = {
       "light" : {
         "background": {
@@ -44,34 +41,44 @@ class EngineConfig:
           "g" : 1,
         },
         "maintext": {
-          "r" : 0,
-          "b" : 0,
-          "g" : 0,
+          "r" : 1,
+          "b" : 1,
+          "g" : 1,
         },
         "engineBtnsBackground": {
           "r" : 0.3,
           "b" : 0.3,
           "g" : 0.3,
         },
+        "engineBtnsColor": {
+          "r" : 0,
+          "b" : 0,
+          "g" : 0,
+        },
         "warn": {
           "r" : 1,
-          "b" : 0.5,
-          "g" : 0.5,
+          "b" : 0.3,
+          "g" : 0.3,
         },
         "alert": {
           "r" : 1,
           "b" : 0.1,
           "g" : 0.1,
         },
+        "sceneGUIbgLabel": {
+          "r" : 0.5,
+          "b" : 0.3,
+          "g" : 0.3,
+        },
         "sceneGUIbgBTN": {
-          "r" : 0.6,
-          "b" : 0.2,
-          "g" : 0.2,
+          "r" : 0.7,
+          "b" : 0.3,
+          "g" : 0.3,
         },
         "sceneGUIbgWidget": {
-          "r" : 0.9,
-          "b" : 0.2,
-          "g" : 0.9,
+          "r" : 0.6,
+          "b" : 0.4,
+          "g" : 0.4,
         },
         "consoleText": {
           "r" : 0,
@@ -95,8 +102,13 @@ class EngineConfig:
           "b" : 0.2,
           "g" : 0.2,
         },
+        "engineBtnsColor": {
+          "r" : 1,
+          "b" : 1,
+          "g" : 1,
+        },
         "warn": {
-          "r" : 0.5,
+          "r" : 1,
           "b" : 0,
           "g" : 0.5,
         },
@@ -105,15 +117,20 @@ class EngineConfig:
           "b" : 0.3,
           "g" : 0.3,
         },
+        "sceneGUIbgLabel": {
+          "r" : 0.7,
+          "b" : 0.1,
+          "g" : 0.5,
+        },
         "sceneGUIbgBTN": {
-          "r" : 0.2,
+          "r" : 0.7,
           "b" : 0.2,
-          "g" : 0.6,
+          "g" : 0.5,
         },
         "sceneGUIbgWidget": {
-          "r" : 0.2,
-          "b" : 0.2,
-          "g" : 0.9,
+          "r" : 0.7,
+          "b" : 0.3,
+          "g" : 0.5,
         },
         "consoleText": {
           "r" : 0,
@@ -121,7 +138,6 @@ class EngineConfig:
           "g" : 0,
         },
       },
-    
     }
 
   def getTheme(self):
@@ -131,7 +147,6 @@ class EngineConfig:
     return self.themes[self.currentTheme][flag]
 
   def getThemeCustomColor(self, key):
-    # print("TEST COLOR ")
     return (
       self.getThemeTextColorByComp(key)["r"],
       self.getThemeTextColorByComp(key)["b"],
@@ -140,7 +155,6 @@ class EngineConfig:
     )
 
   def getThemeTextColor(self):
-    # print("TEST COLOR ")
     return (
       self.getThemeTextColorByComp("maintext")["r"],
       self.getThemeTextColorByComp("maintext")["b"],
@@ -174,4 +188,4 @@ class EngineConfig:
 
   def getVersion(self):
     print("Current CrossK version: " + self.version)
-    return "current version: " + self.version
+    return "Current version: " + self.version

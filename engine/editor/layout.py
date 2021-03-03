@@ -11,40 +11,20 @@ from kivy.properties import StringProperty, ObjectProperty
 
 class EngineLayout(BoxLayout):
 
+    # This is root app class container. I need to pass all needed staff
+    # from main-editor or make copy of main-editor and remove unused code.
+    # Must be done before package feature
+
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
 
-    def action_engine_create_project(self, instance):
-        print(" this is app instance ")
-        print(" test name ", self.currentProjectName)
-        print(" test path ", self.currentProjectPath)
-
     def loadAppElementsStore():
-        print("'ble")
+        print("This is app level root")
 
     def __init__(self, **kwargs):
         super(EngineLayout, self).__init__(**kwargs)
-
-        print("Testing layout size: ", self.size )
-        print("Testing layout pos: ", self.pos )
-
-        ######################################################
-        #for item in store.find(name='renderComponentArray'):
-        #    print('tshirtmans index key is', item[0])
-        #    print('his key value pairs are', str(item[1]))
-        ######################################################
-
-        #self.appRenderElementsArray = [Label(text='TEXT COMPONENT', size_hint=(.5, .1), color=(1,0,1,1) )]
-
-        #for i in range(len(self.appRenderElementsArray)):
-        #    self.add_widget(self.appRenderElementsArray[i])
-
-        # self.engineTitle = 
-
-        # self.add_widget(self.engineTitle)
-         
-        #self.button = Button(text='plop', pos=(1,1),size_hint=(.5, .1), on_press=self.action_engine_create_project)
-        #self.add_widget(self.button)
+        # print("Testing layout size: ", self.size)
+        # print("Testing layout pos: ", self.pos)
 
         with self.canvas.before:
             Color(0.3, 0.1, 0.6, 1)

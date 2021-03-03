@@ -20,7 +20,7 @@ class EditorOperationButton():
         self.newBtnHeight = 80
 
         self.store = kwargs.get("store")
-        self.engineLayout = kwargs.get("engineLayout")
+        self.currentLayout = kwargs.get("currentLayout")
 
         self.engineRoot = kwargs.get("engineRoot")
         print("Access store -> ", self.store)
@@ -81,6 +81,35 @@ class EditorOperationButton():
         infoBtn2 = Button(text='Add new button', on_press=lambda a:self.oAddBtn(self))
         content.add_widget(infoBtn2)
 
+
+    def __add_elementar(self, localStagedElements, calculatedLabelData):
+
+        print('add btn elemntar')
+        founded = False
+        for index, item in enumerate(localStagedElements):
+            if item['type'] == 'LAYOUT' and item['id'] == self.currentLayout:
+                print('FOUNDED')
+                founded = True
+                localStagedElements[index]['elements'].append(calculatedLabelData)
+                break
+
+        if founded == True:
+            return True
+
+        for index, item in enumerate(localStagedElements):
+            if item['type'] == 'LAYOUT':
+                print('SEARCH LAYOUT', item['id'])
+                for subIndex, sub in enumerate(item['elements']):
+                    if item['type'] == 'LAYOUT' and sub['id'] == self.currentLayout:
+                        founded = True
+                        localStagedElements[index]['elements'][subIndex].append(calculatedLabelData)
+                        return founded
+                        break
+
+        print("founded return ", founded)
+        return founded
+
+
     def oAddBtn(self, instance):
         ####################################################
         # Operation `Add`
@@ -136,57 +165,31 @@ class EditorOperationButton():
             "size_hint_y": str(self.buttonHintY.text),
             "dimensionRole": dimensionRole
         } 
-    
-
-        if self.checkboxPer.active == True: 
-            calculatedElement = Button(
-                text=self.buttonText.text,
-                color=self.newBtnColor,
-                #width=self.buttonWidthText.text,
-                #height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
-                # size_hint_x size_hint_y
-            )
-        else:
-            calculatedElement = Button(
-                text=self.buttonText.text,
-                color=self.newBtnColor,
-                width=self.buttonWidthText.text,
-                height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                background_normal= '',
-                background_color= self.newBtnBgColor
-                # size_hint_x size_hint_y
-            )
 
         print("calculatedButtonData on local call -> ", calculatedButtonData)
-
         localStagedElements = []
 
         if self.store.exists('renderComponentArray'):
             print('renderComponentArray exists:', self.store.get('renderComponentArray')['elements'])
-            
             localStagedElements = self.store.get('renderComponentArray')['elements']
-            
-            for item in localStagedElements:
-                print('Added new button')
-                print('Staged element text  -> ', item['type'])
+            if self.currentLayout == 'SCENE_ROOT':
+                localStagedElements.append(calculatedButtonData)
+            else:
+                self.__add_elementar(localStagedElements, calculatedButtonData)
 
-            localStagedElements.append(calculatedButtonData)
+                print("AFTER ADD LEMENTAR")
+ 
             # store.delete('')
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
         
         # print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
-        self.engineLayout.add_widget(calculatedElement)
+        # self.currentLayout.add_widget(calculatedElement)
+        
         self.popup.dismiss()
 
-        self.engineRoot.updateScene(localStagedElements)
+        self.engineRoot.updateScene()
         self.engineRoot.sceneGUIContainer.selfUpdate()
 
     # To monitor changes, we can bind to color property changes

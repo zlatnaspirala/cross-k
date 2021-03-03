@@ -20,7 +20,7 @@ class EditorOperationLabel():
         self.newLabelHeight = 80
 
         self.store = kwargs.get("store")
-        self.engineLayout = kwargs.get("engineLayout")
+        self.currentLayout = kwargs.get("currentLayout")
         self.engineRoot = kwargs.get("engineRoot")
         print("Access store -> ", self.store)
 
@@ -93,6 +93,33 @@ class EditorOperationLabel():
         infoBtn2 = Button(text='Add new label', on_press=lambda a:self.oAdd(self))
         content.add_widget(infoBtn2)
 
+    def __add_elementar(self, localStagedElements, calculatedLabelData):
+
+        print('add btn elemntar')
+        founded = False
+        for index, item in enumerate(localStagedElements):
+            if item['type'] == 'LAYOUT' and item['id'] == self.currentLayout:
+                print('FOUNDED')
+                founded = True
+                localStagedElements[index]['elements'].append(calculatedLabelData)
+                break
+
+        if founded == True:
+            return True
+
+        for index, item in enumerate(localStagedElements):
+            if item['type'] == 'LAYOUT':
+                print('SEARCH LAYOUT', item['id'])
+                for subIndex, sub in enumerate(item['elements']):
+                    if item['type'] == 'LAYOUT' and sub['id'] == self.currentLayout:
+                        founded = True
+                        localStagedElements[index]['elements'][subIndex].append(calculatedLabelData)
+                        return founded
+                        break
+
+        print("founded return ", founded)
+        return founded
+
     def oAdd(self, instance):
         ####################################################
         # Operation `Add`
@@ -149,35 +176,7 @@ class EditorOperationLabel():
             "size_hint_x": str(self.buttonHintX.text),
             "size_hint_y": str(self.buttonHintY.text),
             "dimensionRole": dimensionRole
-        } 
-    
-
-        if self.checkboxPer.active == True: 
-            calculatedElement = Label(
-                text=self.buttonText.text,
-                color=self.newLabelColor,
-                font_size=float(self.fontSizeBtn.text),
-                #width=self.buttonWidthText.text,
-                #height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                #background_normal= '',
-                #background_color= self.newLabelBgColor
-                # size_hint_x size_hint_y
-            )
-        else:
-            calculatedElement = Label(
-                text=self.buttonText.text,
-                color=self.newLabelColor,
-                font_size=self.fontSizeBtn.text,
-                width=self.buttonWidthText.text,
-                height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                #background_normal= '',
-                # background_color= self.newLabelBgColor
-                # size_hint_x size_hint_y
-            )
+        }
 
         print("calculatedLabelData on local call -> ", calculatedLabelData)
 
@@ -185,24 +184,19 @@ class EditorOperationLabel():
 
         if self.store.exists('renderComponentArray'):
             print('renderComponentArray exists:', self.store.get('renderComponentArray')['elements'])
-            
             localStagedElements = self.store.get('renderComponentArray')['elements']
-            
-            for item in localStagedElements:
-                print('Staged element text  -> ', item['text'])
+            # ADD TO ROOT
 
-            localStagedElements.append(calculatedLabelData)
-            #store.delete('tito')
+            if self.currentLayout == 'SCENE_ROOT':
+                localStagedElements.append(calculatedLabelData)
+            else:
+                self.__add_elementar(localStagedElements, calculatedLabelData)
+                print("AFTER ADD ELEMENTAR")
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
-        
-        print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
-        self.engineLayout.add_widget(calculatedElement)
-
-        self.engineRoot.updateScene(localStagedElements)
-        self.engineRoot.sceneGUIContainer.selfUpdate()
-        
+        self.engineRoot.updateScene()
+        self.engineRoot.sceneGUIContainer.selfUpdate()        
         self.popup.dismiss()
 
     def on_color(self, instance, value):
@@ -217,24 +211,16 @@ class EditorOperationLabel():
         self.popup.dismiss()
 
     def on_checkbox_active(instance, value1, value):
-        print(" 1 : ", instance)
-        print(" 2 ", value1)
-        print(" 3 ", value)
         if value:
             print('The dimensions checkbox', value1, 'is active')
             instance.checkboxPer.active = False
-
         else:
             print('The dimensions checkbox', value1, 'is inactive')
 
     def on_checkbox_bold_active(instance, value1, value):
-        print(" 1 : ", instance)
-        print(" 2 ", value1)
-        print(" 3 ", value)
         if value:
             print('The bold checkbox', value1, 'is active')
             # instance.checkboxPer.active = False
-
         else:
             print('The bold checkbox', value1, 'is inactive')
 
@@ -246,4 +232,3 @@ class EditorOperationLabel():
             instance.checkboxDim.active = False
         else:
             print('The dimensions checkbox', value1, 'is inactive')
-

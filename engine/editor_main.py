@@ -15,30 +15,30 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.metrics import dp, sp, pt
 from kivy.core.window import Window
-from engine.editor.layout import EngineLayout
-from engine.editor.sceneGUICOntainer import SceneGUIContainer
-from engine.config import EngineConfig
-from engine.common.modifycation import AlignedTextInput
-from engine.common.commons import getAboutGUI, getMessageBoxYesNo
-from engine.common.operationsButton import EditorOperationButton
-from engine.common.operationsLabel import EditorOperationLabel
-from engine.common.operationsBox import EditorOperationBox
-from engine.common.enginePackage import PackagePopup
 from kivy.uix.image import Image, AsyncImage 
 from kivy.uix.textinput import TextInput
 from kivy.uix.colorpicker import ColorPicker
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
-
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
+from kivy.graphics import Color, Rectangle
+from engine.editor.layout import EngineLayout
+from engine.editor.sceneGUICOntainer import SceneGUIContainer
+from engine.config import EngineConfig
+from engine.common.modifycation import AlignedTextInput
+from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
+from engine.common.operationsButton import EditorOperationButton
+from engine.common.operationsLabel import EditorOperationLabel
+from engine.common.operationsBox import EditorOperationBox
+from engine.common.enginePackage import PackagePopup
 
 # from datetime import datetime
 
+# Only Editor reference
 import os
 import threading
 import uuid
-
 
 # Selected source
 #from win32api import GetSystemMetrics
@@ -61,7 +61,10 @@ class EditorMain(BoxLayout):
         self.add_widget(self.createLoadProjectLayoutEditor)
 
         self.createLoadProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
-        self.createLoadProjectLayoutEditor.add_widget(Button(text='0.1.0', size=(60, 100), size_hint=(None, None) ))
+        self.createLoadProjectLayoutEditor.add_widget(
+            Button(text='Cancel load dialog', size=(60, 100), size_hint=(None, None) ,
+            on_press=self.loadNewProjectGUICancel )
+        )
 
         self.newProjectBtn = Button(text='Load project', size_hint=(.1, .2),
           on_press=self.loadProjectFiles)
@@ -119,7 +122,7 @@ class EditorMain(BoxLayout):
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
 
-        self.updateScene(loadElements)
+        self.updateScene()
 
         # Sync call SceneGUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
@@ -225,21 +228,26 @@ class EditorMain(BoxLayout):
         self.add_widget(self.createNewProjectLayoutEditor)
 
         self.createNewProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
-        self.createNewProjectLayoutEditor.add_widget(Button(text='Cancel', size=(70, 70), size_hint=(None, None), on_press=self.createNewProjectGUICancel ))
+        
 
-        self.newProjectBtn = Button(text='Create new', size_hint=(.1, .2),
+        self.newProjectBtn = Button(text='Create new', size_hint=(1, None),size=(1, 44),
           on_press=self.createProjectFiles)
 
         self.newProjectTitle = Label(text='Project name:')
         self.createNewProjectLayoutEditor.add_widget(self.newProjectTitle)
         # self.projectName = TextInput(multiline=False, size_hint=(.1, .05) )
-        self.projectName = self.get_input('middle', 'center')
+        self.projectName =  TextInput(text='Project1', size_hint=(1, None) , height=44) # self.get_input('middle', 'center')
 
         self.createNewProjectLayoutEditor.add_widget(self.projectName)
         self.createNewProjectLayoutEditor.add_widget(self.newProjectBtn)
 
+        self.createNewProjectLayoutEditor.add_widget(Button(markup=True, text='[b]Cancel[b]', size=(70, 44), size_hint=(1, None), on_press=self.createNewProjectGUICancel ))
+
     def createNewProjectGUICancel(self, instance):
         self.remove_widget(self.createNewProjectLayoutEditor)
+
+    def loadNewProjectGUICancel(self, instance):
+        self.remove_widget(self.createLoadProjectLayoutEditor)
 
     def packageWinApp(self, instance):
         test = PackagePopup(engineConfig=self.engineConfig)
@@ -265,7 +273,7 @@ class EditorMain(BoxLayout):
         #Window.top = 10
         #Window.left = 500
         #Window.fullscreen = True
-        Window.clearcolor = (0, 0, 0, 1)
+        Window.clearcolor = self.engineConfig.getThemeBackgroundColor()
        
         # Run time schortcut vars
         #self.orientation='vertical'
@@ -364,19 +372,20 @@ class EditorMain(BoxLayout):
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
 
+
     def openApplicationMenuBtn(self, instance):
         #self.appMenuDropdown.open(self)
         print("test >!>>!, self.appMenuDropdown", self.appMenuDropdown)
 
     def get_input(self, v, h):
         # Test stage for this
-        return AlignedTextInput(text='Project1', halign=h, valign=v, height=100)
+        return AlignedTextInput(text='Project1', halign=h, valign=v, height=44)
 
     def addNewButtonGUI(self, instance):
         print('BUTTON.....................................')
         operationAddTest = EditorOperationButton(
             store=self.store,
-            engineLayout=self.engineLayout,
+            currentLayout='SCENE_ROOT',
             engineRoot=self
         )
 
@@ -384,7 +393,7 @@ class EditorMain(BoxLayout):
         print('LAYOUT.....................................')
         operationAddTest = EditorOperationBox(
             store=self.store,
-            engineLayout=self.engineLayout,
+            currentLayout='SCENE_ROOT',
             engineRoot=self
         )
 
@@ -392,7 +401,7 @@ class EditorMain(BoxLayout):
         print('LABEL.....................................')
         operationAddTest = EditorOperationLabel(
             store=self.store,
-            engineLayout=self.engineLayout,
+            currentLayout='SCENE_ROOT',
             engineRoot=self
         )
 
@@ -421,6 +430,7 @@ class EditorMain(BoxLayout):
                 text="Type " + str(detailData['type']),
                 size_hint=(1,None),
                 background_normal= '',
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 height=50 )
         )
@@ -429,6 +439,7 @@ class EditorMain(BoxLayout):
             Button(
                 text=str(detailData['id']),
                 size_hint=(1,None),
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 height=50 )
@@ -438,6 +449,7 @@ class EditorMain(BoxLayout):
             Button(
                 text="Name(Tag) " + detailData['name'],
                 size_hint=(1,None),
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 height=50 )
@@ -453,6 +465,7 @@ class EditorMain(BoxLayout):
             Button(
                 text= currentType + " Text",
                 size_hint=(1,None),
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 height=50 )
@@ -462,7 +475,7 @@ class EditorMain(BoxLayout):
         # half common btn , label 
         if "text" in detailData:
             print("detailData['text'] sure, it was defined.")
-            if (detailData['text'] != null ):
+            if (detailData['text'] != None ):
                 self.detailsCommonText = TextInput(text=detailData['text'], size_hint=(1, None), height=50)
                 self.editorElementDetails.add_widget(self.detailsCommonText)
         else:
@@ -471,7 +484,9 @@ class EditorMain(BoxLayout):
         # Checkbox use pixel dimesion system
         self.editorElementDetails.add_widget(Label(
             text='Use Pixel Dimensions', size_hint=(1,None),
-                height=50, color=self.engineConfig.getThemeTextColor()))
+                height=50,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'))
+            )
        
         if detailData['dimensionRole'] == "pixel":
             _isActiveCheckBoxPix = True
@@ -500,7 +515,7 @@ class EditorMain(BoxLayout):
                 height=50,
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
-                color=self.engineConfig.getThemeTextColor()
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 )
             )
         self.detailsCommonWidth = TextInput(text=str(detailData['width']), size_hint=(1, None), height=50)
@@ -513,21 +528,29 @@ class EditorMain(BoxLayout):
                 height=50,
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
-                color=self.engineConfig.getThemeTextColor() )
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'))
             )
         self.detailsCommonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=50)
         self.editorElementDetails.add_widget(self.detailsCommonHeight)
 
         # Percent dimensions
-        self.editorElementDetails.add_widget(Label(text='Use Percent Dimensions', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+        loc1 = Label(text='Use Percent Dimensions', 
+                     color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                     size_hint=(1,None),
+                     height=50)
+        self.editorElementDetails.add_widget(loc1)
+        #loc1.bind(pos=update_rect, size=update_rect)
+
         self.checkboxPer = CheckBox(active=_isActiveCheckBoxPer, size_hint=(1,None),
                 height=50)
         self.editorElementDetails.add_widget(self.checkboxPer)
 
         # Combine dimensions
-        self.editorElementDetails.add_widget(Label(text='Use Combine Dimensions (None for disable)', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+        self.editorElementDetails.add_widget(
+            Label(text='Use Combine Dimensions (None for disable)', 
+                  color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                  size_hint=(1,None),
+                  height=50))
         self.checkboxCombine = CheckBox(active=_isActiveCheckBoxCombine, size_hint=(1,None),
                 height=50)
         self.editorElementDetails.add_widget(self.checkboxCombine)
@@ -566,32 +589,31 @@ class EditorMain(BoxLayout):
 
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
-                
 
         self.editorElementDetails.add_widget(
             Label(
                 text="Delete button '" + detailData['name'] + "' ",
                 size_hint=(1,None),
                 height=40,
-                color=self.engineConfig.getThemeTextColor(),
-                on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
-            )
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+            ))
 
         self.editorElementDetails.add_widget(
             Button(
-                text="delete button",
+                text="Delete button",
                 size_hint=(1,None),
                 height=40,
-                color=self.engineConfig.getThemeTextColor(),
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('warn')),
                 on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
             )
 
-
         self.editorElementDetails.add_widget(
             Button(
-                text="Save changes",
+                markup=True,
+                text="[b]Save changes[/b]",
                 size_hint=(1,None),
                 height=120,
                 color=self.engineConfig.getThemeTextColor(),
@@ -602,7 +624,8 @@ class EditorMain(BoxLayout):
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Cancel",
+                markup=True,
+                text="[b]Cancel[/b]",
                 size_hint=(1,None),
                 height=120,
                 background_normal= '',
@@ -619,7 +642,8 @@ class EditorMain(BoxLayout):
         # Clear
 
         self.editorElementDetails.add_widget(Label(text='Use Bold', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                size_hint=(1,None), height=50))
 
         self.checkboxIsBold = CheckBox(active=False, size_hint=(1,None),
                 height=50)
@@ -630,8 +654,11 @@ class EditorMain(BoxLayout):
             Button(
                 text="Font size ",
                 size_hint=(1,None),
-                height=50 )
-            )
+                height=50,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
 
         self.labelDetailsFontSize = TextInput(
             text=detailData['fontSize'],
@@ -642,39 +669,43 @@ class EditorMain(BoxLayout):
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Save changes",
+                markup=True,
+                text="[b][color=00ff00]S[/color]ave changes[/b]",
                 size_hint=(1,None),
                 height=120,
                 color=self.engineConfig.getThemeTextColor(),
-                on_press=partial(self.saveLabelDetails, str(detailData['id']), str(detailData['type']) ))
-            )
+                on_press=partial(self.saveLabelDetails, str(detailData['id']), str(detailData['type']) ),
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Cancel",
+                markup=True,
+                text="[b]Cancel[/b]",
                 size_hint=(1,None),
                 height=120,
+                color=self.engineConfig.getThemeTextColor(),
                 on_press=self.cloaseWithNoSaveDetails
             ))
 
     # End of Label block
 
-    ####################
-
     def showBoxLayoutDetails(self, detailData):
 
         self.editorElementDetails.add_widget(
-            Label(
-                text="Delete button '" + detailData['name'] + "' ",
+            Button(
+                markup=True,
+                text="[b][color='red']Add element[/color][/b]",
                 size_hint=(1,None),
                 height=40,
                 color=self.engineConfig.getThemeTextColor(),
-                on_press=partial(self.saveLayoutDetails, str(detailData['id']), str(detailData['type']) ))
+                on_press=partial(self.callAddNewElementGUIBox, detailData))
             )
 
         self.editorElementDetails.add_widget(
             Button(
-                text="delete button",
+                markup=True,
+                text="[b][color='red']Delete Layout[/color][/b]",
                 size_hint=(1,None),
                 height=40,
                 color=self.engineConfig.getThemeTextColor(),
@@ -692,8 +723,8 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor(),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=partial(self.saveLayoutDetails, str(detailData['id']), str(detailData['type']) ))
-            )
+                on_press=partial(self.saveLayoutDetails, str(detailData) )
+            ))
 
         self.editorElementDetails.add_widget(
             Button(
@@ -705,32 +736,38 @@ class EditorMain(BoxLayout):
                 on_press=self.cloaseWithNoSaveDetails
             ))
 
+    # LAYOUTS BTN FRIST BLOCK
+    def callAddNewElementGUIBox(self, currentData, instance):
+        print('ADD SUB ELEMENT BUTTON......................[object]...............', currentData['id'])
+        print('ADD SUB ELEMENT BUTTON......................type...............', currentData['type'])
+        print('ADD SUB ELEMENT BUTTON......................elements...............', currentData['elements'])
 
-        # Buttonblock
+        operationAddTest = EditorOperationButton(
+            store=self.store,
+            currentLayout=currentData['id'], # works
+            engineRoot=self,
+        )
 
-
-
-    ### LAYOUTS 
     def __setLayoutType(self, instance):
-        print("..........", instance)
+        print(".....select layout type.....", instance.text)
         self.selectBtn.text = instance.text
-        self.layoutTypeList.select(self.btnBox.text)
+        self.layoutTypeList.select(instance.text)
 
     def showCommonLayoutDetails(self, detailData, instance):
-        print("COMMON.DETAILS.LAYOUT......... ", detailData)
+        # print("COMMON.DETAILS.LAYOUT......... ", detailData)
         # Clear
         try: self.editorElementDetails
         except NameError: self.editorElementDetails = None
 
         if self.editorElementDetails is None:
-            print(".first time.")
+            print(".")
         else:
             self.remove_widget(self.editorElementDetails)
-            print(".clear.")
-        
+            print(".")
+
         currentType = str(detailData['type']).lower().capitalize()
 
-        # DETAILS BOX BTN 
+        # DETAILS BOX BTN
         self.editorElementDetails = GridLayout( orientation='lr-tb')
         self.editorElementDetails.cols = 2
 
@@ -764,34 +801,21 @@ class EditorMain(BoxLayout):
         self.commonDetailsNameText = TextInput(
             text=detailData['name'],
             size_hint=(1, None),
-            height=50
+            height=44
         )
         self.editorElementDetails.add_widget(self.commonDetailsNameText)
-        # text
-        self.editorElementDetails.add_widget(
-            Button(
-                text= currentType + " Orientation",
-                size_hint=(1,None),
-                background_normal= '',
-                background_color=(self.engineConfig.getThemeBackgroundColor()),
-                height=50 )
-            )
 
-        # half common btn , label 
-        self.detailsCommonLayoutOrientation = TextInput(text=detailData['orientation'], size_hint=(1, None), height=50)
-        self.editorElementDetails.add_widget(self.detailsCommonLayoutOrientation)
-
-        self.editorElementDetails.add_widget(Label(text='Padding'))
-        self.padding = AlignedTextInput(text='vertical', halign="middle", valign="center")
-        self.editorElementDetails.add_widget(self.padding)
-
-        self.editorElementDetails.add_widget(Label(text='Spacing'))
-        self.spacing = AlignedTextInput(text='vertical', halign="middle", valign="center")
-        self.editorElementDetails.add_widget(self.spacing)
-
+        
+        self.editorElementDetails.add_widget(Label(text='Layout type',size_hint=(1, None),
+            height=44))
 
         self.layoutTypeList = DropDown()
-        self.selectBtn = Button(text='Select layout type', on_press=self.layoutTypeList.open)
+        self.selectBtn = Button(
+            text=detailData['layoutType'],
+            size_hint=(1, None),
+            height=30,
+            on_press=self.layoutTypeList.open)
+
         self.editorElementDetails.add_widget(self.selectBtn)
         
         #Anchor layout:
@@ -832,7 +856,29 @@ class EditorMain(BoxLayout):
         self.layoutTypeList.add_widget(self.btnStack)
 
         self.editorElementDetails.add_widget(self.layoutTypeList)
+        self.layoutTypeList.dismiss()
 
+        # text
+        self.editorElementDetails.add_widget(
+            Button(
+                text= currentType + " Orientation",
+                size_hint=(1,None),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeBackgroundColor()),
+                height=44 )
+            )
+
+        # half common btn , label 
+        self.detailsCommonLayoutOrientation = TextInput(text=detailData['orientation'], size_hint=(1, None), height=50)
+        self.editorElementDetails.add_widget(self.detailsCommonLayoutOrientation)
+
+        self.editorElementDetails.add_widget(Label(text='Padding',size_hint=(1, None), height=50))
+        self.layoutPadding = TextInput(text=detailData['padding'],size_hint=(1, None), height=50 )
+        self.editorElementDetails.add_widget(self.layoutPadding)
+
+        self.editorElementDetails.add_widget(Label(text='Spacing',size_hint=(1, None), height=50))
+        self.layoutSpacing = TextInput(text=detailData['spacing'], size_hint=(1, None), height=50)
+        self.editorElementDetails.add_widget(self.layoutSpacing)
 
         # Checkbox use pixel dimesion system
         self.editorElementDetails.add_widget(Label(
@@ -869,50 +915,53 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor()
                 )
             )
-        self.detailsCommonWidth = TextInput(text=str(detailData['width']), size_hint=(1, None), height=50)
+        self.detailsCommonWidth = TextInput(text=str(detailData['width']), size_hint=(1, None), height=44)
         self.editorElementDetails.add_widget(self.detailsCommonWidth)
 
         self.editorElementDetails.add_widget(
             Button(
                 text= currentType + " Height",
                 size_hint=(1,None),
-                height=50,
+                height=44,
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 color=self.engineConfig.getThemeTextColor() )
             )
-        self.detailsCommonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=50)
+        self.detailsCommonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=44)
         self.editorElementDetails.add_widget(self.detailsCommonHeight)
 
         # Percent dimensions
         self.editorElementDetails.add_widget(Label(text='Use Percent Dimensions', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=44))
         self.checkboxPer = CheckBox(active=_isActiveCheckBoxPer, size_hint=(1,None),
-                height=50)
+                height=44)
         self.editorElementDetails.add_widget(self.checkboxPer)
 
         # Combine dimensions
         self.editorElementDetails.add_widget(Label(text='Use Combine Dimensions (None for disable)', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=50))
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=44))
         self.checkboxCombine = CheckBox(active=_isActiveCheckBoxCombine, size_hint=(1,None),
-                height=50)
+                height=44)
         self.editorElementDetails.add_widget(self.checkboxCombine)
 
         # Bind checkboxs for details box
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
         self.checkboxDim.bind(active=self.on_checkbox_pixel_active) # pylint disable=no-member
         self.checkboxCombine.bind(active=self.on_checkbox_combine_active) # pylint disable=no-member
- 
+
+        # Hint
         self.commonHintXDetail = TextInput(text=str(detailData['size_hint_x']), size_hint=(1,None),
-                height=50)
+                height=44)
         self.editorElementDetails.add_widget(self.commonHintXDetail)
         self.commonHintYDetail = TextInput(text=str(detailData['size_hint_y']), size_hint=(1,None),
-                height=50)
+                height=44)
         self.editorElementDetails.add_widget(self.commonHintYDetail)
- 
+
         # Colors elements
-        clrPickerTextColor = ColorPicker(color=(detailData['color']))
-        clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']))
+        clrPickerTextColor = ColorPicker(color=(detailData['color']), size_hint=(1,None),
+                height=144)
+        clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']), size_hint=(1,None),
+                height=144)
 
         self.editorElementDetails.add_widget(clrPickerBackgroundColor)
         self.editorElementDetails.add_widget(clrPickerTextColor)
@@ -925,16 +974,13 @@ class EditorMain(BoxLayout):
         clrPickerBackgroundColor.bind(color=self.on_details_bgcolor) # pylint: disable=no-member
 
         # Specific elemetn props
-        if str(detailData['layoutType']) == "Box":
+        if str(detailData['layoutType']) == "Box" or str(detailData['layoutType']) == "Select layout type":
             self.showBoxLayoutDetails(detailData)
         elif str(detailData['layoutType']) == "Grid":
             self.showBoxLayoutDetails(detailData)
 
-    ####################
-
     # Save details fast solution for now
     def saveDetails(self, elementID, elementType,  instance):
-
         print("Save detail for ->" , elementID)
         # predefinition
         dimensionRole = "pixel"
@@ -964,7 +1010,6 @@ class EditorMain(BoxLayout):
             else:
                 local_size_hintY = float(self.commonHintYDetail.text)
             dimensionRole = "combine"
-
         # CrossK Element Data Interface
         calculatedButtonData = {
             "id": elementID,
@@ -979,23 +1024,26 @@ class EditorMain(BoxLayout):
             "size_hint_y": self.commonHintYDetail.text,
             "dimensionRole": dimensionRole
         }
-
         # Collect data
         print(" CONSTRUCTED " , calculatedButtonData)
-
         # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
+
+        # TEST
+
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
-                print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
+                print('I FOUND REFS REPLACE UPDATE STORE ')
                 loadElements[index] = calculatedButtonData
+
+        # TEST
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
 
-        self.updateScene(loadElements)
+        self.updateScene()
         self.sceneGUIContainer.selfUpdate()
 
         self.remove_widget(self.editorElementDetails)
@@ -1066,20 +1114,17 @@ class EditorMain(BoxLayout):
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
 
-        self.updateScene(loadElements)
+        self.updateScene()
         self.sceneGUIContainer.selfUpdate()
 
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
 
-
-
     ####################
 
     # Save details fast solution for now
-    def saveLayoutDetails(self, elementID, elementType,  instance):
-
-        print("Save detail layout for ->" , elementID)
+    def saveLayoutDetails(self, detailData,  instance):
+        print("Save detail layout for " , detailData['type'])
         # predefinition
         dimensionRole = "pixel"
         if self.checkboxDim.active == True: 
@@ -1115,16 +1160,16 @@ class EditorMain(BoxLayout):
             "name": self.commonDetailsNameText.text,
             "type": "LAYOUT",
             "layoutType": self.selectBtn.text,
-            "items": "[1,2,3]",
+            "elements": detailData['elements'],
             "orientation": self.detailsCommonLayoutOrientation.text,
-            "padding": self.padding.text,
-            "spacing": self.spacing.text,
-            "color": self.newBtnColor,
-            "bgColor": self.newBtnBgColor,
-            "width": self.buttonWidthText.text,
-            "height": self.buttonHeightText.text,
-            "size_hint_x": str(self.buttonHintX.text),
-            "size_hint_y": str(self.buttonHintY.text),
+            "padding": self.layoutPadding.text,
+            "spacing": self.layoutSpacing.text,
+            "color": self.newDetailsColor,
+            "bgColor": self.newDetailsBgColor,
+            "width": self.detailsCommonWidth.text,
+            "height": self.detailsCommonHeight.text,
+            "size_hint_x": self.commonHintXDetail.text,
+            "size_hint_y": self.commonHintYDetail.text,
             "dimensionRole": dimensionRole
         } 
 
@@ -1134,29 +1179,84 @@ class EditorMain(BoxLayout):
         # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
+
+        # First just root
+        isFounded = False
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
-                print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
+                print('I FOUND LAYOUT REFS IN ROOT REPLACE UPDATE STORE ', item['dimensionRole'])
                 loadElements[index] = calculatedButtonData
+                isFounded = True
+        
+        # deep look
+        if isFounded == False:
+            for index, item in enumerate(loadElements):
+                print("index", index)
+                if item['type'] == 'LAYOUT':
+                    for sindex, sitem in enumerate(item['elements']):
+                        if sitem['id'] == elementID:
+                            sitem = calculatedButtonData
+                            print('I FOUND LAYOUT  EFS IN SUB REPLACE UPDATE STORE ', sitem['dimensionRole'])
+
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
 
-        self.updateScene(loadElements)
+        self.updateScene()
         self.sceneGUIContainer.selfUpdate()
 
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
 
-#######################
+    def __deleteElementar(self, currElements, elementID):
+
+        print("delete element in root first  ", currElements)
+        isPassed = False
+
+        for index, item in enumerate(currElements):
+            print("index", index)
+
+            if item['id'] == elementID:
+                print('I FOUND REFS IN ROOT DELETE - UPDATE STORE ', item['name'])
+                currElements.pop(index)
+                isPassed = True
+                return currElements
+                break
+
+            print("isPassed ", isPassed)
+            if isPassed == False:
+                for index, item in enumerate(currElements):
+                    print("search subs in ", currElements)
+
+                    if item['type'] == "LAYOUT" and len(item['elements']) > 0:
+                        print('I FOUND [DELETE]  layout with elements - DEEP SEARCH ', item['name'])
+                        for indexSub, itemSub in enumerate(item['elements']):
+                            if itemSub['id'] == elementID:
+                                currElements[index]['elements'].pop(indexSub)
+                                isPassed = True
+                                return currElements
+                                break
+        
+        # DELETE DETAILS GUI BOX
+        self.editorElementDetails.clear_widgets()
 
     # Delete button action
     def delete(self, elementID, elementType,  instance):
-        print("delete element !")
+
+        # print("delete element type ", elementType)
+        # print("delete element ID ", elementID)
+        # print("instance ", instance)
+
         # updaet always
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
-        loadElements = self.store.get('renderComponentArray')['elements']
+        rootElements = self.store.get('renderComponentArray')['elements']
+
+        modifitedData = self.__deleteElementar(rootElements, elementID)
+        # print(modifitedData)
+        self.store.put('renderComponentArray', elements=modifitedData)
+        self.updateScene()
+        self.sceneGUIContainer.selfUpdate()
 
     # Details box
     def on_details_color(self, instance, value):
@@ -1197,20 +1297,19 @@ class EditorMain(BoxLayout):
 
     def _readElementar(self, currentCointainer, loadElements):
 
-        print("read elementar current container : ", currentCointainer)
-        # print("read elementar current loadElements ARRAY : ", loadElements)
+        print("read elementar current container  loadElements : ", loadElements)
+        if loadElements == [None]:
+            return False
 
         for item in loadElements:
-        # print("......", item['type'])
-            if item['type'] == 'BUTTON':
-                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+            if item != None and item['type'] == 'BUTTON':
                 local_size_hintX = None
                 local_size_hintY= None
 
                 if item['dimensionRole'] == "pixel":
                     local_size_hintX = None
                     local_size_hintY= None
-                    self.engineLayout.add_widget( Button(
+                    currentCointainer.add_widget( Button(
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1233,7 +1332,7 @@ class EditorMain(BoxLayout):
                         local_size_hintY = item['size_hint_y']
 
 
-                    self.engineLayout.add_widget( Button(
+                    currentCointainer.add_widget( Button(
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1252,7 +1351,7 @@ class EditorMain(BoxLayout):
                     else:
                         local_size_hintY = item['size_hint_y']
 
-                    self.engineLayout.add_widget( Button(
+                    currentCointainer.add_widget( Button(
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1263,15 +1362,16 @@ class EditorMain(BoxLayout):
                         width=item['width'])
                     )
 
-            if item['type'] == 'LABEL':
-                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
+            if item != None and item['type'] == 'LABEL':
+
                 local_size_hintX = None
                 local_size_hintY= None
 
                 if item['dimensionRole'] == "pixel":
+
                     local_size_hintX = None
                     local_size_hintY= None
-                    self.engineLayout.add_widget( Label(
+                    test = Label(
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
@@ -1280,13 +1380,20 @@ class EditorMain(BoxLayout):
                         padding_y= 0, # test
                         center=(1,1), # test
                         font_blended= True, # test
-                        #background_normal= '',
-                        #background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY,
                         height=item['height'],
                         width=item['width'])
-                    )
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
                 elif item['dimensionRole'] == "hint":
 
                     if item['size_hint_x'] == "None":
@@ -1299,8 +1406,7 @@ class EditorMain(BoxLayout):
                     else:
                         local_size_hintY = item['size_hint_y']
 
-
-                    self.engineLayout.add_widget( Label(
+                    test = Label(
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
@@ -1308,12 +1414,21 @@ class EditorMain(BoxLayout):
                         padding_x= 0, # test
                         padding_y= 0, # test
                         center=(1,1), # test
-                        #background_normal= '',
-                        #background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY)
-                    )
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
                 elif item['dimensionRole'] == "combine":
+
                     if item['size_hint_x'] == "None":
                         local_size_hintX = None
                     else:
@@ -1324,7 +1439,7 @@ class EditorMain(BoxLayout):
                     else:
                         local_size_hintY = item['size_hint_y']
 
-                    self.engineLayout.add_widget( Label(
+                    test =  Label(
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
@@ -1332,20 +1447,28 @@ class EditorMain(BoxLayout):
                         padding_x= 0, # test
                         padding_y= 0, # test
                         center=(1,1), # test
-                        #background_normal= '',
+                        #foreground_color=item['color'],
                         #background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY,
                         height=item['height'],
                         width=item['width'])
-                    )
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
 
-            if item['type'] == 'LAYOUT':
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
+            if item != None and item['type'] == 'LAYOUT':
 
                 # determinate type
                 if item['layoutType'] == "Box":
 
-                    ###############################
                     local_size_hintX = None
                     local_size_hintY= None
 
@@ -1364,11 +1487,9 @@ class EditorMain(BoxLayout):
                         else:
                             local_size_hintY = item['size_hint_y']
 
-                    ###############################
-
                     Attacher = BoxLayout
-                    print("BOX_>>>>>>>>>>>>>>>>>>>")
-                    currentCointainer.add_widget( Attacher(
+                    print("BOX LOAD>>>>>>>>>>>>>>")
+                    myAttacher = Attacher(
                         #text=item['text'],
                         orientation=item['orientation'],
                         spacing=float(item['spacing']),
@@ -1378,7 +1499,20 @@ class EditorMain(BoxLayout):
                         #background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY)
-                    )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+
+                    print(">>>>", item['elements'])
+                    self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Anchor":
                     Attacher = AnchorLayout
@@ -1395,17 +1529,17 @@ class EditorMain(BoxLayout):
                 elif item['layoutType'] == "Stack":
                     Attacher = Stack
 
-                print('its lauout ,read sub items ->>>')
+                # print('its lauout ,read sub items ->>>')
                 print('its lauout ,read sub items ->>>', item["layoutType"])
-                # _readElementar
 
-    def updateScene(self, loadElements):
+    def updateScene(self):
 
+        self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
+        loadElements = self.store.get('renderComponentArray')['elements']
+
+        print('----------------------------------')
         print('CLEAR, UPDATE SCENE [engineLayout]')
         print('----------------------------------')
         self.engineLayout.clear_widgets()
-        self.engineLayout.clear_widgets()
 
         self._readElementar(self.engineLayout ,loadElements)
-
- 

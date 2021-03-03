@@ -40,13 +40,43 @@ def crossKValidateNumbers(txt):
 def getAboutGUI():
 
     box = BoxLayout(orientation="vertical")
-    infoBtn = Button(text='CrossK 2d context engine solution')
-    box.add_widget(Label(markup=True,
-                         text="""Based on kivy 2.0 python framework. GPL-3.0 License with avavailable source code.
-                                 [b]https://github.com/zlatnaspirala/cross-k[b]"""))
+    infoBtn = Button(markup=True, 
+                     text='[b]ok[/b]',
+                     font_size=22,
+                     size_hint=(1,0.2))
+    box.add_widget(Label(
+            text='maximumroulette.com production',
+            font_size=25,
+            size_hint=(1,0.1)
+        ))
     Picture(injectWidget=box, accessAssets="logo")
-    box.add_widget(Label(text='maximumroulette.com production'))
-    box.add_widget(Label(text='Created by @zlatnaspirala 2021'))
+    box.add_widget(Label(markup=True,
+        text="""Based on kivy 2.0 python framework. GPL-3.0 License with avavailable source code.
+        CrossK is a small but conspiratorial app engine based on kivy opengles2.0 in background.
+        
+        [b]https://github.com/zlatnaspirala/cross-k[/b]
+        Licence:
+        Only `Engine source code` is under GPL-3.0.
+        - Feel free to use this program.
+        - You can sell your crossK generated applications without any licence.
+        - Your applications are exempt from any license.
+        - Any modification in the engine source code must be shared and available in your 
+          about box with next attribution:
+          [i]
+          CrossK GPL-3.0 License
+          [MODIFICATION_SHORT_DESCRIBE]
+          [MODIFICATION_ENGINE_SOURCE_LINK]
+          [b]https://github.com/zlatnaspirala/cross-k[/b] 
+          [/i]
+
+        [b]Credits:[/b]
+        https://www.python.org
+        https://kivy.org"""))
+
+    box.add_widget(Label(text='Created by zlatnaspirala 2021',
+                         font_size=22,
+                         size_hint=(1,0.2)
+                        ))
     
     box.add_widget(infoBtn)
         
@@ -78,3 +108,7 @@ def getMessageBoxYesNo(message, msgType, callback):
     popup.open()
 
 
+## DEEP 
+def deepSearch(arg1 , arg2):
+    print("Deep arg 1", arg1)
+    print("Deep arg 2", arg2)

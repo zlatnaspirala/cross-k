@@ -28,12 +28,6 @@ from functools import partial
 
 class EditorOperationBox():
 
-
-    def __setLayoutType(self, instance):
-        print("..........", instance)
-        self.selectBtn.text = instance.text
-        self.layoutTypeList.select(self.btnBox.text)
-
     def __init__(self, **kwargs):
 
         # Definitions defaults - config implementation later!
@@ -43,26 +37,28 @@ class EditorOperationBox():
         self.newBtnHeight = 80
 
         self.store = kwargs.get("store")
-        self.engineLayout = kwargs.get("engineLayout")
+        self.currentLayout = kwargs.get("currentLayout")
 
         self.engineRoot = kwargs.get("engineRoot")
         print("Access store -> ", self.store)
 
         # Prepare content
         content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
-        clrPickerTextColor = ColorPicker(size_hint=(1, 5))
-        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
+        clrPickerTextColor = ColorPicker(size_hint=(1, 1))
+        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 1))
         
         content.add_widget(Label(text='Layout Name(Tag)'))
-        self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
+        self.buttonNameText = TextInput(text='MyBoxLayout')
         content.add_widget(self.buttonNameText)
 
         content.add_widget(Label(text='Layout Type(Visual type)'))
         # self.buttonNameText = AlignedTextInput(text='utton', halign="middle", valign="center")
 
         self.layoutTypeList = DropDown()
-        self.selectBtn = Button(text='Select layout type', on_press=self.layoutTypeList.open)
+        self.selectBtn = Button(text='Box', on_press=self.layoutTypeList.open)
         content.add_widget(self.selectBtn)
+
+        self.layoutTypeList.dismiss()
         
         #Anchor layout:
         #Box layout: 
@@ -104,23 +100,26 @@ class EditorOperationBox():
         content.add_widget(self.layoutTypeList)
 
 
-        content.add_widget(Label(text='Button background color'))
-        content.add_widget(clrPickerBackgroundColor)
-        content.add_widget(Label(text='Button text color'))
-        content.add_widget(clrPickerTextColor)
+        colorHolder = BoxLayout(size_hint=(1,None), height=160)
+        content.add_widget(colorHolder)
+
+        colorHolder.add_widget(Label(text='Button background color'))
+        colorHolder.add_widget(clrPickerBackgroundColor)
+        colorHolder.add_widget(Label(text='Button text color'))
+        colorHolder.add_widget(clrPickerTextColor)
 
 
         content.add_widget(Label(text='Orientation'))
-        self.orientation = AlignedTextInput(text='vertical', halign="middle", valign="center")
+        self.orientation = TextInput(text='vertical')
         content.add_widget(self.orientation)
 
         content.add_widget(Label(text='Padding'))
-        self.padding = AlignedTextInput(text='vertical', halign="middle", valign="center")
-        content.add_widget(self.padding)
+        self.layoutPadding = TextInput(text='0')
+        content.add_widget(self.layoutPadding)
 
         content.add_widget(Label(text='Spacing'))
-        self.spacing = AlignedTextInput(text='vertical', halign="middle", valign="center")
-        content.add_widget(self.spacing)
+        self.layoutSpacing = TextInput(text="0")
+        content.add_widget(self.layoutSpacing)
 
         myCheckDimSys = BoxLayout()
         myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
@@ -160,8 +159,18 @@ class EditorOperationBox():
         self.popup.open()
 
         # Bind elements
-        infoBtn2 = Button(text='Add new Layout', on_press=lambda a:self.oAddBox(self))
-        content.add_widget(infoBtn2)
+        commitBtn = Button(
+            text='Add new Layout',
+            size_hint=(1, None),
+            height=88,
+            on_press=lambda a:self.oAddBox(self)
+        )
+        content.add_widget(commitBtn)
+
+    def __setLayoutType(self, instance):
+        print("__setLayoutType", instance)
+        self.selectBtn.text = instance.text
+        self.layoutTypeList.select(self.btnBox.text)
 
     def oAddBox(self, instance):
         ####################################################
@@ -205,10 +214,10 @@ class EditorOperationBox():
             "name": self.buttonNameText.text,
             "type": "LAYOUT",
             "layoutType": self.selectBtn.text,
-            "items": "[1,2,3]",
+            "elements": [],
             "orientation": self.orientation.text,
-            "padding": self.padding.text,
-            "spacing": self.spacing.text,
+            "padding": self.layoutPadding.text,
+            "spacing": self.layoutSpacing.text,
             "color": self.newBtnColor,
             "bgColor": self.newBtnBgColor,
             "width": self.buttonWidthText.text,
@@ -217,59 +226,11 @@ class EditorOperationBox():
             "size_hint_y": str(self.buttonHintY.text),
             "dimensionRole": dimensionRole
         } 
-    
-        Attacher = BoxLayout
-        # determinate type
-        if self.selectBtn.text == "Box":
-            Attacher = BoxLayout
-            calculatedElement = Attacher(
-                #text=self.orientation.text,
-                #color=self.newBtnColor,
-                width=self.buttonWidthText.text,
-                height=self.buttonHeightText.text,
-                size_hint_x=local_size_hintX,
-                size_hint_y=local_size_hintY,
-                #background_normal= '',
-                #background_color= self.newBtnBgColor
-            )
-        elif self.selectBtn.text == "Anchor":
-            Attacher = AnchorLayout
-        elif self.selectBtn.text == "Float":
-            Attacher = FloatLayout
-        elif self.selectBtn.text == "Grid":
-            Attacher = GridLayout
-        elif self.selectBtn.text == "Page":
-            Attacher = PageLayout
-        elif self.selectBtn.text == "Relative":
-            Attacher = Relative
-        elif self.selectBtn.text == "Scatter":
-            Attacher = Scatter
-        elif self.selectBtn.text == "Stack":
-            Attacher = Stack
 
         if self.checkboxPer.active == True: 
-
             print('what is the type of layout', self.selectBtn.text)
-            #Anchor layout:
-            #Box layout: 
-            #Float layout:
-            #Grid layout:
-            #Page Layout:
-            #Relative layout:
-            #Scatter layout:
-            #Stack layout: 
-            #calculatedElement = Attacher(
-                #text=self.orientation.text,
-                #color=self.newBtnColor,
-                #width=self.buttonWidthText.text,
-                #height=self.buttonHeightText.text,
-                #size_hint_x=local_size_hintX,
-                #size_hint_y=local_size_hintY,
-                # background_normal= '',
-                # background_color= self.newBtnBgColor
-                # size_hint_x size_hint_y
-            #)
-        print("calculatedButtonData on local call -> ", calculatedButtonData)
+
+        # print("Attacher internal Attacher.uid ID -> ", Attacher.uid)
 
         localStagedElements = []
 
@@ -279,8 +240,7 @@ class EditorOperationBox():
             localStagedElements = self.store.get('renderComponentArray')['elements']
             
             for item in localStagedElements:
-                print('Added new button')
-                print('Staged element text  -> ', item['layoutType'])
+                print('A')
 
             localStagedElements.append(calculatedButtonData)
             # store.delete('')
@@ -289,10 +249,11 @@ class EditorOperationBox():
         self.store.put('renderComponentArray', elements=localStagedElements)
         
         # print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
-        self.engineLayout.add_widget(calculatedElement)
+        # self.currentLayout.add_widget(calculatedElement)
+
         self.popup.dismiss()
 
-        self.engineRoot.updateScene(localStagedElements)
+        self.engineRoot.updateScene()
         self.engineRoot.sceneGUIContainer.selfUpdate()
 
     # To monitor changes, we can bind to color property changes

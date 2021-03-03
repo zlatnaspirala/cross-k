@@ -10,19 +10,88 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.scrollview import ScrollView
 # pylint: disable=no-name-in-module
-from kivy.properties import StringProperty, ObjectProperty 
+from kivy.properties import StringProperty, ObjectProperty
 
 class SceneGUIContainer(ScrollView):
 
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
 
+    def _update(self, loadElements, container, parentName):
+
+        if parentName == "rootScene":
+            parentName = ""
+        else:
+            parentName = "[" + parentName + "]"
+
+        for _index, item in enumerate(loadElements):
+            print("update _index ", _index)
+            if item['type'] == 'BUTTON':
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    padding_x= self.deepTest * 10,
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                )
+                container.add_widget(test)
+                test.bind(size=test.setter('text_size'))
+
+            if item['type'] == 'LABEL':
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeCustomColor('sceneGUIbgLabel')),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                    )
+
+                test.bind(size=test.setter('text_size'))
+                container.add_widget(test)
+
+            if item['type'] == 'LAYOUT':
+                self.localGrid = GridLayout(
+                    cols=1,
+                    size_hint=(1, None),
+                    height=30 * (len(item['elements']) + 1))
+                localTest = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    on_press=partial(self.engineRoot.showCommonLayoutDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                )
+                localTest.bind(size=localTest.setter('text_size'))
+                self.localGrid.add_widget(localTest)
+
+                container.add_widget( self.localGrid )
+                if len(item['elements']) > 0:
+                    self.deepTest=self.deepTest+1
+                    self._update(  item['elements'] , self.localGrid, item['name'])
+
+            if (_index==len(loadElements)-1):
+                self.deepTest=self.deepTest-1
+
     def selfUpdate(self):
 
         self.clear_widgets()
-
         self.myStore = JsonStore(self.storePath)
-        print("Testing myStore: ", self.myStore)
 
         # call theme, improve aplha arg
         self.sceneScroller = GridLayout(
@@ -30,13 +99,11 @@ class SceneGUIContainer(ScrollView):
             size_hint=(1, None),
             height=600
         )
-        
+
         self.sceneScroller.cols = 1
         self.sceneScroller.size_hint_y= None
         self.sceneScroller.spacing = 1
-        # self.sceneScroller.orientation = 'vertical'
-        # Title box label
-        # print(self.engineRoot.engineConfig.getThemeBgSceneBoxColor() , "<<<<<<<<<<<")
+
         self.sceneScroller.add_widget( Button(
                     markup=True,
                     text='[Scene-Root]',
@@ -50,66 +117,16 @@ class SceneGUIContainer(ScrollView):
 
         self.add_widget(self.sceneScroller)
         loadElements = self.myStore.get('renderComponentArray')['elements']
-        for item in loadElements:
-            print("......", item['type'])
-            if item['type'] == 'BUTTON':
-                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
-                # pass it
-                self.sceneScroller.add_widget(Button(
-                    markup=True,
-                    text='[Button] [b]' + item['name'] + '[b]',
-                    color=self.engineRoot.engineConfig.getThemeTextColor(),
-                    background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
-                    on_press=partial(self.engineRoot.showCommonDetails, item),
-                    size_hint=(1, None),
-                    height=30
-                ))
 
-            if item['type'] == 'LABEL':
-                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
-                # pass it
-                self.sceneScroller.add_widget( Button(
-                    markup=True,
-                    text='[Label] [b]' + item['name'] + '[b]',
-                    color=self.engineRoot.engineConfig.getThemeTextColor(),
-                    background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
-                    on_press=partial(self.engineRoot.showCommonDetails, item),
-                    size_hint=(1, None),
-                    height=30
-                ))
+        self._update( loadElements, self.sceneScroller, 'rootScene')
 
-            if item['type'] == 'LAYOUT':
-                # print('its button , coming from root editor layout , list in root also in sceneGUIContainer.->>>')
-                # pass it
-                self.sceneScroller.add_widget( Button(
-                    markup=True,
-                    text='[Layout] [b]' + item['name'] + '[b]',
-                    color=self.engineRoot.engineConfig.getThemeTextColor(),
-                    background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
-                    on_press=partial(self.engineRoot.showCommonLayoutDetails, item),
-                    size_hint=(1, None),
-                    height=30
-                ))
-
-        self.sceneScroller.add_widget( Button(
-            markup=True,
-            text='[Scene-Root]',
-            color=self.engineRoot.engineConfig.getThemeTextColor(),
-            size_hint=(1, None),
-            background_normal= '',
-            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
-            height=35
-            )
-        )
-    
     def __init__(self, **kwargs):
         super(SceneGUIContainer, self).__init__()
 
         self.storePath = kwargs.get("storePath", "null")
         self.engineRoot = kwargs.get("engineRoot")
+
+        self.deepTest = 0
 
         # Reset
         self.orientation = 'horizontal'
@@ -119,37 +136,3 @@ class SceneGUIContainer(ScrollView):
         self.pos_hint = {'center_x':0.5,'top': 1}
 
         self.selfUpdate()
-        ######################################################
-        # Test loader 
- 
-        # CROSSK_PROJECTS_PATH = App.user_data_dir
-        #store = JsonStore('projects/Project1/Project1.json')
-
-        #for item in store.find(name='renderComponentArray'):
-        #    print('tshirtmans index key is', item[0])
-        #    print('his key value pairs are', str(item[1]))
-
-        ######################################################
-
-        #self.appRenderElementsArray = [Label(text='TEXT COMPONENT', size_hint=(.5, .1), color=(1,0,1,1) )]
-
-        #for i in range(len(self.appRenderElementsArray)):
-        #    self.add_widget(self.appRenderElementsArray[i])
-
-        # self.engineTitle = 
-
-        # self.add_widget(self.engineTitle)
-         
-        #self.button = Button(text='plop', pos=(1,1),size_hint=(.5, .1), on_press=self.action_engine_create_project)
-        #self.add_widget(self.button)
-
-        #with self.canvas.before:
-        #    Color(0.3, 0.1, 0.6, 1)
-        #    self.rect = Rectangle(size=self.size, pos=self.pos)
-
-        #self.bind(size=self._update_rect, pos=self._update_rect)
-
-    # Definition for update call bg
-    #def _update_rect(self, instance, value):
-    #    self.rect.pos = instance.pos
-    #    self.rect.size = instance.size
