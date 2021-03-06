@@ -30,7 +30,7 @@ class EditorOperationButton():
         clrPickerTextColor = ColorPicker(size_hint=(1, 5))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
         content.add_widget(Label(text='Button Name(Tag)'))
-        self.buttonNameText = AlignedTextInput(text='MyButton', halign="middle", valign="center")
+        self.buttonNameText = TextInput(text='MyButton')
         content.add_widget(self.buttonNameText)
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
@@ -47,7 +47,6 @@ class EditorOperationButton():
         myCheckDimSys.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
-        #partial(self.saveDetails, 
 
         content.add_widget(Label(text='Use Pixel Dimensions'))
         self.buttonWidthText = TextInput(text='200')
@@ -56,7 +55,7 @@ class EditorOperationButton():
         content.add_widget(self.buttonHeightText)
 
         myCheckPerSys = BoxLayout()
-        myCheckPerSys.add_widget(Label(text='Use Pixel Dimensions'))
+        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions range[0-1]'))
         content.add_widget(myCheckPerSys)
         self.checkboxPer = CheckBox(active=True)
         myCheckPerSys.add_widget(self.checkboxPer)
@@ -69,7 +68,7 @@ class EditorOperationButton():
         content.add_widget(self.buttonHintY)
 
         self.attachEventCurrentElement = Button(
-                text="Attach button event",
+                text="print('event.action.btn')",
                 size_hint=(1,None),
                 height=40
             )

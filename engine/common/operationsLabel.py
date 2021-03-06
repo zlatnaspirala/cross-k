@@ -29,18 +29,18 @@ class EditorOperationLabel():
         clrPickerTextColor = ColorPicker(size_hint=(1, 5))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
         content.add_widget(Label(text='Label Name(Tag)'))
-        self.buttonNameText = AlignedTextInput(text='MyLabel', halign="middle", valign="center")
+        self.buttonNameText = TextInput(text='MyLabel')
         content.add_widget(self.buttonNameText)
         content.add_widget(Label(text='Label background color'))
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Label text color'))
         content.add_widget(clrPickerTextColor)
         content.add_widget(Label(text='Text'))
-        self.buttonText = AlignedTextInput(text='My Label Text', halign="middle", valign="center")
+        self.buttonText = TextInput(text='My Label Text')
         content.add_widget(self.buttonText)
 
         content.add_widget(Label(text='Font size'))
-        self.fontSizeBtn = AlignedTextInput(text='', halign="middle", valign="center")
+        self.fontSizeBtn = AlignedTextInput(text='18', halign="middle", valign="center")
         content.add_widget(self.fontSizeBtn)
 
         # Bold check box

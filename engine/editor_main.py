@@ -270,8 +270,8 @@ class EditorMain(BoxLayout):
         Window.size = (sp(1200), sp(768))
         # Window.size = (1200, 768)
         # print("WHAT IS P S " , Window.size[0] )
-        #Window.top = 10
-        #Window.left = 500
+        Window.top = 100
+        Window.left = 200
         #Window.fullscreen = True
         Window.clearcolor = self.engineConfig.getThemeBackgroundColor()
        
@@ -596,8 +596,7 @@ class EditorMain(BoxLayout):
                 size_hint=(1,None),
                 height=30,
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
-                on_press=partial(self.attachEvent, str(detailData['id']) )
-                # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                on_press=partial(self.attachEvent, detailData['attacher'])
             ))
 
         self.attachEventCurrentElement = TextInput(
@@ -745,7 +744,7 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor(),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=partial(self.saveLayoutDetails, str(detailData) )
+                on_press=partial(self.saveLayoutDetails, detailData)
             ))
 
         self.editorElementDetails.add_widget(
@@ -1053,13 +1052,21 @@ class EditorMain(BoxLayout):
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
 
-        # TEST
-
+        isFounded = False
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
                 print('I FOUND REFS REPLACE UPDATE STORE ')
                 loadElements[index] = calculatedButtonData
+                isFounded = True
+
+        if isFounded == False:
+            for index, item in enumerate(loadElements):
+                if item['type'] == 'LAYOUT':
+                    for sindex, sitem in enumerate(item['elements']):
+                        if sitem['id'] == elementID:
+                            loadElements[index]['elements'][sindex] = calculatedButtonData
+                            print('I FOUND LAYOUT EFS IN SUB REPLACE UPDATE STORE ', sitem['dimensionRole'])
 
         # TEST
 
@@ -1106,7 +1113,7 @@ class EditorMain(BoxLayout):
             dimensionRole = "combine"
 
         # CrossK Element Data Interface
-        calculatedButtonData = {
+        calculatedLabelData = {
             "id": elementID,
             "name": self.commonDetailsNameText.text, # tag
             "type": elementType,
@@ -1123,19 +1130,29 @@ class EditorMain(BoxLayout):
         }
 
         # Collect data
-        print(" CONSTRUCTED " , calculatedButtonData)
+        print(" CONSTRUCTED " , calculatedLabelData)
 
         # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
+        
+        isFounded = False
         for index, item in enumerate(loadElements):
             print("index", index)
             if item['id'] == elementID:
                 print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
-                loadElements[index] = calculatedButtonData
+                loadElements[index] = calculatedLabelData
+                isFounded = True
+        if isFounded == False:
+            for index, item in enumerate(loadElements):
+                if item['type'] == 'LAYOUT':
+                    for sindex, sitem in enumerate(item['elements']):
+                        if sitem['id'] == elementID:
+                            loadElements[index]['elements'][sindex] = calculatedLabelData
+                            print('I FOUND LAYOUT LABEL REFS IN SUB level1')
 
         print("SAVE -> " , loadElements)
-        self.store.put('renderComponentArray', elements=loadElements )
+        self.store.put('renderComponentArray', elements=loadElements)
 
         self.updateScene()
         self.sceneGUIContainer.selfUpdate()
@@ -1179,7 +1196,7 @@ class EditorMain(BoxLayout):
 
         # CrossK Element Data Interface
         calculatedButtonData = {
-            "id": elementID,
+            "id": detailData['id'],
             "name": self.commonDetailsNameText.text,
             "type": "LAYOUT",
             "layoutType": self.selectBtn.text,
@@ -1207,7 +1224,7 @@ class EditorMain(BoxLayout):
         isFounded = False
         for index, item in enumerate(loadElements):
             print("index", index)
-            if item['id'] == elementID:
+            if item['id'] == detailData['id']:
                 print('I FOUND LAYOUT REFS IN ROOT REPLACE UPDATE STORE ', item['dimensionRole'])
                 loadElements[index] = calculatedButtonData
                 isFounded = True
@@ -1218,10 +1235,9 @@ class EditorMain(BoxLayout):
                 print("index", index)
                 if item['type'] == 'LAYOUT':
                     for sindex, sitem in enumerate(item['elements']):
-                        if sitem['id'] == elementID:
+                        if sitem['id'] == detailData['id']:
                             sitem = calculatedButtonData
                             print('I FOUND LAYOUT  EFS IN SUB REPLACE UPDATE STORE ', sitem['dimensionRole'])
-
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )

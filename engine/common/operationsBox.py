@@ -128,7 +128,6 @@ class EditorOperationBox():
         myCheckDimSys.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
-        #partial(self.saveDetails, 
 
         content.add_widget(Label(text='Use Pixel Dimensions'))
         self.buttonWidthText = TextInput(text='200')
@@ -137,20 +136,20 @@ class EditorOperationBox():
         content.add_widget(self.buttonHeightText)
 
         myCheckPerSys = BoxLayout()
-        myCheckPerSys.add_widget(Label(text='Use Pixel Dimensions'))
+        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions'))
         content.add_widget(myCheckPerSys)
         self.checkboxPer = CheckBox(active=True)
         myCheckPerSys.add_widget(self.checkboxPer)
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use percent dimensions.'))
+        content.add_widget(Label(text='Use percent dimensions range(0 - 1).'))
         self.buttonHintX = TextInput(text='1')
         content.add_widget(self.buttonHintX)
         self.buttonHintY = TextInput(text='1')
         content.add_widget(self.buttonHintY)
 
-        # Popup 
-        self.popup = Popup(title='Add new layout editor box', content=content, auto_dismiss=False)
+        # Popup
+        self.popup = Popup(title='Add new [b]Layout[/b] editor box', content=content, auto_dismiss=False)
 
         # Events attach
         clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
