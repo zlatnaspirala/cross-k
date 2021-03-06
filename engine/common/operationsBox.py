@@ -227,10 +227,7 @@ class EditorOperationBox():
             "dimensionRole": dimensionRole
         } 
 
-        if self.checkboxPer.active == True: 
-            print('what is the type of layout', self.selectBtn.text)
-
-        # print("Attacher internal Attacher.uid ID -> ", Attacher.uid)
+        # print('what is the type of layout', self.selectBtn.text)
 
         localStagedElements = []
 

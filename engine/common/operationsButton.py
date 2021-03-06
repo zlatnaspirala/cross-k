@@ -68,12 +68,33 @@ class EditorOperationButton():
         self.buttonHintY = TextInput(text='1')
         content.add_widget(self.buttonHintY)
 
-        # Popup 
+        self.attachEventCurrentElement = Button(
+                text="Attach button event",
+                size_hint=(1,None),
+                height=40
+            )
+        content.add_widget(self.attachEventCurrentElement)
+
+        content.add_widget(
+            Button(
+                text="Attach button event",
+                size_hint=(1,None),
+                height=40
+            ))
+
+        content.add_widget( TextInput(
+                text='print("ATTACH EVENT WORKS")',
+                size_hint=(1,None),
+                height=40
+              ))
+
+        # Popup
         self.popup = Popup(title='Add new button editor box', content=content, auto_dismiss=False)
 
         # Events attach
         clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
         clrPickerBackgroundColor.bind(color=self.on_bgcolor) # pylint: disable=no-member
+
         # Open popup
         self.popup.open()
 
@@ -81,10 +102,8 @@ class EditorOperationButton():
         infoBtn2 = Button(text='Add new button', on_press=lambda a:self.oAddBtn(self))
         content.add_widget(infoBtn2)
 
-
     def __add_elementar(self, localStagedElements, calculatedLabelData):
-
-        print('add btn elemntar')
+        # print('add btn elemntar')
         founded = False
         for index, item in enumerate(localStagedElements):
             if item['type'] == 'LAYOUT' and item['id'] == self.currentLayout:
@@ -106,9 +125,8 @@ class EditorOperationButton():
                         return founded
                         break
 
-        print("founded return ", founded)
+        # print("founded return ", founded)
         return founded
-
 
     def oAddBtn(self, instance):
         ####################################################
@@ -134,8 +152,7 @@ class EditorOperationButton():
                 local_size_hintY = None
             else:
                 local_size_hintY = self.buttonHintY.text
-                
-            
+
             dimensionRole = "hint"
         elif self.checkboxCombine.active == True: 
             print(" SET COMBINE ")
@@ -148,10 +165,9 @@ class EditorOperationButton():
                 local_size_hintY = None
             else:
                 local_size_hintY = self.buttonHintY.text
-                
+
             dimensionRole = "combine"
 
-   
         calculatedButtonData = {
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
@@ -163,49 +179,33 @@ class EditorOperationButton():
             "height": self.buttonHeightText.text,
             "size_hint_x": str(self.buttonHintX.text),
             "size_hint_y": str(self.buttonHintY.text),
-            "dimensionRole": dimensionRole
+            "dimensionRole": dimensionRole,
+            "attacher": self.attachEventCurrentElement.text
         } 
 
-        print("calculatedButtonData on local call -> ", calculatedButtonData)
+        print("calculatedButtonData call -> ", calculatedButtonData)
         localStagedElements = []
 
         if self.store.exists('renderComponentArray'):
-            print('renderComponentArray exists:', self.store.get('renderComponentArray')['elements'])
             localStagedElements = self.store.get('renderComponentArray')['elements']
             if self.currentLayout == 'SCENE_ROOT':
                 localStagedElements.append(calculatedButtonData)
             else:
                 self.__add_elementar(localStagedElements, calculatedButtonData)
 
-                print("AFTER ADD LEMENTAR")
- 
-            # store.delete('')
-
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
-        
-        # print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
-        # self.currentLayout.add_widget(calculatedElement)
-        
         self.popup.dismiss()
-
         self.engineRoot.updateScene()
         self.engineRoot.sceneGUIContainer.selfUpdate()
 
-    # To monitor changes, we can bind to color property changes
     def on_color(self, instance, value):
-
         self.newBtnColor = str(value)
-        # print( "RGBA = ", (value[0], value[1], value[2], 1 )) #  or instance.color
         self.newBtnColor = (value[0], value[1], value[2], 1 )
-        # print( "HSV = ", str(instance.hsv))
-        # print( "HEX = ", str(instance.hex_color))
 
     def on_bgcolor(self, instance, value):
-
-        print( str(value) , ' ,,,,, color')
-        # print( "RGBA = ", (value[0], value[1], value[2], 1 )) #  or instance.color
         self.newBtnBgColor = (value[0], value[1], value[2], 1 )
+        # print( "RGBA = ", (value[0], value[1], value[2], 1 ))
         # print( "HSV = ", str(instance.hsv))
         # print( "HEX = ", str(instance.hex_color))
 
@@ -214,19 +214,13 @@ class EditorOperationButton():
         self.popup.dismiss()
 
     def on_checkbox_active(instance, value1, value):
-        print(" 1 : ", instance)
-        print(" 2 ", value1)
-        print(" 3 ", value)
         if value:
             print('The dimensions checkbox', value1, 'is active')
             instance.checkboxPer.active = False
-
         else:
             print('The dimensions checkbox', value1, 'is inactive')
 
     def on_checkbox_per_active(instance, value1, value):
-        print(" input percent ", value)
-        print(" acess ", instance)
         if value:
             print('The dimensions checkbox', value1, 'is active')
             instance.checkboxDim.active = False

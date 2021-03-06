@@ -25,7 +25,7 @@ class MyApp(App):
         print("-------------------------------------------------")
 
     def build(self):
-        self.title = 'CrossK game engine beta test'
+        self.title = 'CrossK game engine beta 0.1.0'
 
         return EditorMain()
 
