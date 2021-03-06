@@ -72,6 +72,36 @@ For now i make package for whole engine:
 kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name NIKI --distpath packages/projectTest --workpath .cache/ main.py
 ```
 
+## STRUCTURE FILES
+ Its not perfect for now.
+
+<pre>
+├── .cache/                        (Auto generated)
+├── .vscode/                       (VisualCode/debugger)
+├── node_modules/                  (Auto generated)
+├── components/                    (empty for now)
+├── demos/                         (not project files)
+├── engine/
+|   ├── assets/
+|   ├── common/
+|   |   └── commons.py
+|   |   └── enginePackage.py
+|   |   └── modification.py
+|   |   └── operationBox.py
+|   |   └── operationButton.py
+|   |   └── operationLabel.py
+|   ├── editor/
+|   |   └── layout.py
+|   |   └── sceneGUIContainer.py
+|   ├── config.py                  (Engine editor config)
+|   ├── editor_main.py  Main Engine File
+|   ├── kivy_venv/
+|   ├── projects/                  (Auto generated - Project files)
+|   ├── shader-editor/             (non project files)
+</pre>
+
+
+
 # [TODO-LIST]
 
 <pre>
