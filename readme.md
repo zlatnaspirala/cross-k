@@ -52,7 +52,7 @@ python3 -m pip uninstall image
 If you have problem with :
 ```js
 python3 -m pip ...
-Them use this format
+Then use this format
 pip3 install ...
 ```
 
