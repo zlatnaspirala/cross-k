@@ -25,6 +25,7 @@ from kivy.app import App
 from kivy.graphics import Color, Rectangle
 from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUICOntainer import SceneGUIContainer
+from engine.editor.events import EngineLayoutEvents
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
@@ -263,7 +264,6 @@ class EditorMain(BoxLayout):
         self.engineConfig.getVersion()
 
         # self.packageWinApp()
-
         # Initial call for aboutGUI
         getAboutGUI()
 
@@ -596,7 +596,7 @@ class EditorMain(BoxLayout):
                 size_hint=(1,None),
                 height=30,
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
-                on_press=partial(self.attachEvent, detailData['attacher'])
+                on_press=partial(self.engineLayout.attachEvent, detailData['attacher'])
             ))
 
         self.attachEventCurrentElement = TextInput(
@@ -652,13 +652,6 @@ class EditorMain(BoxLayout):
                 on_press=self.cloaseWithNoSaveDetails
             ))
 
-    # Button Live Attacher
-    # Access own live element with `liveInstance`
-    def attachEvent(self, arg1, liveInstance):
-        print("ATTACH EVENT", arg1, liveInstance)
-        # liveInstance.text = 'blabla'
-        exec(arg1)
-
     # LABEL Block
     def showLabelDetails(self, detailData):
         print("LABEL detailData-> ", detailData)
@@ -688,6 +681,28 @@ class EditorMain(BoxLayout):
         )
         self.editorElementDetails.add_widget(self.labelDetailsFontSize)
 
+
+
+        self.editorElementDetails.add_widget(
+            Label(
+                text="Delete Label '" + detailData['name'] + "' ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+            ))
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Delete Label",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
+            )
+
         self.editorElementDetails.add_widget(
             Button(
                 markup=True,
@@ -713,15 +728,31 @@ class EditorMain(BoxLayout):
 
     def showBoxLayoutDetails(self, detailData):
 
-        self.editorElementDetails.add_widget(
-            Button(
+        localBox = BoxLayout()
+        self.editorElementDetails.add_widget(localBox)
+        localBox.add_widget(Button(
                 markup=True,
-                text="[b][color='red']Add element[/color][/b]",
-                size_hint=(1,None),
+                text="[b][color='red']Add Btn[/color][/b]",
+                size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
                 on_press=partial(self.callAddNewElementGUIBox, detailData))
             )
+        
+        localBox.add_widget(
+            Button(
+                markup=True,
+                text="[b][color='red']Add Label[/color][/b]",
+                size_hint=(0.2,None),
+                height=30,
+                color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.callAddNewLabelGUIBox, detailData))
+            )
+
 
         self.editorElementDetails.add_widget(
             Button(
@@ -759,13 +790,20 @@ class EditorMain(BoxLayout):
 
     # LAYOUTS BTN FRIST BLOCK
     def callAddNewElementGUIBox(self, currentData, instance):
+        operationAddTest = EditorOperationButton(
+            store=self.store,
+            currentLayout=currentData['id'], # works
+            engineRoot=self,
+        )
+
+    def callAddNewLabelGUIBox(self, currentData, instance):
         print('ADD SUB ELEMENT BUTTON......................[object]...............', currentData['id'])
         print('ADD SUB ELEMENT BUTTON......................type...............', currentData['type'])
         print('ADD SUB ELEMENT BUTTON......................elements...............', currentData['elements'])
 
-        operationAddTest = EditorOperationButton(
+        operationAddTest = EditorOperationLabel(
             store=self.store,
-            currentLayout=currentData['id'], # works
+            currentLayout=currentData['id'],
             engineRoot=self,
         )
 
@@ -1359,7 +1397,7 @@ class EditorMain(BoxLayout):
                         size_hint_y=local_size_hintY,
                         height=item['height'],
                         width=item['width'],
-                        on_press=partial(self.attachEvent, item['attacher'] ) ) 
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'] ) ) 
 
                 elif item['dimensionRole'] == "hint":
 
@@ -1380,7 +1418,7 @@ class EditorMain(BoxLayout):
                         background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY,
-                        on_press=partial(self.attachEvent, item['attacher'])
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'])
                     ) 
 
                 elif item['dimensionRole'] == "combine":
@@ -1403,7 +1441,7 @@ class EditorMain(BoxLayout):
                         size_hint_y=local_size_hintY,
                         height=item['height'],
                         width=item['width'],
-                        on_press=partial(self.attachEvent, item['attacher'])
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'])
                     )
 
                 currentCointainer.add_widget(constructedApplicationButton)

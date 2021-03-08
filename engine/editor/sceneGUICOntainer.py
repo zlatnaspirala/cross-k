@@ -32,7 +32,7 @@ class SceneGUIContainer(ScrollView):
                     halign="left", valign="middle",
                     padding_x= self.deepTest * 10,
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b]',
+                    text='[b]' + item['name'] + '[/b][i]'+ str(_index) + '[/i]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
@@ -47,8 +47,9 @@ class SceneGUIContainer(ScrollView):
                 test = Button(
                     markup=True,
                     halign="left", valign="middle",
+                    padding_x= self.deepTest * 10,
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b]',
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeCustomColor('sceneGUIbgLabel')),
@@ -69,7 +70,7 @@ class SceneGUIContainer(ScrollView):
                     markup=True,
                     halign="left", valign="middle",
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b]',
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
@@ -86,7 +87,7 @@ class SceneGUIContainer(ScrollView):
                     self._update(  item['elements'] , self.localGrid, item['name'])
 
             if (_index==len(loadElements)-1):
-                self.deepTest=self.deepTest-1
+                self.deepTest=0
 
     def selfUpdate(self):
 
