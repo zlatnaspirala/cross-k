@@ -34,7 +34,7 @@ python3 -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew
 python3 -m pip install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew --extra-index-url https://kivy.org/downloads/packages/simple/
 python3 -m pip install kivy.deps.gstreamer
 python3 -m pip install kivy.deps.angle
-c install kivy
+pip3.9 install kivy
 pip3.9 install docutils pygments pypiwin32 kivy.deps.sdl2
 
 
@@ -52,7 +52,7 @@ python3 -m pip uninstall image
 If you have problem with :
 ```js
 python3 -m pip ...
-Them use this format
+Then use this format
 pip3 install ...
 ```
 
