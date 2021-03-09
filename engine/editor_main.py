@@ -9,6 +9,7 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -717,7 +718,7 @@ class EditorMain(BoxLayout):
                 #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 #background_color=(0.1,0.1,0,0.5),
-                on_release=self.cloaseWithNoSaveDetails
+                on_release=self.closeWithNoSaveDetails
             ))
 
     # LABEL Block
@@ -791,7 +792,7 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor(),
                 #background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=self.cloaseWithNoSaveDetails
+                on_press=self.closeWithNoSaveDetails
             ))
 
     # End of Label block
@@ -823,6 +824,9 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.callAddNewLabelGUIBox, detailData))
             )
 
+        ## ANCHOR 
+        # anchor_x='right', anchor_y='bottom'
+
         self.editorElementDetails.add_widget(
             Button(
                 markup=True,
@@ -835,7 +839,75 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
             )
 
+        if str(detailData['layoutType']) == "Anchor":
+            self.editorElementDetails.add_widget(
+                Label(
+                    text="The AnchorLayout aligns left, right or center.",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                    # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                ))
 
+            self.layoutAnchorX = DropDown()
+            self.selectAnchor = Button(
+                text='center',
+                size_hint=(1, None),
+                height=30,
+                on_press=self.layoutAnchorX.open)
+
+            self.btnAnchor_xL = Button(text='left', size_hint_y=None, height=44 )
+            self.btnAnchor_xL.bind(on_release=partial(self.__setLayoutAnchorX))
+            self.layoutAnchorX.add_widget(self.btnAnchor_xL)
+
+            self.btnAnchor_xC = Button(text='center', size_hint_y=None, height=44) 
+            self.btnAnchor_xC.bind(on_release=partial(self.__setLayoutAnchorX))
+            self.layoutAnchorX.add_widget(self.btnAnchor_xC)
+
+            self.btnAnchor_xR = Button(text='right', size_hint_y=None, height=44)
+            self.btnAnchor_xR.bind(on_release=partial(self.__setLayoutAnchorX))
+            self.layoutAnchorX.add_widget(self.btnAnchor_xR)
+
+            self.editorElementDetails.add_widget(self.layoutAnchorX)
+            self.layoutAnchorX.dismiss()
+
+            self.editorElementDetails.add_widget(self.selectAnchor)
+            
+
+            self.editorElementDetails.add_widget(
+                Label(
+                    text="The AnchorLayout aligns top, bottom or center",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                    # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                ))
+
+            self.layoutAnchorY = DropDown()
+            self.selectAnchorY = Button(
+                text='center',
+                size_hint=(1, None),
+                height=30,
+                on_press=self.layoutAnchorY.open)
+
+            self.btnAnchor_yL = Button(text='top', size_hint_y=None, height=44 )
+            self.btnAnchor_yL.bind(on_release=partial(self.__setLayoutAnchorY))
+            self.layoutAnchorY.add_widget(self.btnAnchor_yL)
+
+            self.btnAnchor_yC = Button(text='center', size_hint_y=None, height=44) 
+            self.btnAnchor_yC.bind(on_release=partial(self.__setLayoutAnchorY))
+            self.layoutAnchorY.add_widget(self.btnAnchor_yC)
+
+            self.btnAnchor_yR = Button(text='buttom', size_hint_y=None, height=44)
+            self.btnAnchor_yR.bind(on_release=partial(self.__setLayoutAnchorY))
+            self.layoutAnchorY.add_widget(self.btnAnchor_yR)
+
+            self.editorElementDetails.add_widget(self.layoutAnchorY)
+            self.layoutAnchorY.dismiss()
+
+            self.editorElementDetails.add_widget(self.selectAnchorY)
+
+        # SAVE BUTTON
         self.editorElementDetails.add_widget(
             Button(
                 markup=True,
@@ -857,7 +929,7 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor(),
                 # background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=self.cloaseWithNoSaveDetails
+                on_press=self.closeWithNoSaveDetails
             ))
 
     # LAYOUTS BTN FRIST BLOCK
@@ -883,6 +955,16 @@ class EditorMain(BoxLayout):
         print(".....select layout type.....", instance.text)
         self.selectBtn.text = instance.text
         self.layoutTypeList.select(instance.text)
+
+    def __setLayoutAnchorX(self, instance):
+        print(".....select layout type.....", instance.text)
+        self.selectAnchor.text = instance.text
+        self.layoutAnchorX.select(instance.text)
+
+    def __setLayoutAnchorY(self, instance):
+        print(".....select layout type.....", instance.text)
+        self.selectAnchorY.text = instance.text
+        self.layoutAnchorY.select(instance.text)
 
     def showCommonLayoutDetails(self, detailData, instance):
         # print("COMMON.DETAILS.LAYOUT......... ", detailData)
@@ -961,6 +1043,10 @@ class EditorMain(BoxLayout):
         self.btnBox = Button(text='Box', size_hint_y=None, height=44 )
         self.btnBox.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnBox)
+
+        self.btnAnchor = Button(text='Anchor', size_hint_y=None, height=44) 
+        self.btnAnchor.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnAnchor)
 
         self.btnFloat = Button(text='Float', size_hint_y=None, height=44)
         self.btnFloat.bind(on_release=partial(self.__setLayoutType))
@@ -1108,6 +1194,8 @@ class EditorMain(BoxLayout):
         if str(detailData['layoutType']) == "Box" or str(detailData['layoutType']) == "Select layout type":
             self.showBoxLayoutDetails(detailData)
         elif str(detailData['layoutType']) == "Grid":
+            self.showBoxLayoutDetails(detailData)
+        elif str(detailData['layoutType']) == "Anchor":
             self.showBoxLayoutDetails(detailData)
 
     # Save details fast solution for now
@@ -1439,9 +1527,12 @@ class EditorMain(BoxLayout):
         else:
             print('The dimensions checkbox', value1, 'is inactive')
 
-    def cloaseWithNoSaveDetails(self, instance):
-        self.remove_widget(self.editorElementDetails)
+    def closeWithNoSaveDetails(self, instance):
         self.currentProjectMenuDropdown.open(self)
+        if self.editorElementDetails is None:
+            return 0
+        self.remove_widget(self.editorElementDetails)
+        # self.currentProjectMenuDropdown.open(self)
 
     def _readElementar(self, currentCointainer, loadElements):
 
@@ -1621,27 +1712,26 @@ class EditorMain(BoxLayout):
 
             if item != None and item['type'] == 'LAYOUT':
 
-                # determinate type
-                if item['layoutType'] == "Box":
+                local_size_hintX = None
+                local_size_hintY= None
 
+                if item['dimensionRole'] == "pixel":
                     local_size_hintX = None
                     local_size_hintY= None
+                elif item['dimensionRole'] == "hint" or item['dimensionRole'] == "combine":
 
-                    if item['dimensionRole'] == "pixel":
+                    if item['size_hint_x'] == "None":
                         local_size_hintX = None
-                        local_size_hintY= None
-                    elif item['dimensionRole'] == "hint" or item['dimensionRole'] == "combine":
+                    else:
+                        local_size_hintX = item['size_hint_x']
 
-                        if item['size_hint_x'] == "None":
-                            local_size_hintX = None
-                        else:
-                            local_size_hintX = item['size_hint_x']
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
 
-                        if item['size_hint_y'] == "None":
-                            local_size_hintY = None
-                        else:
-                            local_size_hintY = item['size_hint_y']
-
+                # determinate type
+                if item['layoutType'] == "Box":
                     Attacher = BoxLayout
                     print("BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
@@ -1671,6 +1761,35 @@ class EditorMain(BoxLayout):
 
                 elif item['layoutType'] == "Anchor":
                     Attacher = AnchorLayout
+                    print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
+                    myAttacher = Attacher(
+                        #text=item['text'],
+                        # orientation=item['orientation'],
+                        # spacing=float(item['spacing']),
+                        # padding=float(item['padding']),
+                        anchor_x='right',
+                        anchor_y='bottom',
+                        # color=item['color'],
+                        #background_normal= '',
+                        #background_color= item['bgColor'],
+                        #size_hint_x=local_size_hintX,
+                        #size_hint_y=local_size_hintY
+                        )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+
+                    print(">>>>", item['elements'])
+                    self._readElementar(myAttacher, item['elements'])
+
                 elif item['layoutType'] == "Float":
                     Attacher = FloatLayout
                 elif item['layoutType']  == "Grid":
@@ -1688,6 +1807,8 @@ class EditorMain(BoxLayout):
                 print('its lauout ,read sub items ->>>', item["layoutType"])
 
     def updateScene(self):
+
+        # self.closeWithNoSaveDetails()
 
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']

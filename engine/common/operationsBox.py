@@ -73,6 +73,10 @@ class EditorOperationBox():
         self.btnBox.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnBox)
 
+        self.btnAnchor = Button(text='Anchor', size_hint_y=None, height=44) 
+        self.btnAnchor.bind(on_release=partial(self.__setLayoutType))
+        self.layoutTypeList.add_widget(self.btnAnchor)
+
         self.btnFloat = Button(text='Float', size_hint_y=None, height=44)
         self.btnFloat.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnFloat)
