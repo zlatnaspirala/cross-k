@@ -14,7 +14,7 @@ class EngineConfig:
 
     self.programmer = {
       "nickname": "Nikola Lukic",
-      "slogan" : "meta data"
+      "slogan" : "Everything is possible"
     }
 
     self.auth = {
@@ -24,7 +24,6 @@ class EngineConfig:
 
     # Define Themes black/light
     self.currentTheme = "black"
-
     self.setupThemes()
 
     # RUNTIME USAGE IN APP LEVEL - PreDefinitions
@@ -37,105 +36,105 @@ class EngineConfig:
       "light" : {
         "background": {
           "r" : 1,
-          "b" : 1,
           "g" : 1,
+          "b" : 1,
         },
         "maintext": {
           "r" : 1,
-          "b" : 1,
           "g" : 1,
+          "b" : 1,
         },
         "engineBtnsBackground": {
           "r" : 0.3,
-          "b" : 0.3,
           "g" : 0.3,
+          "b" : 0.3,
         },
         "engineBtnsColor": {
           "r" : 0,
-          "b" : 0,
           "g" : 0,
+          "b" : 0,
         },
         "warn": {
           "r" : 1,
-          "b" : 0.3,
           "g" : 0.3,
+          "b" : 0.3,
         },
         "alert": {
           "r" : 1,
-          "b" : 0.1,
           "g" : 0.1,
+          "b" : 0.1,
         },
         "sceneGUIbgLabel": {
           "r" : 0.5,
-          "b" : 0.3,
           "g" : 0.3,
+          "b" : 0.3,
         },
         "sceneGUIbgBTN": {
           "r" : 0.7,
-          "b" : 0.3,
           "g" : 0.3,
+          "b" : 0.3,
         },
         "sceneGUIbgWidget": {
           "r" : 0.6,
-          "b" : 0.4,
           "g" : 0.4,
+          "b" : 0.4,
         },
         "consoleText": {
           "r" : 0,
-          "b" : 1,
-          "g" : 0,
+          "g" : 1,
+          "b" : 0,
         },
       },
       "black" : {
         "background": {
           "r" : 0,
-          "b" : 0,
           "g" : 0,
+          "b" : 0,
         },
         "maintext": {
           "r" : 1,
-          "b" : 1,
           "g" : 1,
+          "b" : 1,
         },
         "engineBtnsBackground": {
           "r" : 0.2,
-          "b" : 0.2,
           "g" : 0.2,
+          "b" : 0.2,
         },
         "engineBtnsColor": {
           "r" : 1,
-          "b" : 1,
           "g" : 1,
+          "b" : 1,
         },
         "warn": {
-          "r" : 1,
-          "b" : 0,
-          "g" : 0.5,
+          "r" : 0.8,
+          "g" : 0,
+          "b" : 0.5,
         },
         "alert": {
           "r" : 1,
-          "b" : 0.3,
           "g" : 0.3,
+          "b" : 0.3,
         },
         "sceneGUIbgLabel": {
-          "r" : 0.7,
-          "b" : 0.1,
-          "g" : 0.5,
+          "r" : 0.4,
+          "g" : 0,
+          "b" : 0.5,
         },
         "sceneGUIbgBTN": {
-          "r" : 0.7,
-          "b" : 0.2,
-          "g" : 0.5,
+          "r" : 0.6,
+          "g" : 0.2,
+          "b" : 0.6,
         },
         "sceneGUIbgWidget": {
-          "r" : 0.7,
-          "b" : 0.3,
-          "g" : 0.5,
+          "r" : 0.4,
+          "g" : 0.1,
+          "b" : 0.6,
         },
         "consoleText": {
           "r" : 0,
-          "b" : 1,
-          "g" : 0,
+          "g" : 1,
+          "b" : 0,
         },
       },
     }
@@ -149,40 +148,40 @@ class EngineConfig:
   def getThemeCustomColor(self, key):
     return (
       self.getThemeTextColorByComp(key)["r"],
-      self.getThemeTextColorByComp(key)["b"],
       self.getThemeTextColorByComp(key)["g"],
+      self.getThemeTextColorByComp(key)["b"],
       1
     )
 
   def getThemeTextColor(self):
     return (
       self.getThemeTextColorByComp("maintext")["r"],
-      self.getThemeTextColorByComp("maintext")["b"],
       self.getThemeTextColorByComp("maintext")["g"],
+      self.getThemeTextColorByComp("maintext")["b"],
       1
     )
 
   def getThemeBackgroundColor(self):
     return (
       self.getThemeTextColorByComp("background")["r"],
-      self.getThemeTextColorByComp("background")["b"],
       self.getThemeTextColorByComp("background")["g"],
+      self.getThemeTextColorByComp("background")["b"],
       1
     )
 
   def getThemeBgSceneBtnColor(self):
     return (
       self.getThemeTextColorByComp("sceneGUIbgBTN")["r"],
-      self.getThemeTextColorByComp("sceneGUIbgBTN")["b"],
       self.getThemeTextColorByComp("sceneGUIbgBTN")["g"],
+      self.getThemeTextColorByComp("sceneGUIbgBTN")["b"],
       1
     )
 
   def getThemeBgSceneBoxColor(self):
     return (
       self.getThemeTextColorByComp("sceneGUIbgWidget")["r"],
-      self.getThemeTextColorByComp("sceneGUIbgWidget")["b"],
       self.getThemeTextColorByComp("sceneGUIbgWidget")["g"],
+      self.getThemeTextColorByComp("sceneGUIbgWidget")["b"],
       1
     )
 

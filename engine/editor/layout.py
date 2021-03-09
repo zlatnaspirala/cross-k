@@ -8,7 +8,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
-from engine.editor.events import EngineLayoutEvents
+# from engine.editor.events import EngineLayoutEvents
 
 class EngineLayout(BoxLayout):
     # This is root app class container. I need to pass all needed staff

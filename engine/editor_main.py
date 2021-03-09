@@ -25,7 +25,6 @@ from kivy.app import App
 from kivy.graphics import Color, Rectangle
 from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUICOntainer import SceneGUIContainer
-from engine.editor.events import EngineLayoutEvents
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
@@ -33,6 +32,8 @@ from engine.common.operationsButton import EditorOperationButton
 from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
 from engine.common.enginePackage import PackagePopup
+# from engine.editor.events import EngineLayoutEvents
+from builtins import chr
 
 # from datetime import datetime
 
@@ -58,25 +59,44 @@ class EditorMain(BoxLayout):
         print("CreateLoadInstanceGUIBox ..." )
         #self.rows = 2  row_force_default=True, row_default_height=10
 
-        self.createLoadProjectLayoutEditor = GridLayout(padding= 0 , rows=5, row_force_default=True, row_default_height=50)
+        self.createLoadProjectLayoutEditor = GridLayout(spacing = 1,
+                                                        rows=7,
+                                                        row_force_default=True,
+                                                        row_default_height=50)
         self.add_widget(self.createLoadProjectLayoutEditor)
 
         self.createLoadProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
-        self.createLoadProjectLayoutEditor.add_widget(
-            Button(text='Cancel load dialog', size=(60, 100), size_hint=(None, None) ,
-            on_press=self.loadNewProjectGUICancel )
-        )
 
-        self.newProjectBtn = Button(text='Load project', size_hint=(.1, .2),
-          on_press=self.loadProjectFiles)
+        self.createLoadProjectLayoutEditor.add_widget(Label(text='[b]Multiplatform App-Game Engine Tool[/b]', markup=True, bold=True, font_size="20sp" ))
+        self.createLoadProjectLayoutEditor.add_widget(Label(text='[b]Based on powerful kivy 2.0 [opengles2]. Running with Python3.[/b]', markup=True, bold=True, font_size="10sp" ))
+
+        self.newProjectBtn = Button(
+            markup=True,
+            text='[b]Load project[/b]',
+            size_hint=(1, .2),
+            color=self.engineConfig.getThemeTextColor(),
+            background_normal= '',
+            background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+            on_press=self.loadProjectFiles)
 
         self.newProjectTitle = Label(text='Project name:')
         self.createLoadProjectLayoutEditor.add_widget(self.newProjectTitle)
         # self.projectName = TextInput(multiline=False, size_hint=(.1, .05) )
-        self.projectName = self.get_input('middle', 'center')
+        self.projectName = TextInput(text='Project1', font_size=22)
 
         self.createLoadProjectLayoutEditor.add_widget(self.projectName)
         self.createLoadProjectLayoutEditor.add_widget(self.newProjectBtn)
+
+        self.createLoadProjectLayoutEditor.add_widget(
+            Button(
+                markup=True,
+                text='[b]Cancel[/b]',
+                size_hint=(1, 0.2),
+                color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                on_press=self.loadNewProjectGUICancel))
+
 
     def loadProjectFiles(self, instance):
 
@@ -225,24 +245,64 @@ class EditorMain(BoxLayout):
         print("CreateNewInstanceGUIBox ..." )
         #self.rows = 2  row_force_default=True, row_default_height=10
 
-        self.createNewProjectLayoutEditor = GridLayout(padding= 0 , rows=5, row_force_default=True, row_default_height=50)
+        self.createNewProjectLayoutEditor = GridLayout(padding= 0,
+                                                       spacing=1,
+                                                       rows=8,
+                                                       row_force_default=True,
+                                                       row_default_height=50)
         self.add_widget(self.createNewProjectLayoutEditor)
 
-        self.createNewProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
-        
+        self.createNewProjectLayoutEditor.add_widget(
+                         Label(
+                           text='', markup=True, font_size="30sp",
+                           size=(1,50), size_hint=(1,None)
+                        ))
 
-        self.newProjectBtn = Button(text='Create new', size_hint=(1, None),size=(1, 44),
-          on_press=self.createProjectFiles)
+        self.createNewProjectLayoutEditor.add_widget(
+                         Label(
+                           text='CROSS[b]K[/b]', markup=True, font_size="30sp",
+                           size=(1,50), size_hint=(1,None)
+                        ))
 
-        self.newProjectTitle = Label(text='Project name:')
+        self.createNewProjectLayoutEditor.add_widget(Label(text='[b]Multiplatform App-Game Engine Tool[/b]', markup=True, bold=True, font_size="20sp",
+                                   size=(1,10), size_hint=(1,None) ))
+        self.createNewProjectLayoutEditor.add_widget(Label(
+            text='[b]Based on powerful kivy 2.0 [opengles2]. Running with Python3.[/b]',
+            markup=True, bold=True, font_size="10sp",
+            size_hint=(1, None),
+            size=(1, 30) ))
+
+        self.newProjectBtn = Button(markup=True,
+                                    text='[b]Create new[/b]',
+                                    size_hint=(1, None),
+                                    size=(1, 50),
+                                    color=self.engineConfig.getThemeTextColor(),
+                                    background_normal= '',
+                                    background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                                    on_press=self.createProjectFiles)
+
+        self.newProjectTitle = Label(markup=True, text='[b]Project name:[/b]')
         self.createNewProjectLayoutEditor.add_widget(self.newProjectTitle)
-        # self.projectName = TextInput(multiline=False, size_hint=(.1, .05) )
-        self.projectName =  TextInput(text='Project1', size_hint=(1, None) , height=44) # self.get_input('middle', 'center')
+        self.projectName =  TextInput(text='Project1',
+                                      font_size=22,
+                                      halign='center',
+                                      #valign='middle',
+                                      size_hint=(1, None),
+                                      height=50)
 
         self.createNewProjectLayoutEditor.add_widget(self.projectName)
         self.createNewProjectLayoutEditor.add_widget(self.newProjectBtn)
 
-        self.createNewProjectLayoutEditor.add_widget(Button(markup=True, text='[b]Cancel[b]', size=(70, 44), size_hint=(1, None), on_press=self.createNewProjectGUICancel ))
+        self.createNewProjectLayoutEditor.add_widget(
+            Button(markup=True,
+                   text='[b]Cancel[b]',
+                   size=(1,50),
+                   size_hint=(1, None),
+                   color=self.engineConfig.getThemeTextColor(),
+                   background_normal= '',
+                   background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                   on_press=self.createNewProjectGUICancel 
+                   ))
 
     def createNewProjectGUICancel(self, instance):
         self.remove_widget(self.createNewProjectLayoutEditor)
@@ -371,7 +431,6 @@ class EditorMain(BoxLayout):
         # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
-
 
     def openApplicationMenuBtn(self, instance):
         #self.appMenuDropdown.open(self)
@@ -592,7 +651,7 @@ class EditorMain(BoxLayout):
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Attach button event '" + detailData['name'] + "' ",
+                text="Simulate/run button event '" + detailData['name'] + "' ",
                 size_hint=(1,None),
                 height=30,
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
@@ -631,25 +690,34 @@ class EditorMain(BoxLayout):
 
         self.editorElementDetails.add_widget(
             Button(
+                border=(3,3,3,3),
                 markup=True,
                 text="[b]Save changes[/b]",
+                font_size=18,
                 size_hint=(1,None),
-                height=120,
+                height=100,
                 color=self.engineConfig.getThemeTextColor(),
-                background_normal= '',
+                # color=(1,1,1,0.1),
+                # background_normal='engine/assets/nidzaBorder002.png',
+                # background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                # background_color=(1,1,1,0.8),
+                on_release=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
             )
 
         self.editorElementDetails.add_widget(
             Button(
+                border=(10,10,10,10),
                 markup=True,
+                font_size=18,
                 text="[b]Cancel[/b]",
                 size_hint=(1,None),
-                height=120,
-                background_normal= '',
+                height=100,
+                #background_normal='engine/assets/nidzaBorder001-250x250_yellow_black.png',
+                #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                on_press=self.cloaseWithNoSaveDetails
+                #background_color=(0.1,0.1,0,0.5),
+                on_release=self.cloaseWithNoSaveDetails
             ))
 
     # LABEL Block
@@ -682,7 +750,6 @@ class EditorMain(BoxLayout):
         self.editorElementDetails.add_widget(self.labelDetailsFontSize)
 
 
-
         self.editorElementDetails.add_widget(
             Label(
                 text="Delete Label '" + detailData['name'] + "' ",
@@ -706,12 +773,13 @@ class EditorMain(BoxLayout):
         self.editorElementDetails.add_widget(
             Button(
                 markup=True,
-                text="[b][color=00ff00]S[/color]ave changes[/b]",
+                text="[b]Save changes[/b]",
                 size_hint=(1,None),
                 height=120,
-                color=self.engineConfig.getThemeTextColor(),
                 on_press=partial(self.saveLabelDetails, str(detailData['id']), str(detailData['type']) ),
-                background_color=self.engineConfig.getThemeBackgroundColor()
+                color=self.engineConfig.getThemeTextColor(),
+                #background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
             ))
 
         self.editorElementDetails.add_widget(
@@ -721,6 +789,8 @@ class EditorMain(BoxLayout):
                 size_hint=(1,None),
                 height=120,
                 color=self.engineConfig.getThemeTextColor(),
+                #background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 on_press=self.cloaseWithNoSaveDetails
             ))
 
@@ -732,7 +802,7 @@ class EditorMain(BoxLayout):
         self.editorElementDetails.add_widget(localBox)
         localBox.add_widget(Button(
                 markup=True,
-                text="[b][color='red']Add Btn[/color][/b]",
+                text="[b]Add Btn[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -744,7 +814,7 @@ class EditorMain(BoxLayout):
         localBox.add_widget(
             Button(
                 markup=True,
-                text="[b][color='red']Add Label[/color][/b]",
+                text="[b]Add Label[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -753,11 +823,10 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.callAddNewLabelGUIBox, detailData))
             )
 
-
         self.editorElementDetails.add_widget(
             Button(
                 markup=True,
-                text="[b][color='red']Delete Layout[/color][/b]",
+                text="[b]Delete Layout[/b]",
                 size_hint=(1,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -769,21 +838,24 @@ class EditorMain(BoxLayout):
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Save changes",
-                size_hint=(1,None),
-                height=120,
+                markup=True,
+                text="[b]Save changes[/b]",
+                size_hint=(1,1),
+                #height=120,
                 color=self.engineConfig.getThemeTextColor(),
-                background_normal= '',
+                # background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 on_press=partial(self.saveLayoutDetails, detailData)
             ))
 
         self.editorElementDetails.add_widget(
             Button(
-                text="Cancel",
-                size_hint=(1,None),
-                height=120,
-                background_normal= '',
+                markup=True,
+                text="[b]Cancel[/b]",
+                size_hint=(1,1),
+                #height=120,
+                color=self.engineConfig.getThemeTextColor(),
+                # background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 on_press=self.cloaseWithNoSaveDetails
             ))
@@ -827,7 +899,7 @@ class EditorMain(BoxLayout):
         currentType = str(detailData['type']).lower().capitalize()
 
         # DETAILS BOX BTN
-        self.editorElementDetails = GridLayout( orientation='lr-tb')
+        self.editorElementDetails = GridLayout( orientation='lr-tb', spacing=1, padding=1)
         self.editorElementDetails.cols = 2
 
         # Type
@@ -1198,8 +1270,6 @@ class EditorMain(BoxLayout):
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
 
-    ####################
-
     # Save details fast solution for now
     def saveLayoutDetails(self, detailData,  instance):
         print("Save detail layout for " , detailData['type'])
@@ -1338,6 +1408,7 @@ class EditorMain(BoxLayout):
     # Details box
     def on_details_color(self, instance, value):
         self.newDetailsColor = (value[0], value[1], value[2], 1 )
+
     def on_details_bgcolor(self, instance, value):
         self.newDetailsBgColor = (value[0], value[1], value[2], 1 )
 
