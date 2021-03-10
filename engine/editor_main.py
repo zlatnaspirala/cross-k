@@ -548,19 +548,20 @@ class EditorMain(BoxLayout):
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 height=30 )
             )
-
         # half common btn , label 
-        # pos_hint={'x':.2, 'y':.2}
-        # pos=(10,10)
-            #        "pos_x": self.buttonPositionX.text,
-            #"pos_y": self.buttonPositionY.text,
-            #"pos_hint_x": self.buttonPositionHintX.text,
-            #"pos_hint_y": self.buttonPositionHintY.text,
+        if "text" in detailData:
+            print("detailData['text'] sure, it was defined.")
+            if (detailData['text'] != None ):
+                self.detailsCommonText = TextInput(text=detailData['text'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(self.detailsCommonText)
+        else:
+            print("detailData['text'] NOT defined.")
 
         if "pos_x" in detailData:
             print("detailData['pos_x'] sure, it was defined.")
             if (detailData['pos_x'] != None ):
                 self.detailsCommonPositionX = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (pixel):", size_hint=(1, None), height=30))
                 self.editorElementDetails.add_widget(self.detailsCommonPositionX)
         else:
             print("detailData['pos'] NOT defined.")
@@ -569,6 +570,7 @@ class EditorMain(BoxLayout):
             print("detailData['pos_y'] sure, it was defined.")
             if (detailData['pos_y'] != None ):
                 self.detailsCommonPositionY = TextInput(text=detailData['pos_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (pixel):", size_hint=(1, None), height=30))
                 self.editorElementDetails.add_widget(self.detailsCommonPositionY)
         else:
             print("detailData['pos_y'] NOT defined.")
@@ -578,6 +580,7 @@ class EditorMain(BoxLayout):
             print("detailData['pos_hint_x'] sure, it was defined.")
             if (detailData['pos_hint_x'] != None ):
                 self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (hint):", size_hint=(1, None), height=30))
                 self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
         else:
             print("detailData['pos'] NOT defined.")
@@ -586,18 +589,12 @@ class EditorMain(BoxLayout):
             print("detailData['pos_hint_y'] sure, it was defined.")
             if (detailData['pos_hint_y'] != None ):
                 self.detailsCommonPositionYHint = TextInput(text=detailData['pos_hint_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (hint):", size_hint=(1, None), height=30))
                 self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
         else:
             print("detailData['pos_y'] NOT defined.")
 
-        # half common btn , label 
-        if "text" in detailData:
-            print("detailData['text'] sure, it was defined.")
-            if (detailData['text'] != None ):
-                self.detailsCommonText = TextInput(text=detailData['text'], size_hint=(1, None), height=30)
-                self.editorElementDetails.add_widget(self.detailsCommonText)
-        else:
-            print("detailData['text'] NOT defined.")
+
 
         # Checkbox use pixel dimesion system
         self.editorElementDetails.add_widget(Label(
@@ -708,6 +705,43 @@ class EditorMain(BoxLayout):
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
 
+        if "pos_x" in detailData:
+            print("detailData['pos_x'] sure, it was defined.")
+            if (detailData['pos_x'] != None ):
+                self.detailsCommonPositionX = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (pixel):",size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionX)
+        else:
+            print("detailData['pos'] NOT defined.")
+
+        if "pos_y" in detailData:
+            print("detailData['pos_y'] sure, it was defined.")
+            if (detailData['pos_y'] != None ):
+                self.detailsCommonPositionY = TextInput(text=detailData['pos_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (pixel):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionY)
+        else:
+            print("detailData['pos_y'] NOT defined.")
+
+        # pos Hint
+        if "pos_hint_x" in detailData:
+            print("detailData['pos_hint_x'] sure, it was defined.")
+            if (detailData['pos_hint_x'] != None ):
+                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (hint):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
+        else:
+            print("detailData['pos'] NOT defined.")
+
+        if "pos_hint_y" in detailData:
+            print("detailData['pos_hint_y'] sure, it was defined.")
+            if (detailData['pos_hint_y'] != None ):
+                self.detailsCommonPositionYHint = TextInput(text=detailData['pos_hint_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (hint):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
+        else:
+            print("detailData['pos_y'] NOT defined.")
+
         self.editorElementDetails.add_widget(
             Button(
                 text="Simulate/run button event '" + detailData['name'] + "' ",
@@ -781,6 +815,8 @@ class EditorMain(BoxLayout):
 
     # LABEL Block
     def showLabelDetails(self, detailData):
+ 
+
         print("LABEL detailData-> ", detailData)
         self.editorElementDetails.add_widget(Label(text='Use Bold', 
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
@@ -859,7 +895,42 @@ class EditorMain(BoxLayout):
 
         #selectAnchor
         #if detailData['layoutType'] == 'Anchor' or detailData['layoutType'] == 'Float':
+        if "pos_x" in detailData:
+            print("detailData['pos_x'] sure, it was defined.")
+            if (detailData['pos_x'] != None ):
+                self.detailsCommonPositionX = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (pixel):",size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionX)
+        else:
+            print("detailData['pos'] NOT defined.")
 
+        if "pos_y" in detailData:
+            print("detailData['pos_y'] sure, it was defined.")
+            if (detailData['pos_y'] != None ):
+                self.detailsCommonPositionY = TextInput(text=detailData['pos_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (pixel):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionY)
+        else:
+            print("detailData['pos_y'] NOT defined.")
+
+        # pos Hint
+        if "pos_hint_x" in detailData:
+            print("detailData['pos_hint_x'] sure, it was defined.")
+            if (detailData['pos_hint_x'] != None ):
+                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position X (hint):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
+        else:
+            print("detailData['pos'] NOT defined.")
+
+        if "pos_hint_y" in detailData:
+            print("detailData['pos_hint_y'] sure, it was defined.")
+            if (detailData['pos_hint_y'] != None ):
+                self.detailsCommonPositionYHint = TextInput(text=detailData['pos_hint_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(Label(text="Position Y (hint):", size_hint=(1, None), height=30))
+                self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
+        else:
+            print("detailData['pos_y'] NOT defined.")
 
         localBox = BoxLayout()
         self.editorElementDetails.add_widget(localBox)

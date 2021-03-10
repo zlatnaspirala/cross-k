@@ -152,6 +152,20 @@ class EditorOperationBox():
         self.buttonHintY = TextInput(text='1')
         content.add_widget(self.buttonHintY)
 
+        content.add_widget(Label(text='Position X in pixels'))
+        self.buttonPositionX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionX)
+        content.add_widget(Label(text='Position Y in pixels'))
+        self.buttonPositionY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionY)
+
+        content.add_widget(Label(text='Position Hint X'))
+        self.buttonPositionHintX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintX)
+        content.add_widget(Label(text='Position Hint Y'))
+        self.buttonPositionHintY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintY)
+        
         # Popup
         self.popup = Popup(title='Add new [b]Layout[/b] editor box', content=content, auto_dismiss=False)
 
@@ -224,6 +238,10 @@ class EditorOperationBox():
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
             "type": "LAYOUT",
+            "pos_x": self.buttonPositionX.text,
+            "pos_y": self.buttonPositionY.text,
+            "pos_hint_x": self.buttonPositionHintX.text,
+            "pos_hint_y": self.buttonPositionHintY.text,
             "layoutType": self.selectBtn.text,
             "elements": [],
             "orientation": self.orientation.text,

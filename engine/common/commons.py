@@ -108,7 +108,6 @@ def getMessageBoxYesNo(message, msgType, callback):
 
     popup.open()
 
-
 ## DEEP 
 def deepSearch(arg1 , arg2):
     print("Deep arg 1", arg1)

@@ -8,6 +8,9 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
+
+from engine.editor.networking import Networking
+
 # from engine.editor.events import EngineLayoutEvents
 
 class EngineLayout(BoxLayout):
@@ -74,6 +77,7 @@ class EngineLayout(BoxLayout):
         super(EngineLayout, self).__init__(**kwargs)
         # print("Testing layout size: ", self.size)
         # print("Testing layout pos: ", self.pos)
+        test = Networking()
 
         # self.appEvents = EngineLayoutEvents()
         with self.canvas.before:
