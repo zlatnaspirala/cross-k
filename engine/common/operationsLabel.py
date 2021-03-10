@@ -35,6 +35,21 @@ class EditorOperationLabel():
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Label text color'))
         content.add_widget(clrPickerTextColor)
+
+        content.add_widget(Label(text='Position X in pixels'))
+        self.buttonPositionX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionX)
+        content.add_widget(Label(text='Position Y in pixels'))
+        self.buttonPositionY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionY)
+
+        content.add_widget(Label(text='Position Hint X'))
+        self.buttonPositionHintX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintX)
+        content.add_widget(Label(text='Position Hint Y'))
+        self.buttonPositionHintY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintY)
+
         content.add_widget(Label(text='Text'))
         self.buttonText = TextInput(text='My Label Text')
         content.add_widget(self.buttonText)
@@ -167,6 +182,10 @@ class EditorOperationLabel():
             "name": self.buttonNameText.text,
             "type": "LABEL",
             "text": self.buttonText.text,
+            "pos_x": self.buttonPositionX.text,
+            "pos_y": self.buttonPositionY.text,
+            "pos_hint_x": self.buttonPositionHintX.text,
+            "pos_hint_y": self.buttonPositionHintY.text,
             "fontSize": self.fontSizeBtn.text,
             "bold": str(self.checkBoxBold.active),
             "color": self.newLabelColor,

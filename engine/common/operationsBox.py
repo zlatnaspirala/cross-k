@@ -212,6 +212,14 @@ class EditorOperationBox():
                 local_size_hintY = self.buttonHintY.text
             dimensionRole = "combine"
 
+        #if str(detailData['layoutType']) == "Anchor" or str(detailData['layoutType']) == "Float":
+            #localAnchor_x = self.selectAnchor.text
+            #localAnchor_y = self.selectAnchorY.text
+        #else:
+
+        localAnchor_x = 'center'
+        localAnchor_y = 'center'
+
         calculatedButtonData = {
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
@@ -227,7 +235,9 @@ class EditorOperationBox():
             "height": self.buttonHeightText.text,
             "size_hint_x": str(self.buttonHintX.text),
             "size_hint_y": str(self.buttonHintY.text),
-            "dimensionRole": dimensionRole
+            "dimensionRole": dimensionRole,
+            "anchor_x": localAnchor_x,
+            "anchor_y": localAnchor_y
         } 
 
         # print('what is the type of layout', self.selectBtn.text)

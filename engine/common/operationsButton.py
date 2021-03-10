@@ -1,6 +1,7 @@
 import re
 import uuid
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
@@ -26,19 +27,41 @@ class EditorOperationButton():
         print("Access store -> ", self.store)
 
         # Prepare content
-        content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
-        clrPickerTextColor = ColorPicker(size_hint=(1, 5))
-        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 5))
+        content = GridLayout( cols=4, padding=[150,0,150,0])
+        clrPickerTextColor = ColorPicker(size_hint=(1, 4))
+        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 4))
         content.add_widget(Label(text='Button Name(Tag)'))
         self.buttonNameText = TextInput(text='MyButton')
         content.add_widget(self.buttonNameText)
+
+        content.add_widget(Label(text='Text'))
+        self.buttonText = TextInput(text='My Button Text', halign="center")
+        content.add_widget(self.buttonText)
+        
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Button text color'))
         content.add_widget(clrPickerTextColor)
+        
+
+        content.add_widget(Label(text='Position X in pixels'))
+        self.buttonPositionX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionX)
+        content.add_widget(Label(text='Position Y in pixels'))
+        self.buttonPositionY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionY)
+
+        content.add_widget(Label(text='Position Hint X'))
+        self.buttonPositionHintX = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintX)
+        content.add_widget(Label(text='Position Hint Y'))
+        self.buttonPositionHintY = TextInput(text='0', halign="center")
+        content.add_widget(self.buttonPositionHintY)
+
         content.add_widget(Label(text='Text'))
-        self.buttonText = AlignedTextInput(text='My Button Text', halign="middle", valign="center")
+        self.buttonText = TextInput(text='My Button Text', halign="center" )
         content.add_widget(self.buttonText)
+
 
         myCheckDimSys = BoxLayout()
         myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
@@ -73,13 +96,6 @@ class EditorOperationButton():
                 height=40
             )
         content.add_widget(self.attachEventCurrentElement)
-
-        content.add_widget(
-            Button(
-                text="Attach button event",
-                size_hint=(1,None),
-                height=40
-            ))
 
         content.add_widget( TextInput(
                 text='print("ATTACH EVENT WORKS")',
@@ -172,6 +188,10 @@ class EditorOperationButton():
             "name": self.buttonNameText.text,
             "type": "BUTTON",
             "text": self.buttonText.text,
+            "pos_x": self.buttonPositionX.text,
+            "pos_y": self.buttonPositionY.text,
+            "pos_hint_x": self.buttonPositionHintX.text,
+            "pos_hint_y": self.buttonPositionHintY.text,
             "color": self.newBtnColor,
             "bgColor": self.newBtnBgColor,
             "width": self.buttonWidthText.text,
@@ -180,7 +200,7 @@ class EditorOperationButton():
             "size_hint_y": str(self.buttonHintY.text),
             "dimensionRole": dimensionRole,
             "attacher": self.attachEventCurrentElement.text
-        } 
+        }
 
         print("calculatedButtonData call -> ", calculatedButtonData)
         localStagedElements = []

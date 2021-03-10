@@ -26,26 +26,27 @@ class Picture():
         # path = os.getcwd()
         # print(os.path.abspath(os.path.join(path, os.pardir)))
         curdir2 =  assetsPath + '/engine/assets/' + self.accessAssets +  '/' + self.accessAssets + '.png'
-        picture1 = AsyncImage(source=curdir2)
+        picture1 = AsyncImage(source=curdir2, size_hint=(1, 1))
         self.injectWidget.add_widget(picture1)
 
     def on_pause(self):
         return True
 
-
 def crossKValidateNumbers(txt):
     return re.findall('[^0-9]', txt)
 
-
 def getAboutGUI():
 
-    box = BoxLayout(orientation="vertical")
+    box = BoxLayout(
+            orientation="vertical")
+
     infoBtn = Button(markup=True, 
                      text='[b]ok[/b]',
                      font_size=22,
                      size_hint=(1,0.2))
     box.add_widget(Label(
-            text='maximumroulette.com production',
+            markup=True, 
+            text='[b]maximumroulette.com production[/b]',
             font_size=25,
             size_hint=(1,0.1)
         ))

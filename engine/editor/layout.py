@@ -29,7 +29,19 @@ class EngineLayout(BoxLayout):
     def deepSearch(self, currContainer, index):
         print("test currContainer.children ", currContainer.children)
         res =  currContainer.children[::-1]
-        return res[index]
+        if len(res) <= index:
+            print("Element not exist !!!")
+            return None
+        else:
+            testLocal = res[index]
+            return testLocal
+
+    def E(self, arg):
+        local = self.getElementByIndexArray(arg)
+        if local == None:
+            return {'text': 'fake data, element no exist'}
+        else:
+            return local
 
     def getElementByIndexArray(self, crossKAccess):
         testContainer = 0
@@ -48,7 +60,11 @@ class EngineLayout(BoxLayout):
                 #  two ways !!!
                 if len(crossKAccess) - 1 == index:
                     print("[last]", testContainer)
+                    if testContainer == None:
+                        return None
                     res =  testContainer.children[::-1]
+                    if len(res) == 0:
+                        return None
                     return res[item]
                 else:
                     print("test next deep Container", testContainer)
@@ -74,5 +90,5 @@ class EngineLayout(BoxLayout):
     def attachEvent(self, arg1, liveInstance):
         print("ATTACH EVENT", arg1, liveInstance)
         # liveInstance.text = 'blabla'
-        print( self.getElementByIndexArray([1,0]).text , "  Look at 0 1 ")
+        print( self.E([1,0])['text'] , "  Look at 0 1 ")
         exec(arg1)

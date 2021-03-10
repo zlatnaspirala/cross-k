@@ -5,6 +5,7 @@ print(kivy.__version__)
 kivy.require('2.0.0')
 
 from functools import partial
+from kivy.utils import platform
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -43,6 +44,12 @@ import os
 import threading
 import uuid
 
+print("Current platform :", kivy.utils.platform)
+print("Editor Engine Running")
+
+if (kivy.utils.platform == 'win'):
+    from win32api import GetSystemMetrics
+
 # Selected source
 #from win32api import GetSystemMetrics
 #print("Width =", GetSystemMetrics(0))
@@ -61,10 +68,16 @@ class EditorMain(BoxLayout):
         #self.rows = 2  row_force_default=True, row_default_height=10
 
         self.createLoadProjectLayoutEditor = GridLayout(spacing = 1,
-                                                        rows=7,
+                                                        rows=8,
                                                         row_force_default=True,
                                                         row_default_height=50)
         self.add_widget(self.createLoadProjectLayoutEditor)
+
+        self.createLoadProjectLayoutEditor.add_widget(
+                         Label(
+                           text='', markup=True, font_size="30sp",
+                           size=(1,50), size_hint=(1,None)
+                        ))
 
         self.createLoadProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
 
@@ -97,7 +110,6 @@ class EditorMain(BoxLayout):
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 on_press=self.loadNewProjectGUICancel))
-
 
     def loadProjectFiles(self, instance):
 
@@ -243,9 +255,8 @@ class EditorMain(BoxLayout):
         print("CrossK project with name -> ", self.projectName.text, " -> created.")
 
     def CreateNewInstanceGUIBox(self, instance):
-        print("CreateNewInstanceGUIBox ..." )
-        #self.rows = 2  row_force_default=True, row_default_height=10
 
+        print("CreateNewInstanceGUIBox ..." )
         self.createNewProjectLayoutEditor = GridLayout(padding= 0,
                                                        spacing=1,
                                                        rows=8,
@@ -314,10 +325,17 @@ class EditorMain(BoxLayout):
     def packageWinApp(self, instance):
         test = PackagePopup(engineConfig=self.engineConfig)
         print("Package application for windows started")
-        
+
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
 
+        self.MONITOR_W = 1200
+        self.MONITOR_H = 780
+
+        if (kivy.utils.platform == 'win'):
+            print("GOOOD")
+            self.MONITOR_W = GetSystemMetrics(0)
+            self.MONITOR_H = GetSystemMetrics(1)
         ####################################################
         # Engine config , Colors Theme
         ####################################################
@@ -328,11 +346,9 @@ class EditorMain(BoxLayout):
         # Initial call for aboutGUI
         getAboutGUI()
 
-        Window.size = (sp(1200), sp(768))
-        # Window.size = (1200, 768)
-        # print("WHAT IS P S " , Window.size[0] )
-        Window.top = 100
-        Window.left = 200
+        Window.size = (sp(self.MONITOR_W - 10), sp(self.MONITOR_H - 70))
+        Window.top = 30
+        Window.left = 5
         #Window.fullscreen = True
         Window.clearcolor = self.engineConfig.getThemeBackgroundColor()
        
@@ -353,7 +369,7 @@ class EditorMain(BoxLayout):
         ################################################################
         # Main Editor Layout (left) menu.
         ################################################################
-        self.editorMenuLayout = BoxLayout(orientation='vertical', size_hint=(None, 1), width=300 )
+        self.editorMenuLayout = BoxLayout(orientation='vertical', size_hint=(None, 1), width=300)
         self.add_widget(self.editorMenuLayout)
 
         # predefined var for Details
@@ -365,11 +381,11 @@ class EditorMain(BoxLayout):
         # 
         packWindows = Button(text='Make package for windows',
                       color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(None, None),  height=30, width=200,
+                      size_hint=(1, None),  height=30, width=300,
                       on_press=self.packageWinApp)
         packLinux = Button(text='Make package for Linux',
                       color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(None, None),  height=30, width=200,
+                      size_hint=(1, None),  height=30, width=300,
                       on_press=self.packageWinApp)
         self.packageDropdown.add_widget(packWindows)
         self.packageDropdown.add_widget(packLinux)
@@ -381,15 +397,15 @@ class EditorMain(BoxLayout):
         
         toolsAddBox = Button(text='Add Box',
                       color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(None, None),  height=30, width=200,
+                      size_hint=(None, None),  height=30, width=300,
                       on_press=self.addNewBoxGUI)
         toolsAddBtn = Button(text='Add Button',
                       color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(None, None),  height=30, width=200,
+                      size_hint=(None, None),  height=30, width=300,
                       on_press=self.addNewButtonGUI)
         toolsAddText = Button(text='Add Text',
                       color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(None, None),  height=30, width=200,
+                      size_hint=(None, None),  height=30, width=300,
                       on_press=self.addNewLabelGUI)
         self.currentProjectMenuDropdown.add_widget(toolsAddBox)
         self.currentProjectMenuDropdown.add_widget(toolsAddBtn)
@@ -403,12 +419,12 @@ class EditorMain(BoxLayout):
 
         btn = Button(text='Create new project',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(None, None), height=30, width=200)
+                     size_hint=(1, None), height=30, width=300)
         self.appMenuDropdown.add_widget(btn)
 
         loadBtn = Button(text='Load project',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(None, None), height=30, width=200)
+                     size_hint=(1, None), height=30, width=300)
         self.appMenuDropdown.add_widget(loadBtn)
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
@@ -419,16 +435,18 @@ class EditorMain(BoxLayout):
  
         MakePackageBtn = Button(text='Make package',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(None, None), height=30, width=200)
+                     size_hint=(None, None), height=30, width=300)
         MakePackageBtn.bind(on_release=self.packageDropdown.open)
         self.editorMenuLayout.add_widget(MakePackageBtn)
 
 
-        editorTools = Button(text='Tools', color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=200)
+        editorTools = Button(text='Tools', color=(self.engineConfig.getThemeTextColor()),
+                             size_hint=(None, None), height=30, width=300)
         editorTools.bind(on_release=self.currentProjectMenuDropdown.open)
         self.editorMenuLayout.add_widget(editorTools)
 
-        mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]', color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=200)
+        mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]',
+            color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=300)
         # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
@@ -531,6 +549,46 @@ class EditorMain(BoxLayout):
                 height=30 )
             )
 
+        # half common btn , label 
+        # pos_hint={'x':.2, 'y':.2}
+        # pos=(10,10)
+            #        "pos_x": self.buttonPositionX.text,
+            #"pos_y": self.buttonPositionY.text,
+            #"pos_hint_x": self.buttonPositionHintX.text,
+            #"pos_hint_y": self.buttonPositionHintY.text,
+
+        if "pos_x" in detailData:
+            print("detailData['pos_x'] sure, it was defined.")
+            if (detailData['pos_x'] != None ):
+                self.detailsCommonPositionX = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(self.detailsCommonPositionX)
+        else:
+            print("detailData['pos'] NOT defined.")
+
+        if "pos_y" in detailData:
+            print("detailData['pos_y'] sure, it was defined.")
+            if (detailData['pos_y'] != None ):
+                self.detailsCommonPositionY = TextInput(text=detailData['pos_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(self.detailsCommonPositionY)
+        else:
+            print("detailData['pos_y'] NOT defined.")
+
+        # pos Hint
+        if "pos_hint_x" in detailData:
+            print("detailData['pos_hint_x'] sure, it was defined.")
+            if (detailData['pos_hint_x'] != None ):
+                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
+        else:
+            print("detailData['pos'] NOT defined.")
+
+        if "pos_hint_y" in detailData:
+            print("detailData['pos_hint_y'] sure, it was defined.")
+            if (detailData['pos_hint_y'] != None ):
+                self.detailsCommonPositionYHint = TextInput(text=detailData['pos_hint_y'], size_hint=(1, None), height=30)
+                self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
+        else:
+            print("detailData['pos_y'] NOT defined.")
 
         # half common btn , label 
         if "text" in detailData:
@@ -799,6 +857,10 @@ class EditorMain(BoxLayout):
 
     def showBoxLayoutDetails(self, detailData):
 
+        #selectAnchor
+        #if detailData['layoutType'] == 'Anchor' or detailData['layoutType'] == 'Float':
+
+
         localBox = BoxLayout()
         self.editorElementDetails.add_widget(localBox)
         localBox.add_widget(Button(
@@ -824,6 +886,18 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.callAddNewLabelGUIBox, detailData))
             )
 
+        localBox.add_widget(
+            Button(
+                markup=True,
+                text="[b]Add Layout[/b]",
+                size_hint=(0.2,None),
+                height=30,
+                color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.callAddNewLayoutGUIBox, detailData))
+            )
+
         ## ANCHOR 
         # anchor_x='right', anchor_y='bottom'
 
@@ -839,10 +913,10 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
             )
 
-        if str(detailData['layoutType']) == "Anchor":
+        if str(detailData['layoutType']) == "Anchor" or str(detailData['layoutType']) == "Float":
             self.editorElementDetails.add_widget(
                 Label(
-                    text="The AnchorLayout aligns left, right or center.",
+                    text="The Anchor/Float Layout aligns left, right or center.",
                     size_hint=(1,None),
                     height=30,
                     color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
@@ -941,11 +1015,18 @@ class EditorMain(BoxLayout):
         )
 
     def callAddNewLabelGUIBox(self, currentData, instance):
-        print('ADD SUB ELEMENT BUTTON......................[object]...............', currentData['id'])
-        print('ADD SUB ELEMENT BUTTON......................type...............', currentData['type'])
-        print('ADD SUB ELEMENT BUTTON......................elements...............', currentData['elements'])
-
         operationAddTest = EditorOperationLabel(
+            store=self.store,
+            currentLayout=currentData['id'],
+            engineRoot=self,
+        )
+
+    def callAddNewLayoutGUIBox(self, currentData, instance):
+        print('ADD SUB ELEMENT LAYOUT......................[object]...............', currentData['id'])
+        print('ADD SUB ELEMENT LAYOUT......................type...............', currentData['type'])
+        print('ADD SUB ELEMENT LAYOUT......................elements...............', currentData['elements'])
+        # NEED PARENT LAYOUT REAL REFERENCE INSTANCE
+        operationAddTest = EditorOperationBox(
             store=self.store,
             currentLayout=currentData['id'],
             engineRoot=self,
@@ -1197,7 +1278,8 @@ class EditorMain(BoxLayout):
             self.showBoxLayoutDetails(detailData)
         elif str(detailData['layoutType']) == "Anchor":
             self.showBoxLayoutDetails(detailData)
-
+        elif str(detailData['layoutType']) == "Float":
+            self.showBoxLayoutDetails(detailData)
     # Save details fast solution for now
     def saveDetails(self, elementID, elementType,  instance):
         print("Save detail for ->" , elementID)
@@ -1390,6 +1472,13 @@ class EditorMain(BoxLayout):
                 local_size_hintY = float(self.commonHintYDetail.text)
             dimensionRole = "combine"
 
+        if str(detailData['layoutType']) == "Anchor" or str(detailData['layoutType']) == "Float":
+            localAnchor_x = self.selectAnchor.text
+            localAnchor_y = self.selectAnchorY.text
+        else:
+            localAnchor_x = 'center'
+            localAnchor_y = 'center'
+
         # CrossK Element Data Interface
         calculatedButtonData = {
             "id": detailData['id'],
@@ -1406,9 +1495,15 @@ class EditorMain(BoxLayout):
             "height": self.detailsCommonHeight.text,
             "size_hint_x": self.commonHintXDetail.text,
             "size_hint_y": self.commonHintYDetail.text,
-            "dimensionRole": dimensionRole
-        } 
-
+            "dimensionRole": dimensionRole,
+            "anchor_x": localAnchor_x,
+            "anchor_y": localAnchor_y,
+            "pos_x": self.detailsCommonPositionX.text,
+            "pos_y": self.detailsCommonPositionY.text,
+            "pos_hint_x": self.detailsCommonPositionXHint.text,
+            "pos_hint_y": self.detailsCommonPositionYHint.text,
+        }
+        # ? maybe
         # Collect data
         print(" CONSTRUCTED " , calculatedButtonData)
 
@@ -1489,6 +1584,7 @@ class EditorMain(BoxLayout):
 
         modifitedData = self.__deleteElementar(rootElements, elementID)
         # print(modifitedData)
+        self.closeWithNoSaveDetails(None)
         self.store.put('renderComponentArray', elements=modifitedData)
         self.updateScene()
         self.sceneGUIContainer.selfUpdate()
@@ -1537,7 +1633,7 @@ class EditorMain(BoxLayout):
     def _readElementar(self, currentCointainer, loadElements):
 
         print("read elementar current container  loadElements : ", loadElements)
-        if loadElements == [None]:
+        if loadElements == [None]  or loadElements == None:
             return False
 
         for item in loadElements:
@@ -1763,13 +1859,35 @@ class EditorMain(BoxLayout):
                     Attacher = AnchorLayout
                     print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
+                        anchor_x=item['anchor_x'],
+                        anchor_y=item['anchor_y']
+                        )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+
+                    print(">>>>", item['elements'])
+                    self._readElementar(myAttacher, item['elements'])
+
+                elif item['layoutType'] == "Float":
+                    Attacher = FloatLayout
+
+                    print("BOX FloatLayout LOAD>>>>>>>>>>>>>>")
+                    myAttacher = Attacher(
                         #text=item['text'],
-                        # orientation=item['orientation'],
-                        # spacing=float(item['spacing']),
-                        # padding=float(item['padding']),
-                        anchor_x='right',
-                        anchor_y='bottom',
-                        # color=item['color'],
+                        size=(300, 300),
+                        #orientation=item['orientation'],
+                        #spacing=float(item['spacing']),
+                        #padding=float(item['padding']),
+                        #color=item['color'],
                         #background_normal= '',
                         #background_color= item['bgColor'],
                         #size_hint_x=local_size_hintX,
@@ -1790,8 +1908,6 @@ class EditorMain(BoxLayout):
                     print(">>>>", item['elements'])
                     self._readElementar(myAttacher, item['elements'])
 
-                elif item['layoutType'] == "Float":
-                    Attacher = FloatLayout
                 elif item['layoutType']  == "Grid":
                     Attacher = GridLayout
                 elif item['layoutType'] == "Page":
