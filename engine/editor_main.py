@@ -344,7 +344,7 @@ class EditorMain(BoxLayout):
 
         # self.packageWinApp()
         # Initial call for aboutGUI
-        getAboutGUI()
+        # getAboutGUI()
 
         Window.size = (sp(self.MONITOR_W - 10), sp(self.MONITOR_H - 70))
         Window.top = 30
@@ -704,43 +704,6 @@ class EditorMain(BoxLayout):
 
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
-
-        if "pos_x" in detailData:
-            print("detailData['pos_x'] sure, it was defined.")
-            if (detailData['pos_x'] != None ):
-                self.detailsCommonPositionX = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
-                self.editorElementDetails.add_widget(Label(text="Position X (pixel):",size_hint=(1, None), height=30))
-                self.editorElementDetails.add_widget(self.detailsCommonPositionX)
-        else:
-            print("detailData['pos'] NOT defined.")
-
-        if "pos_y" in detailData:
-            print("detailData['pos_y'] sure, it was defined.")
-            if (detailData['pos_y'] != None ):
-                self.detailsCommonPositionY = TextInput(text=detailData['pos_y'], size_hint=(1, None), height=30)
-                self.editorElementDetails.add_widget(Label(text="Position Y (pixel):", size_hint=(1, None), height=30))
-                self.editorElementDetails.add_widget(self.detailsCommonPositionY)
-        else:
-            print("detailData['pos_y'] NOT defined.")
-
-        # pos Hint
-        if "pos_hint_x" in detailData:
-            print("detailData['pos_hint_x'] sure, it was defined.")
-            if (detailData['pos_hint_x'] != None ):
-                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
-                self.editorElementDetails.add_widget(Label(text="Position X (hint):", size_hint=(1, None), height=30))
-                self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
-        else:
-            print("detailData['pos'] NOT defined.")
-
-        if "pos_hint_y" in detailData:
-            print("detailData['pos_hint_y'] sure, it was defined.")
-            if (detailData['pos_hint_y'] != None ):
-                self.detailsCommonPositionYHint = TextInput(text=detailData['pos_hint_y'], size_hint=(1, None), height=30)
-                self.editorElementDetails.add_widget(Label(text="Position Y (hint):", size_hint=(1, None), height=30))
-                self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
-        else:
-            print("detailData['pos_y'] NOT defined.")
 
         self.editorElementDetails.add_widget(
             Button(
@@ -1166,13 +1129,13 @@ class EditorMain(BoxLayout):
         self.commonDetailsNameText = TextInput(
             text=detailData['name'],
             size_hint=(1, None),
-            height=44
+            height=30
         )
         self.editorElementDetails.add_widget(self.commonDetailsNameText)
 
         
         self.editorElementDetails.add_widget(Label(text='Layout type',size_hint=(1, None),
-            height=44))
+            height=30))
 
         self.layoutTypeList = DropDown()
         self.selectBtn = Button(
@@ -1192,35 +1155,35 @@ class EditorMain(BoxLayout):
         #Scatter layout:
         # Stack layout: 
 
-        self.btnBox = Button(text='Box', size_hint_y=None, height=44 )
+        self.btnBox = Button(text='Box', size_hint_y=None, height=30)
         self.btnBox.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnBox)
 
-        self.btnAnchor = Button(text='Anchor', size_hint_y=None, height=44) 
+        self.btnAnchor = Button(text='Anchor', size_hint_y=None, height=30) 
         self.btnAnchor.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnAnchor)
 
-        self.btnFloat = Button(text='Float', size_hint_y=None, height=44)
+        self.btnFloat = Button(text='Float', size_hint_y=None, height=30)
         self.btnFloat.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnFloat)
 
-        self.btnGrid = Button(text='Grid', size_hint_y=None, height=44)
+        self.btnGrid = Button(text='Grid', size_hint_y=None, height=30)
         self.btnGrid.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnGrid)
 
-        self.btnPage = Button(text='Page', size_hint_y=None, height=44)
+        self.btnPage = Button(text='Page', size_hint_y=None, height=30)
         self.btnPage.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnPage)
 
-        self.btnRelative = Button(text='Relative', size_hint_y=None, height=44)
+        self.btnRelative = Button(text='Relative', size_hint_y=None, height=30)
         self.btnRelative.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnRelative)
 
-        self.btnScatter = Button(text='Scatter', size_hint_y=None, height=44)
+        self.btnScatter = Button(text='Scatter', size_hint_y=None, height=30)
         self.btnScatter.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnScatter)
 
-        self.btnStack = Button(text='Stack', size_hint_y=None, height=44)
+        self.btnStack = Button(text='Stack', size_hint_y=None, height=30)
         self.btnStack.bind(on_release=partial(self.__setLayoutType))
         self.layoutTypeList.add_widget(self.btnStack)
 
@@ -1234,7 +1197,7 @@ class EditorMain(BoxLayout):
                 size_hint=(1,None),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
-                height=44 )
+                height=30)
             )
 
         # half common btn , label 
@@ -1284,33 +1247,34 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor()
                 )
             )
-        self.detailsCommonWidth = TextInput(text=str(detailData['width']), size_hint=(1, None), height=44)
+        self.detailsCommonWidth = TextInput(text=str(detailData['width']),
+            size_hint=(1, None), height=30)
         self.editorElementDetails.add_widget(self.detailsCommonWidth)
 
         self.editorElementDetails.add_widget(
             Button(
                 text= currentType + " Height",
                 size_hint=(1,None),
-                height=44,
+                height=30,
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeBackgroundColor()),
                 color=self.engineConfig.getThemeTextColor() )
             )
-        self.detailsCommonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=44)
+        self.detailsCommonHeight = TextInput(text=detailData['height'], size_hint=(1, None), height=30)
         self.editorElementDetails.add_widget(self.detailsCommonHeight)
 
         # Percent dimensions
         self.editorElementDetails.add_widget(Label(text='Use Percent Dimensions', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=44))
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=30))
         self.checkboxPer = CheckBox(active=_isActiveCheckBoxPer, size_hint=(1,None),
-                height=44)
+                height=30)
         self.editorElementDetails.add_widget(self.checkboxPer)
 
         # Combine dimensions
         self.editorElementDetails.add_widget(Label(text='Use Combine Dimensions (None for disable)', 
-                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=44))
+                color=self.engineConfig.getThemeTextColor(), size_hint=(1,None), height=30))
         self.checkboxCombine = CheckBox(active=_isActiveCheckBoxCombine, size_hint=(1,None),
-                height=44)
+                height=30)
         self.editorElementDetails.add_widget(self.checkboxCombine)
 
         # Bind checkboxs for details box
@@ -1320,17 +1284,17 @@ class EditorMain(BoxLayout):
 
         # Hint
         self.commonHintXDetail = TextInput(text=str(detailData['size_hint_x']), size_hint=(1,None),
-                height=44)
+                height=30)
         self.editorElementDetails.add_widget(self.commonHintXDetail)
         self.commonHintYDetail = TextInput(text=str(detailData['size_hint_y']), size_hint=(1,None),
-                height=44)
+                height=30)
         self.editorElementDetails.add_widget(self.commonHintYDetail)
 
         # Colors elements
         clrPickerTextColor = ColorPicker(color=(detailData['color']), size_hint=(1,None),
-                height=144)
+                height=200)
         clrPickerBackgroundColor = ColorPicker(color=(detailData['bgColor']), size_hint=(1,None),
-                height=144)
+                height=200)
 
         self.editorElementDetails.add_widget(clrPickerBackgroundColor)
         self.editorElementDetails.add_widget(clrPickerTextColor)
@@ -1395,7 +1359,11 @@ class EditorMain(BoxLayout):
             "size_hint_x": self.commonHintXDetail.text,
             "size_hint_y": self.commonHintYDetail.text,
             "dimensionRole": dimensionRole,
-            "attacher": self.attachEventCurrentElement.text
+            "attacher": self.attachEventCurrentElement.text,
+            "pos_x": self.detailsCommonPositionX.text,
+            "pos_y": self.detailsCommonPositionY.text,
+            "pos_hint_x": self.detailsCommonPositionXHint.text,
+            "pos_hint_y": self.detailsCommonPositionYHint.text,
         }
         # Collect data
         print(" CONSTRUCTED " , calculatedButtonData)
@@ -1477,7 +1445,11 @@ class EditorMain(BoxLayout):
             "height": self.detailsCommonHeight.text,
             "size_hint_x": self.commonHintXDetail.text,
             "size_hint_y": self.commonHintYDetail.text,
-            "dimensionRole": dimensionRole
+            "dimensionRole": dimensionRole,
+            "pos_x": self.detailsCommonPositionX.text,
+            "pos_y": self.detailsCommonPositionY.text,
+            "pos_hint_x": self.detailsCommonPositionXHint.text,
+            "pos_hint_y": self.detailsCommonPositionYHint.text,
         }
 
         # Collect data

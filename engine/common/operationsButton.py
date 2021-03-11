@@ -27,15 +27,19 @@ class EditorOperationButton():
         print("Access store -> ", self.store)
 
         # Prepare content
-        content = GridLayout( cols=4, padding=[150,0,150,0])
-        clrPickerTextColor = ColorPicker(size_hint=(1, 4))
-        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 4))
-        content.add_widget(Label(text='Button Name(Tag)'))
-        self.buttonNameText = TextInput(text='MyButton')
+        content = GridLayout( cols=2, padding=[150,0,150,0])
+        clrPickerTextColor = ColorPicker(size_hint=(1, 3))
+        clrPickerBackgroundColor = ColorPicker(size_hint=(1, 3))
+        content.add_widget(Label(text='Button Name(Tag)', size_hint=(1,None),
+                height=30))
+        self.buttonNameText = TextInput(text='MyButton', size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonNameText)
 
-        content.add_widget(Label(text='Text'))
-        self.buttonText = TextInput(text='My Button Text', halign="center")
+        content.add_widget(Label(text='Text', size_hint=(1,None),
+                height=30))
+        self.buttonText = TextInput(text='My Button Text', halign="center", size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonText)
         
         content.add_widget(Label(text='Button background color'))
@@ -44,63 +48,78 @@ class EditorOperationButton():
         content.add_widget(clrPickerTextColor)
         
 
-        content.add_widget(Label(text='Position X in pixels'))
-        self.buttonPositionX = TextInput(text='0', halign="center")
+        content.add_widget(Label(text='Position X in pixels', size_hint=(1,None),
+                height=30))
+        self.buttonPositionX = TextInput(text='0', halign="center", size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonPositionX)
-        content.add_widget(Label(text='Position Y in pixels'))
-        self.buttonPositionY = TextInput(text='0', halign="center")
+        content.add_widget(Label(text='Position Y in pixels', size_hint=(1,None),
+                height=30))
+        self.buttonPositionY = TextInput(text='0', halign="center", size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonPositionY)
 
-        content.add_widget(Label(text='Position Hint X'))
-        self.buttonPositionHintX = TextInput(text='0', halign="center")
+        content.add_widget(Label(text='Position Hint X', size_hint=(1,None),
+                height=30))
+        self.buttonPositionHintX = TextInput(text='0', halign="center", size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonPositionHintX)
-        content.add_widget(Label(text='Position Hint Y'))
-        self.buttonPositionHintY = TextInput(text='0', halign="center")
+        content.add_widget(Label(text='Position Hint Y', size_hint=(1,None),
+                height=30))
+        self.buttonPositionHintY = TextInput(text='0', halign="center", size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonPositionHintY)
 
-        content.add_widget(Label(text='Text'))
-        self.buttonText = TextInput(text='My Button Text', halign="center" )
-        content.add_widget(self.buttonText)
-
-
-        myCheckDimSys = BoxLayout()
-        myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
+        myCheckDimSys = BoxLayout(size_hint=(1,None),
+                height=30)
+        myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
+                height=30))
         content.add_widget(myCheckDimSys)
-        self.checkboxDim = CheckBox()
+        self.checkboxDim = CheckBox(size_hint=(1,None),
+                height=30)
         myCheckDimSys.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use Pixel Dimensions'))
-        self.buttonWidthText = TextInput(text='200')
+        content.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
+                height=30))
+        self.buttonWidthText = TextInput(text='200', size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonWidthText)
-        self.buttonHeightText = TextInput(text='100')
+        self.buttonHeightText = TextInput(text='100', size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonHeightText)
 
-        myCheckPerSys = BoxLayout()
-        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions range[0-1]'))
+        myCheckPerSys = BoxLayout(size_hint=(1,None),
+                height=30)
+        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions range[0-1]', size_hint=(1,None),
+                height=30))
         content.add_widget(myCheckPerSys)
-        self.checkboxPer = CheckBox(active=True)
+        self.checkboxPer = CheckBox(active=True, size_hint=(1,None),
+                height=30)
         myCheckPerSys.add_widget(self.checkboxPer)
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use percent dimensions.'))
-        self.buttonHintX = TextInput(text='1')
+        content.add_widget(Label(text='Use percent dimensions.', size_hint=(1,None),
+                height=30))
+        self.buttonHintX = TextInput(text='1', size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonHintX)
-        self.buttonHintY = TextInput(text='1')
+        self.buttonHintY = TextInput(text='1', size_hint=(1,None),
+                height=30)
         content.add_widget(self.buttonHintY)
 
-        self.attachEventCurrentElement = Button(
-                text="print('event.action.btn')",
+        self.attachEventCurrentElement = Label(
+                text="print('Attach event onPress')",
                 size_hint=(1,None),
-                height=40
+                height=30
             )
         content.add_widget(self.attachEventCurrentElement)
 
         content.add_widget( TextInput(
                 text='print("ATTACH EVENT WORKS")',
                 size_hint=(1,None),
-                height=40
+                height=30
               ))
 
         # Popup
@@ -114,8 +133,26 @@ class EditorOperationButton():
         self.popup.open()
 
         # Bind elements
-        infoBtn2 = Button(text='Add new button', on_press=lambda a:self.oAddBtn(self))
+        infoBtn2 = Button(
+            text='Add new button', 
+            font_size=18,
+            background_normal= '',
+            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+            color=self.engineRoot.engineConfig.getThemeTextColor(),
+            on_press=lambda a:self.oAddBtn(self))
         content.add_widget(infoBtn2)
+
+        cancelBtn = Button(
+            text='Cancel',
+            font_size=18,
+            background_normal= '',
+            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+            color=self.engineRoot.engineConfig.getThemeTextColor(),
+            on_press=lambda a:self.closePopup(self))
+        content.add_widget(cancelBtn)
+
+    def closePopup(self):
+        self.popup.dismiss()
 
     def __add_elementar(self, localStagedElements, calculatedLabelData):
         # print('add btn elemntar')

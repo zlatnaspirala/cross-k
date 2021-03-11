@@ -13,18 +13,30 @@ from kivy.network.urlrequest import UrlRequest
 
 class Networking():
 
+    def on_error(self, error):
+        print("Networking - on_error", error)
+
+    def on_failure(self, error):
+        print("Networking - on_failure", error)
+
+    def on_redirect(self, error):
+        print("Networking - on_redirect", error)
+
+    def analyzeJson(self, *args):
+        print("Networking - analyzeJson", args[0][1]['headers'])
+        for key in args[0][1]['headers']:
+            print(' key {}: value {} '.format(key, args[0][1]['headers'][str(key)]))
+
     def __init__(self, **kwargs):
         super(Networking, self).__init__(**kwargs)
         print("Networking ... ")
- 
-        def on_error(error):
-            print("Networking - analyzeJson")
 
-        def analyzeJson(req, result):
-            print("Networking - analyzeJson")
-            for key, value in req.resp_headers.items():
-                print('{}: {}'.format(key, value))
+    def getJson(self):
+        req = UrlRequest('https://maximumroulette.com/', 
+        #self.analyzeJson, None, self.on_error ,self.on_error)
+            on_error=lambda *args: self.on_error(args),
+            on_failure=lambda *args: self.on_failure(args),
+            on_redirect=lambda *args: self.on_redirect(args),
+            on_success=lambda *args: self.analyzeJson(args) )
+        print("get JSON")
 
-    # def access(self):
-        req = UrlRequest('https://httpbin.org/headers', analyzeJson, None, on_error)
-        print("Networking")

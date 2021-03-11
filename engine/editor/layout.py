@@ -77,7 +77,8 @@ class EngineLayout(BoxLayout):
         super(EngineLayout, self).__init__(**kwargs)
         # print("Testing layout size: ", self.size)
         # print("Testing layout pos: ", self.pos)
-        test = Networking()
+        self.net = Networking()
+        # test.getJson()
 
         # self.appEvents = EngineLayoutEvents()
         with self.canvas.before:
