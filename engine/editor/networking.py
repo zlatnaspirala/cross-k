@@ -13,6 +13,11 @@ from kivy.network.urlrequest import UrlRequest
 
 class Networking():
 
+    # Test
+    def callbackAnalyzeJson(self, data):
+        print('not overrided.', data)
+    # Test
+
     def on_error(self, error):
         print("Networking - on_error", error)
 
@@ -23,16 +28,30 @@ class Networking():
         print("Networking - on_redirect", error)
 
     def analyzeJson(self, *args):
-        print("Networking - analyzeJson", args[0][1]['headers'])
-        for key in args[0][1]['headers']:
-            print(' key {}: value {} '.format(key, args[0][1]['headers'][str(key)]))
+        # Abstract determination
+        print("Networking - analyzeJson args    -> ")# args)
+
+        if (type(args) is tuple) == True:
+            for index, item in enumerate(args):
+                print(' ---> {} '.format(item))
+                if (type(item) is tuple) == True:
+                    for sIndex, sItem in enumerate(item):
+                        print(' sIndex ', sIndex)
+                        print(' sInde ' , sItem)
+                        if "<UrlRequest" not in str(sItem):
+                            self.callbackAnalyzeJson(sItem)
+
+        else:
+            print('net res => Not tuple')
+            for key in args:
+                print(' key {}: value {} '.format(key, args[str(key)]))
 
     def __init__(self, **kwargs):
         super(Networking, self).__init__(**kwargs)
         print("Networking ... ")
 
     def getJson(self):
-        req = UrlRequest('https://maximumroulette.com/', 
+        req = UrlRequest('https://maximumroulette.com/apps/crossk/get-countries/countries.json', 
         #self.analyzeJson, None, self.on_error ,self.on_error)
             on_error=lambda *args: self.on_error(args),
             on_failure=lambda *args: self.on_failure(args),

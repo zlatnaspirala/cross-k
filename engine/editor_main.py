@@ -27,6 +27,7 @@ from kivy.app import App
 from kivy.graphics import Color, Rectangle
 from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUICOntainer import SceneGUIContainer
+from engine.editor.scripter import EventsEngineLayout
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
@@ -579,7 +580,7 @@ class EditorMain(BoxLayout):
         if "pos_hint_x" in detailData:
             print("detailData['pos_hint_x'] sure, it was defined.")
             if (detailData['pos_hint_x'] != None ):
-                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_x'], size_hint=(1, None), height=30)
+                self.detailsCommonPositionXHint = TextInput(text=detailData['pos_hint_x'], size_hint=(1, None), height=30)
                 self.editorElementDetails.add_widget(Label(text="Position X (hint):", size_hint=(1, None), height=30))
                 self.editorElementDetails.add_widget(self.detailsCommonPositionXHint)
         else:
@@ -593,8 +594,6 @@ class EditorMain(BoxLayout):
                 self.editorElementDetails.add_widget(self.detailsCommonPositionYHint)
         else:
             print("detailData['pos_y'] NOT defined.")
-
-
 
         # Checkbox use pixel dimesion system
         self.editorElementDetails.add_widget(Label(
@@ -705,14 +704,24 @@ class EditorMain(BoxLayout):
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
 
-        self.editorElementDetails.add_widget(
-            Button(
-                text="Simulate/run button event '" + detailData['name'] + "' ",
+        localScripterGUIBox = BoxLayout()
+        localScripterGUIBox.add_widget(Button(
+                text="Simulate event",
                 size_hint=(1,None),
                 height=30,
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 on_press=partial(self.engineLayout.attachEvent, detailData['attacher'])
             ))
+
+        localScripterGUIBox.add_widget(Button(
+                text="Open Scripter Editor",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                on_press=partial(self.showScripter, detailData)
+            ))
+
+        self.editorElementDetails.add_widget(localScripterGUIBox)
 
         self.attachEventCurrentElement = TextInput(
                 text=str(detailData['attacher']),
@@ -775,6 +784,11 @@ class EditorMain(BoxLayout):
                 #background_color=(0.1,0.1,0,0.5),
                 on_release=self.closeWithNoSaveDetails
             ))
+
+    def showScripter(self, arg, instance):
+        print("SHOW SCRIPTER", arg)
+        self.scripter = EventsEngineLayout(engineRoot=self)
+        self.add_widget(self.scripter)
 
     # LABEL Block
     def showLabelDetails(self, detailData):
@@ -1686,10 +1700,20 @@ class EditorMain(BoxLayout):
 
                 constructedApplicationButton = None
 
+                ##"pos_x": "0",
+                #"pos_y": "0",
+                #"pos_hint_x": "0",
+                #"pos_hint_y": "0"
+
                 if item['dimensionRole'] == "pixel":
                     local_size_hintX = None
                     local_size_hintY= None
+                    testLocalPosHint = (float(item['pos_hint_x']), float(item['pos_hint_y']))
+                    print(testLocalPosHint)
                     constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        # pos_hint=testLocalPosHint, # maybe disable
+                        pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1713,6 +1737,8 @@ class EditorMain(BoxLayout):
                         local_size_hintY = item['size_hint_y']
 
                     constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1734,6 +1760,9 @@ class EditorMain(BoxLayout):
                         local_size_hintY = item['size_hint_y']
 
                     constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        pos_hint_x=float(item['pos_hint_x']),
+                        pos_hint_y=float(item['pos_hint_y']),
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1765,6 +1794,7 @@ class EditorMain(BoxLayout):
                         padding_y= 0, # test
                         center=(1,1), # test
                         font_blended= True, # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY,
                         height=item['height'],
@@ -1799,6 +1829,8 @@ class EditorMain(BoxLayout):
                         padding_x= 0, # test
                         padding_y= 0, # test
                         center=(1,1), # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY)
                     with test.canvas.before:
@@ -1832,6 +1864,8 @@ class EditorMain(BoxLayout):
                         padding_x= 0, # test
                         padding_y= 0, # test
                         center=(1,1), # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         #foreground_color=item['color'],
                         #background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
@@ -1903,7 +1937,9 @@ class EditorMain(BoxLayout):
                     print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         anchor_x=item['anchor_x'],
-                        anchor_y=item['anchor_y']
+                        anchor_y=item['anchor_y'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY
                         )
                     with myAttacher.canvas.before:
                         Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])

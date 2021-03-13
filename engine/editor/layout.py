@@ -78,7 +78,7 @@ class EngineLayout(BoxLayout):
         # print("Testing layout size: ", self.size)
         # print("Testing layout pos: ", self.pos)
         self.net = Networking()
-        # test.getJson()
+        self.net.getJson()
 
         # self.appEvents = EngineLayoutEvents()
         with self.canvas.before:
@@ -92,8 +92,8 @@ class EngineLayout(BoxLayout):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
-    def attachEvent(self, arg1, liveInstance):
-        print("ATTACH EVENT", arg1, liveInstance)
+    def attachEvent(self, arg1, me):
+        print("Event triggered -> ", arg1, me)
         # liveInstance.text = 'blabla'
-        print( self.E([1,0])['text'] , "  Look at 0 1 ")
+        # print( self.E([1,0])['text'] , "  Look at 0 1 ")
         exec(arg1)
