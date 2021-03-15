@@ -1,5 +1,6 @@
 
 .cache/
+*.spec
 components/__pycache__/layout.cpython-39.pyc
 *.pyc
-projects/Project1/Package/
+projects/
