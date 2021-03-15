@@ -8,6 +8,9 @@
 ## This is the beginning of a beautiful friendship
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/engine/assets/logo/logo.png)
 
+## First Demo with attaching script
+![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/CROSSK_APP_ENGINE_BETA.png)
+
 After cloning this project only need to install python3, pip3 and kivy 2.0 framework
 You need first time to create `kivy_venv`:
 
