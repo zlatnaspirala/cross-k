@@ -80,12 +80,12 @@ class EventsEngineLayout(FloatLayout):
             ))
 
         self.scriptData = TextInput(
-                pos_hint={'x': 0.02, 'y': 0.5},
+                pos_hint={'x': 0.001, 'y': 0},
                 padding=(20,20,20,20),
                 # markup=True,
                 font_size=18,
                 text=self.currentScript,
-                size_hint=(0.85,0.4),
+                size_hint=(1,0.95),
                 foreground_color=(0.4,1,0.3),
                 background_normal='engine/assets/nidzaBorder002.png',
                 #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
