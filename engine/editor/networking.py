@@ -8,7 +8,6 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
-# from kivy.cache.cache import Cache
 from kivy.network.urlrequest import UrlRequest
 
 class Networking():
@@ -48,7 +47,7 @@ class Networking():
 
     def __init__(self, **kwargs):
         super(Networking, self).__init__(**kwargs)
-        print("Networking ... ")
+        print("[Networking Construct]")
 
     def getJson(self):
         req = UrlRequest('https://maximumroulette.com/apps/crossk/get-countries/countries.json', 
@@ -58,4 +57,3 @@ class Networking():
             on_redirect=lambda *args: self.on_redirect(args),
             on_success=lambda *args: self.analyzeJson(args) )
         print("get JSON")
-

@@ -337,11 +337,16 @@ class EditorMain(BoxLayout):
             print("GOOOD")
             self.MONITOR_W = GetSystemMetrics(0)
             self.MONITOR_H = GetSystemMetrics(1)
+
         ####################################################
         # Engine config , Colors Theme
         ####################################################
         self.engineConfig = EngineConfig()
         self.engineConfig.getVersion()
+
+
+        # define 
+        self.scripter = None
 
         # self.packageWinApp()
         # Initial call for aboutGUI
@@ -786,9 +791,11 @@ class EditorMain(BoxLayout):
             ))
 
     def showScripter(self, arg, instance):
-        print("SHOW SCRIPTER", arg)
-        self.scripter = EventsEngineLayout(engineRoot=self)
-        self.add_widget(self.scripter)
+        if self.scripter == None:
+            self.scripter = EventsEngineLayout(
+                engineRoot=self,
+                currentScript=self.attachEventCurrentElement.text)
+            self.add_widget(self.scripter)
 
     # LABEL Block
     def showLabelDetails(self, detailData):
@@ -1329,6 +1336,7 @@ class EditorMain(BoxLayout):
             self.showBoxLayoutDetails(detailData)
         elif str(detailData['layoutType']) == "Float":
             self.showBoxLayoutDetails(detailData)
+
     # Save details fast solution for now
     def saveDetails(self, elementID, elementType,  instance):
         print("Save detail for ->" , elementID)
@@ -1628,7 +1636,6 @@ class EditorMain(BoxLayout):
         # DELETE DETAILS GUI BOX
         self.editorElementDetails.clear_widgets()
 
-    # Delete button action
     def delete(self, elementID, elementType,  instance):
 
         # print("delete element type ", elementType)
@@ -1646,7 +1653,6 @@ class EditorMain(BoxLayout):
         self.updateScene()
         self.sceneGUIContainer.selfUpdate()
 
-    # Details box
     def on_details_color(self, instance, value):
         self.newDetailsColor = (value[0], value[1], value[2], 1 )
 
@@ -1989,6 +1995,31 @@ class EditorMain(BoxLayout):
 
                 elif item['layoutType']  == "Grid":
                     Attacher = GridLayout
+                    myAttacher = Attacher(
+                        #text=item['text'],
+                        # size=(300, 300),
+                        #orientation=item['orientation'],
+                        cols=2,
+                        spacing=float(item['spacing']),
+                        padding=float(item['padding']),
+                        color=item['color'],
+                        background_normal= '',
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY
+                        )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+
                 elif item['layoutType'] == "Page":
                     Attacher = PageLayout
                 elif item['layoutType'] == "Relative":

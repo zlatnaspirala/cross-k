@@ -13,13 +13,18 @@ from functools import partial
 
 class EventsEngineLayout(FloatLayout):
 
-    def mypos(self, ins, touch2):
-        print('test mypos ', touch2)
-    
+    def is_mouse_scrolling(self, instance):
+        print('test is_mouse_scrolling ', instance)
 
-    def on_touch_down(self, touch2, test):
-        print('test on_touch_down ', touch2.pos)
-        return super(EventsEngineLayout, self).on_touch_down(touch2)
+    def mypos(self, ins, touch):
+        print('test mypos ', touch)
+
+    def on_touch_down(self, touch, instance=False):
+        if instance != False:
+            print('test on_touch_down1 ', touch.pos)
+        else:
+            print('test on_touch_down2 ', touch.pos)
+            return super(EventsEngineLayout, self).on_touch_down(touch)
 
     def mypos2(self, ins, touch2):
         print('test the best')
@@ -28,18 +33,22 @@ class EventsEngineLayout(FloatLayout):
         #        print('Scripter touchDown pos: ', touch2.pos)
                 # Hold value of touch downed pos
         #        self.last_touch = touch2.pos # Need this line
-
         # return super(EventsEngineLayout, self).on_touch_down(touch2)
-        
+    
+    def closeWithOutSave(self, instance):
+        self.engineRoot.remove_widget(self.engineRoot.scripter)
+        self.engineRoot.scripter = None
+
+    def appendScriptToDetails(self, instance):
+        self.engineRoot.attachEventCurrentElement.text = self.scriptData.text
+        self.engineRoot.remove_widget(self.engineRoot.scripter)
+        self.engineRoot.scripter = None
+
     def __init__(self, **kwargs):
         super(EventsEngineLayout, self).__init__()
         self.engineRoot = kwargs.get("engineRoot")
-
-        self.net = Networking()
-        # self.net.getJson()
-
-        
-        print("EventsEngineLayout loaded -> ")
+        self.currentScript = kwargs.get("currentScript")
+        print("EventsEngineLayout loaded.")
 
         self.add_widget(
             Button(
@@ -47,15 +56,15 @@ class EventsEngineLayout(FloatLayout):
                 pos_hint={'x': 0, 'y': 0.95},
                 markup=True,
                 text="[b]Save[/b]",
-                font_size=18,
+                font_size=14,
                 size_hint=(0.5,0.05),
                 color=self.engineRoot.engineConfig.getThemeTextColor(),
                 # color=(1,1,1,0.1),
                 # background_normal='engine/assets/nidzaBorder002.png',
                 # background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
-                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 # background_color=(1,1,1,0.8),
-                # on_release=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                on_release=self.appendScriptToDetails
             ))
 
         self.add_widget(
@@ -63,18 +72,28 @@ class EventsEngineLayout(FloatLayout):
                 pos_hint={'x': 0.5, 'y': 0.95},
                 border=(10,10,10,10),
                 markup=True,
-                font_size=18,
+                font_size=14,
                 text="[b]Cancel[/b]",
                 size_hint=(0.5,0.05),
-                #background_normal='engine/assets/nidzaBorder001-250x250_yellow_black.png',
-                #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
-                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground'))
-                #background_color=(0.1,0.1,0,0.5),
-                # on_release=self.closeWithNoSaveDetails
+                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                on_release=self.closeWithOutSave
             ))
 
+        self.scriptData = TextInput(
+                pos_hint={'x': 0.02, 'y': 0.5},
+                padding=(20,20,20,20),
+                # markup=True,
+                font_size=18,
+                text=self.currentScript,
+                size_hint=(0.85,0.4),
+                foreground_color=(0.4,1,0.3),
+                background_normal='engine/assets/nidzaBorder002.png',
+                #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
+                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                # on_release=self.closeWithNoSaveDetails
+            )
+        self.add_widget(self.scriptData)
 
-        # self.appEvents = EngineLayoutEvents()
         with self.canvas.before:
             Color(0.6, 0.2, 0.6, 1)
             self.rect = Rectangle(size=self.size, pos=self.pos)
@@ -87,4 +106,4 @@ class EventsEngineLayout(FloatLayout):
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
-        
+

@@ -41,6 +41,7 @@ class EngineLayout(BoxLayout):
 
     def E(self, arg):
         local = self.getElementByIndexArray(arg)
+        
         if local == None:
             return {'text': 'fake data, element no exist'}
         else:
@@ -49,13 +50,13 @@ class EngineLayout(BoxLayout):
     def getElementByIndexArray(self, crossKAccess):
         testContainer = 0
         deepSize = len(crossKAccess)
-        print("deep is", len(crossKAccess))
+        # print("deep is", len(crossKAccess))
 
         if deepSize == 1:
             return self
             
         for index, item in enumerate(crossKAccess):
-            print("index", index)
+            # print("index", index)
             if (index == 0):
                 testContainer = self.deepSearch(self, item)
             else:
@@ -77,8 +78,8 @@ class EngineLayout(BoxLayout):
         super(EngineLayout, self).__init__(**kwargs)
         # print("Testing layout size: ", self.size)
         # print("Testing layout pos: ", self.pos)
-        self.net = Networking()
-        self.net.getJson()
+        # self.net = Networking()
+        # self.net.getJson()
 
         # self.appEvents = EngineLayoutEvents()
         with self.canvas.before:
@@ -93,7 +94,10 @@ class EngineLayout(BoxLayout):
         self.rect.size = instance.size
 
     def attachEvent(self, arg1, me):
-        print("Event triggered -> ", arg1, me)
-        # liveInstance.text = 'blabla'
+        # print("Event triggered -> ", arg1, me)
+        # me.text = 'blabla'
         # print( self.E([1,0])['text'] , "  Look at 0 1 ")
-        exec(arg1)
+        try: exec(arg1)
+        except NameError:
+            print('BAD SCRIPT CONTENT!')
+            me.text = "BAD SCRIPT CONTENT!"
