@@ -37,10 +37,10 @@ class EditorOperationBox():
         self.newBtnHeight = 80
 
         self.store = kwargs.get("store")
-        self.currentLayout = kwargs.get("currentLayout")
+        self.currentLayoutId = kwargs.get("currentLayoutId")
 
         self.engineRoot = kwargs.get("engineRoot")
-        print("Access store -> ", self.store)
+        print("Access currentLayoutId -> ", self.currentLayoutId)
 
         # Prepare content
         content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
@@ -116,6 +116,15 @@ class EditorOperationBox():
         content.add_widget(Label(text='Orientation'))
         self.orientation = TextInput(text='vertical')
         content.add_widget(self.orientation)
+
+        content.add_widget(Label(text='cols'))
+        self.colsInput = TextInput(text='6')
+        content.add_widget(self.colsInput)
+
+        content.add_widget(Label(text='rows'))
+        self.rowsInput = TextInput(text='0')
+        content.add_widget(self.rowsInput)
+
 
         content.add_widget(Label(text='Padding'))
         self.layoutPadding = TextInput(text='0')
@@ -238,6 +247,8 @@ class EditorOperationBox():
             "id": str(uuid.uuid4()),
             "name": self.buttonNameText.text,
             "type": "LAYOUT",
+            "cols": self.colsInput.text,
+            "rows": self.rowsInput.text,
             "pos_x": self.buttonPositionX.text,
             "pos_y": self.buttonPositionY.text,
             "pos_hint_x": self.buttonPositionHintX.text,
@@ -259,25 +270,29 @@ class EditorOperationBox():
         } 
 
         # print('what is the type of layout', self.selectBtn.text)
-
         localStagedElements = []
 
         if self.store.exists('renderComponentArray'):
-            print('renderComponentArray exists:', self.store.get('renderComponentArray')['elements'])
-            
+            # print('renderComponentArray exists:', self.store.get('renderComponentArray')['elements'])
             localStagedElements = self.store.get('renderComponentArray')['elements']
-            
-            for item in localStagedElements:
-                print('A')
-
-            localStagedElements.append(calculatedButtonData)
-            # store.delete('')
+            #######################
+            # First just root
+            isFounded = False
+            for index, item in enumerate(localStagedElements):
+                if item['id'] == self.currentLayoutId:
+                    localStagedElements[index]['elements'].append(calculatedButtonData)
+                    isFounded = True
+                    break
+            if isFounded == False:
+                for index, item in enumerate(localStagedElements):
+                    if item['type'] == 'LAYOUT':
+                        for sindex, sitem in enumerate(item['elements']):
+                            if sitem['id'] == self.currentLayoutId:
+                                localStagedElements[index]['elements'][sindex]['elements'].append(calculatedButtonData)
+                                break
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
-        
-        # print(">>>>>>>>>>>>>>>>>>>", calculatedElement)
-        # self.currentLayout.add_widget(calculatedElement)
 
         self.popup.dismiss()
 

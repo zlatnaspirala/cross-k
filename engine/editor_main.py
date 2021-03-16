@@ -83,7 +83,7 @@ class EditorMain(BoxLayout):
         self.createLoadProjectLayoutEditor.add_widget(Label(text='CROSS[b]K[/b]', markup=True, font_size="30sp" ))
 
         self.createLoadProjectLayoutEditor.add_widget(Label(text='[b]Multiplatform App-Game Engine Tool[/b]', markup=True, bold=True, font_size="20sp" ))
-        self.createLoadProjectLayoutEditor.add_widget(Label(text='[b]Based on powerful kivy 2.0 [opengles2]. Running with Python3.[/b]', markup=True, bold=True, font_size="10sp" ))
+        self.createLoadProjectLayoutEditor.add_widget(Label(text='[b]Based on powerful kivy 2.0 [opengles2]. Running with Python3.[/b] ', markup=True, bold=True, font_size="10sp" ))
 
         self.newProjectBtn = Button(
             markup=True,
@@ -96,8 +96,7 @@ class EditorMain(BoxLayout):
 
         self.newProjectTitle = Label(text='Project name:')
         self.createLoadProjectLayoutEditor.add_widget(self.newProjectTitle)
-        # self.projectName = TextInput(multiline=False, size_hint=(.1, .05) )
-        self.projectName = TextInput(text='Project1', font_size=22)
+        self.projectName = TextInput(text='Project1', halign='center', font_size=22)
 
         self.createLoadProjectLayoutEditor.add_widget(self.projectName)
         self.createLoadProjectLayoutEditor.add_widget(self.newProjectBtn)
@@ -709,6 +708,24 @@ class EditorMain(BoxLayout):
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
 
+        # FontSize
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Font size ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
+
+        self.buttonDetailsFontSize = TextInput(
+            text=detailData['fontSize'],
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.buttonDetailsFontSize)
+
         localScripterGUIBox = BoxLayout()
         localScripterGUIBox.add_widget(Button(
                 text="Simulate event",
@@ -810,7 +827,7 @@ class EditorMain(BoxLayout):
                 height=30)
         self.editorElementDetails.add_widget(self.checkboxIsBold)
 
-        # name - tag
+        # FontSize
         self.editorElementDetails.add_widget(
             Button(
                 text="Font size ",
@@ -968,6 +985,29 @@ class EditorMain(BoxLayout):
                 on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
             )
 
+        self.colsInput = TextInput(text=detailData['cols'],size_hint=(1, None), height=30 )
+        self.rowsInput = TextInput(text=detailData['rows'],size_hint=(1, None), height=30 )
+
+        if str(detailData['layoutType']) == "Grid": # or str(detailData['layoutType']) == "Float":
+            self.editorElementDetails.add_widget(
+                Label(
+                    text="The Grid Layout - num of columns:",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                ))
+            self.editorElementDetails.add_widget(self.colsInput)
+
+            self.editorElementDetails.add_widget(
+                Label(
+                    text="The Grid Layout - number of rows:",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                ))
+            self.editorElementDetails.add_widget(self.rowsInput)
+
+
         if str(detailData['layoutType']) == "Anchor" or str(detailData['layoutType']) == "Float":
             self.editorElementDetails.add_widget(
                 Label(
@@ -1083,8 +1123,8 @@ class EditorMain(BoxLayout):
         # NEED PARENT LAYOUT REAL REFERENCE INSTANCE
         operationAddTest = EditorOperationBox(
             store=self.store,
-            currentLayout=currentData['id'],
-            engineRoot=self,
+            currentLayoutId=currentData['id'],
+            engineRoot=self,  # currentData['id']
         )
 
     def __setLayoutType(self, instance):
@@ -1337,7 +1377,7 @@ class EditorMain(BoxLayout):
         elif str(detailData['layoutType']) == "Float":
             self.showBoxLayoutDetails(detailData)
 
-    # Save details fast solution for now
+    # Save details fast solution for now BUTTON
     def saveDetails(self, elementID, elementType,  instance):
         print("Save detail for ->" , elementID)
         # predefinition
@@ -1374,6 +1414,7 @@ class EditorMain(BoxLayout):
             "name": self.commonDetailsNameText.text, # tag
             "type": elementType,
             "text": self.detailsCommonText.text,
+            "fontSize": self.buttonDetailsFontSize.text,
             "color": self.newDetailsColor,
             "bgColor": self.newDetailsBgColor,
             "width": self.detailsCommonWidth.text,
@@ -1550,6 +1591,8 @@ class EditorMain(BoxLayout):
             "name": self.commonDetailsNameText.text,
             "type": "LAYOUT",
             "layoutType": self.selectBtn.text,
+            "cols": self.colsInput.text,
+            "rows": self.rowsInput.text,
             "elements": detailData['elements'],
             "orientation": self.detailsCommonLayoutOrientation.text,
             "padding": self.layoutPadding.text,
@@ -1592,8 +1635,9 @@ class EditorMain(BoxLayout):
                 if item['type'] == 'LAYOUT':
                     for sindex, sitem in enumerate(item['elements']):
                         if sitem['id'] == detailData['id']:
-                            sitem = calculatedButtonData
-                            print('I FOUND LAYOUT  EFS IN SUB REPLACE UPDATE STORE ', sitem['dimensionRole'])
+                            loadElements[index]['elements'][sindex] = calculatedButtonData
+                            # sitem = calculatedButtonData
+                            print('I FOUND LAYOUT IN SUB REPLACE UPDATE STORE')
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
@@ -1719,6 +1763,7 @@ class EditorMain(BoxLayout):
                     constructedApplicationButton = Button(
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         # pos_hint=testLocalPosHint, # maybe disable
+                        font_size=item['fontSize'],
                         pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
                         text=item['text'],
                         color=item['color'],
@@ -1746,6 +1791,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         text=item['text'],
+                        font_size=item['fontSize'],
                         color=item['color'],
                         background_normal= '',
                         background_color= item['bgColor'],
@@ -1769,6 +1815,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         pos_hint_x=float(item['pos_hint_x']),
                         pos_hint_y=float(item['pos_hint_y']),
+                        font_size=item['fontSize'],
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -1996,15 +2043,10 @@ class EditorMain(BoxLayout):
                 elif item['layoutType']  == "Grid":
                     Attacher = GridLayout
                     myAttacher = Attacher(
-                        #text=item['text'],
-                        # size=(300, 300),
-                        #orientation=item['orientation'],
-                        cols=2,
+                        cols=int(item['cols']),
+                        rows=int(item['rows']),
                         spacing=float(item['spacing']),
                         padding=float(item['padding']),
-                        color=item['color'],
-                        background_normal= '',
-                        background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY
                         )
@@ -2019,6 +2061,7 @@ class EditorMain(BoxLayout):
                     # listen to size and position changes
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
+                    self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Page":
                     Attacher = PageLayout

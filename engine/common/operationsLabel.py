@@ -128,7 +128,7 @@ class EditorOperationLabel():
                 for subIndex, sub in enumerate(item['elements']):
                     if item['type'] == 'LAYOUT' and sub['id'] == self.currentLayout:
                         founded = True
-                        localStagedElements[index]['elements'][subIndex].append(calculatedLabelData)
+                        localStagedElements[index]['elements'][subIndex]['elements'].append(calculatedLabelData)
                         return founded
                         break
 
@@ -215,7 +215,9 @@ class EditorOperationLabel():
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
         self.engineRoot.updateScene()
-        self.engineRoot.sceneGUIContainer.selfUpdate()        
+        self.engineRoot.sceneGUIContainer.selfUpdate()
+        self.engineRoot.closeWithNoSaveDetails(None)
+
         self.popup.dismiss()
 
     def on_color(self, instance, value):

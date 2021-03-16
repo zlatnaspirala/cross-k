@@ -52,13 +52,15 @@ class EngineLayout(BoxLayout):
         deepSize = len(crossKAccess)
         # print("deep is", len(crossKAccess))
 
-        if deepSize == 1:
+        if deepSize == 0:
             return self
 
         for index, item in enumerate(crossKAccess):
             # print("index", index)
             if (index == 0):
                 testContainer = self.deepSearch(self, item)
+                if len(crossKAccess) == 1:
+                    return testContainer
             else:
                 # check if last last
                 if len(crossKAccess) - 1 == index:
@@ -70,7 +72,7 @@ class EngineLayout(BoxLayout):
                         return None
                     return res[item]
                 else:
-                    print("Test next deep Container -> ", testContainer)
+                    # print("Test next deep Container -> ", testContainer)
                     testContainer = self.deepSearch(testContainer.children[item], item)
 
     def __init__(self, **kwargs):

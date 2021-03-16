@@ -69,6 +69,7 @@ class SceneGUIContainer(ScrollView):
                 localTest = Button(
                     markup=True,
                     halign="left", valign="middle",
+                    padding_x= self.deepTest * 10,
                     font_size=15,
                     text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),

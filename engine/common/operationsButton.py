@@ -32,7 +32,7 @@ class EditorOperationButton():
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 3))
         content.add_widget(Label(text='Button Name(Tag)', size_hint=(1,None),
                 height=30))
-        self.buttonNameText = TextInput(text='MyButton', size_hint=(1,None),
+        self.buttonNameText = TextInput(text='MyButton', halign="center", size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonNameText)
 
@@ -41,6 +41,12 @@ class EditorOperationButton():
         self.buttonText = TextInput(text='My Button Text', halign="center", size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonText)
+
+        content.add_widget(Label(text='Font size',  size_hint=(1,None),
+                height=30))
+        self.fontSizeBtn = TextInput(text='18', halign="center",  size_hint=(1,None),
+                height=30)
+        content.add_widget(self.fontSizeBtn)
         
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
@@ -83,10 +89,18 @@ class EditorOperationButton():
 
         content.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
                 height=30))
-        self.buttonWidthText = TextInput(text='200', size_hint=(1,None),
+
+        content.add_widget(Label(text='Width', size_hint=(1,None),
+                height=30))
+
+        self.buttonWidthText = TextInput(text='200', halign="center", size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonWidthText)
-        self.buttonHeightText = TextInput(text='100', size_hint=(1,None),
+
+        content.add_widget(Label(text='Height', size_hint=(1,None),
+        height=30))
+
+        self.buttonHeightText = TextInput(text='100', halign="center", size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonHeightText)
 
@@ -100,17 +114,24 @@ class EditorOperationButton():
         myCheckPerSys.add_widget(self.checkboxPer)
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use percent dimensions.', size_hint=(1,None),
+        content.add_widget(Label(text='Use percent dimensions. Use 0.2 is 20%\ of parent width/height ', size_hint=(1,None),
                 height=30))
-        self.buttonHintX = TextInput(text='1', size_hint=(1,None),
+
+        content.add_widget(Label(text='Width in percent range[0-1]', size_hint=(1,None),
+                height=30))
+
+        self.buttonHintX = TextInput(text='1', halign="center",size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonHintX)
-        self.buttonHintY = TextInput(text='1', size_hint=(1,None),
+
+        content.add_widget(Label(text='Height in percent range[0-1]', size_hint=(1,None),
+                height=30))
+        self.buttonHintY = TextInput(text='1', halign="center",size_hint=(1,None),
                 height=30)
         content.add_widget(self.buttonHintY)
 
         self.attachEventCurrentElement = Label(
-                text="print('Attach event onPress')",
+                text="Event script (recommended edit from details box)",
                 size_hint=(1,None),
                 height=30
             )
@@ -173,7 +194,7 @@ class EditorOperationButton():
                 for subIndex, sub in enumerate(item['elements']):
                     if item['type'] == 'LAYOUT' and sub['id'] == self.currentLayout:
                         founded = True
-                        localStagedElements[index]['elements'][subIndex].append(calculatedLabelData)
+                        localStagedElements[index]['elements'][subIndex]['elements'].append(calculatedLabelData)
                         return founded
                         break
 
@@ -225,6 +246,7 @@ class EditorOperationButton():
             "name": self.buttonNameText.text,
             "type": "BUTTON",
             "text": self.buttonText.text,
+            "fontSize": self.fontSizeBtn.text,
             "pos_x": self.buttonPositionX.text,
             "pos_y": self.buttonPositionY.text,
             "pos_hint_x": self.buttonPositionHintX.text,
@@ -254,6 +276,7 @@ class EditorOperationButton():
         self.popup.dismiss()
         self.engineRoot.updateScene()
         self.engineRoot.sceneGUIContainer.selfUpdate()
+        self.engineRoot.closeWithNoSaveDetails(None)
 
     def on_color(self, instance, value):
         self.newBtnColor = str(value)
