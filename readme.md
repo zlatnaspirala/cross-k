@@ -43,7 +43,14 @@ pip3 install kivy
 pip3 install kivy.deps.gstreamer
 pip3 install kivy.deps.angle
 pip3 install --upgrade pyinstaller
+pip3 install python-for-android
+
+cd submodules/
+docker build --tag=p4a --file Dockerfile .
+
 ```
+
+
 
 If you have problem with:
 ```js
@@ -74,6 +81,23 @@ For now i make package for whole engine:
 kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_Beta --distpath packages/projectTest --workpath .cache/ main.py
 ```
 
+[ANDROID]
+
+```js
+docker run \
+    --interactive \
+    --tty \
+    --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\submodules\python-for-android\testapps":/home/user/testapps \
+    p4a sh -c
+        '. venv/bin/activate \
+        && cd testapps \
+        && python setup_vispy.py apk \
+        --sdk-dir $ANDROID_SDK_HOME \
+        --ndk-dir $ANDROID_NDK_HOME'
+
+docker run --interactive --tty --volume "/G/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/submodules/python-for-android/testapps":/home/user/testapps p4a sh -c ". venv/bin/activate && cd testapps && python setup_testapp_python3_sqlite_openssl.py apk --package=nikola.car.sdl2 --name='nidzasdl2' --version=0.5 --bootstrap=sdl2 --sdk-dir $ANDROID_SDK_HOME --ndk-dir $ANDROID_NDK_HOME "
+
+```
 
 
 ## STRUCTURE FILES

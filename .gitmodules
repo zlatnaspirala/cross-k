@@ -1,0 +1,3 @@
+[submodule "submodules/python-for-android"]
+	path = submodules/python-for-android
+	url = https://github.com/kivy/python-for-android

@@ -30,6 +30,15 @@ class EngineConfig:
     self.currentProjectPath = 'mynull'
     self.currentProjectName = 'mynull'
 
+    self.platformRoles = {
+      'showAboutBoxOnLoad': False,
+      'win': {
+        'fullscreen': False,
+        'initialWidth': 1200,
+        'initialHeight': 700
+      }
+    }
+
   def setupThemes(self):
 
     self.themes = {

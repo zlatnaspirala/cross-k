@@ -329,36 +329,36 @@ class EditorMain(BoxLayout):
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
 
-        self.MONITOR_W = 1200
-        self.MONITOR_H = 780
-
-        if (kivy.utils.platform == 'win'):
-            print("GOOOD")
-            self.MONITOR_W = GetSystemMetrics(0)
-            self.MONITOR_H = GetSystemMetrics(1)
-
         ####################################################
         # Engine config , Colors Theme
         ####################################################
         self.engineConfig = EngineConfig()
         self.engineConfig.getVersion()
 
+        self.MONITOR_W = self.engineConfig.platformRoles['win']['initialWidth']
+        self.MONITOR_H = self.engineConfig.platformRoles['win']['initialHeight']
 
-        # define 
+        if (kivy.utils.platform == 'win'):
+            print("Current platform: windows")
+            self.MONITOR_W = GetSystemMetrics(0)
+            self.MONITOR_H = GetSystemMetrics(1)
+            Window.size = (sp(self.MONITOR_W - 10), sp(self.MONITOR_H - 70))
+            Window.top = 30
+            Window.left = 5
+            if self.engineConfig.platformRoles['win']['fullscreen'] == True:
+                Window.fullscreen = True
+            
+        # define details scripter property
         self.scripter = None
 
-        # self.packageWinApp()
         # Initial call for aboutGUI
-        # getAboutGUI()
+        if self.engineConfig.platformRoles['showAboutBoxOnLoad'] == True:
+            getAboutGUI()
 
-        Window.size = (sp(self.MONITOR_W - 10), sp(self.MONITOR_H - 70))
-        Window.top = 30
-        Window.left = 5
-        #Window.fullscreen = True
         Window.clearcolor = self.engineConfig.getThemeBackgroundColor()
        
         # Run time schortcut vars
-        #self.orientation='vertical'
+        # self.orientation='vertical'
         # self.cols = 1
         """  # Get path to SD card Android
         try:
@@ -383,14 +383,17 @@ class EditorMain(BoxLayout):
         self.packageDropdown = DropDown()
         self.packageDropdown.dismiss()
 
-        # 
         packWindows = Button(text='Make package for windows',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.packageWinApp)
         packLinux = Button(text='Make package for Linux',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.packageWinApp)
         self.packageDropdown.add_widget(packWindows)
         self.packageDropdown.add_widget(packLinux)
@@ -403,14 +406,20 @@ class EditorMain(BoxLayout):
         toolsAddBox = Button(text='Add Box',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewBoxGUI)
         toolsAddBtn = Button(text='Add Button',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewButtonGUI)
         toolsAddText = Button(text='Add Text',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewLabelGUI)
         self.currentProjectMenuDropdown.add_widget(toolsAddBox)
         self.currentProjectMenuDropdown.add_widget(toolsAddBtn)
@@ -424,12 +433,19 @@ class EditorMain(BoxLayout):
 
         btn = Button(text='Create new project',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(1, None), height=30, width=300)
+                     size_hint=(1, None), height=30, width=300, 
+                     background_normal= '',
+                     background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                    )
         self.appMenuDropdown.add_widget(btn)
 
         loadBtn = Button(text='Load project',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(1, None), height=30, width=300)
+                     size_hint=(1, None), height=30, width=300,
+                     background_normal= '',
+                     background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                     )
+
         self.appMenuDropdown.add_widget(loadBtn)
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
@@ -440,18 +456,30 @@ class EditorMain(BoxLayout):
  
         MakePackageBtn = Button(text='Make package',
                      color=(self.engineConfig.getThemeTextColor()),
-                     size_hint=(None, None), height=30, width=300)
+                     size_hint=(None, None), height=30, width=300,
+                     background_normal= '',
+                     background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                     )
         MakePackageBtn.bind(on_release=self.packageDropdown.open)
         self.editorMenuLayout.add_widget(MakePackageBtn)
 
 
-        editorTools = Button(text='Tools', color=(self.engineConfig.getThemeTextColor()),
-                             size_hint=(None, None), height=30, width=300)
+        editorTools = Button(
+                             markup=True, text='[b]Tools[/b]',
+                             color=(self.engineConfig.getThemeTextColor()),
+                             size_hint=(None, None), height=30, width=300,
+                             background_normal= '',
+                             background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                           )
         editorTools.bind(on_release=self.currentProjectMenuDropdown.open)
         self.editorMenuLayout.add_widget(editorTools)
 
         mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]',
-            color=(self.engineConfig.getThemeTextColor()), size_hint=(None, None), height=30, width=300)
+                            color=(self.engineConfig.getThemeTextColor()), 
+                            size_hint=(None, None), height=30, width=300,
+                            background_normal= '',
+                            background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                            )
         # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)

@@ -8,18 +8,11 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
-
 from engine.editor.networking import Networking
-
-# from engine.editor.events import EngineLayoutEvents
 
 class EngineLayout(BoxLayout):
     # This is root app class container. I need to pass all needed staff
     # from main-editor or make copy of main-editor and remove unused code.
-    # Must be done before package feature
-    # currentProjectPath = StringProperty('null')
-    # currentProjectName = StringProperty('null')
-
     def getSceneSize(self):
         return len(self.children)
 
@@ -30,10 +23,10 @@ class EngineLayout(BoxLayout):
         return self.children[index]
 
     def deepSearch(self, currContainer, index):
-        print("test currContainer.children ", currContainer.children)
+        # print("test currContainer.children ", currContainer.children)
         res =  currContainer.children[::-1]
         if len(res) <= index:
-            print("Element not exist !!!")
+            print("Main App Layout: Element not exist !!!")
             return None
         else:
             testLocal = res[index]
