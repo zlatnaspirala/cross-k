@@ -71,7 +71,7 @@ class SceneGUIContainer(ScrollView):
                     halign="left", valign="middle",
                     padding_x= self.deepTest * 10,
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]' + item['layoutType'] + '[/u]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),

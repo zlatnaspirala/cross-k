@@ -10,16 +10,10 @@ from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
 from kivy.cache.cache import Cache
 
-#########################################################
-# Base class for Resource CrossK Object
-#########################################################
-
-class CrossKResources():
+class ResourcesGUIContainer():
 
     def __init__(self, **kwargs):
-        super(CrossKResources, self).__init__()
-
-        self.type = kwargs.get('type')
+        super(ResourcesGUIContainer, self).__init__(**kwargs)
 
     def access(self):
-        print("Asset Access")
+        print("ATTACH")

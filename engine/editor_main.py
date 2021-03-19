@@ -448,13 +448,23 @@ class EditorMain(BoxLayout):
                      )
 
         self.appMenuDropdown.add_widget(loadBtn)
+
+        aboutBtn = Button(text='About CrossK Engine',
+                     color=(self.engineConfig.getThemeTextColor()),
+                     size_hint=(1, None), height=30, width=300,
+                     background_normal= '',
+                     background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                     )
+
+        self.appMenuDropdown.add_widget(aboutBtn)
+
+        aboutBtn.bind(on_press=getAboutGUI)
         loadBtn.bind(on_press=self.CreateLoadInstanceGUIBox)
 
         self.editorMenuLayout.add_widget(self.appMenuDropdown)
- 
-        #btn.bind(on_release=lambda btn: appMenuDropdown.select(btn.text))
+
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
- 
+
         MakePackageBtn = Button(text='Make package',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=300,
@@ -463,7 +473,6 @@ class EditorMain(BoxLayout):
                      )
         MakePackageBtn.bind(on_release=self.packageDropdown.open)
         self.editorMenuLayout.add_widget(MakePackageBtn)
-
 
         editorTools = Button(
                              markup=True, text='[b]Tools[/b]',

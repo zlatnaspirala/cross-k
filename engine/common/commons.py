@@ -35,7 +35,7 @@ class Picture():
 def crossKValidateNumbers(txt):
     return re.findall('[^0-9]', txt)
 
-def getAboutGUI():
+def getAboutGUI(instance):
 
     box = BoxLayout(
             orientation="vertical")
