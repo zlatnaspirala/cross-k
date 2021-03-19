@@ -11,6 +11,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.pagelayout import PageLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -1035,6 +1036,18 @@ class EditorMain(BoxLayout):
                 ))
             self.editorElementDetails.add_widget(self.rowsInput)
 
+        self.swipeThresholdPageLayout = TextInput(text=detailData['swipe_threshold'], size_hint=(1, None), height=30)
+        if str(detailData['layoutType']) == "Page":
+            self.editorElementDetails.add_widget(
+                Label(
+                    text="The Page Layout swipe Threshold: ",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                    # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                ))
+            self.editorElementDetails.add_widget(self.swipeThresholdPageLayout)
+
 
         if str(detailData['layoutType']) == "Anchor" or str(detailData['layoutType']) == "Float":
             self.editorElementDetails.add_widget(
@@ -1396,14 +1409,14 @@ class EditorMain(BoxLayout):
         clrPickerBackgroundColor.bind(color=self.on_details_bgcolor) # pylint: disable=no-member
 
         # Specific elemetn props
-        if str(detailData['layoutType']) == "Box" or str(detailData['layoutType']) == "Select layout type":
-            self.showBoxLayoutDetails(detailData)
-        elif str(detailData['layoutType']) == "Grid":
-            self.showBoxLayoutDetails(detailData)
-        elif str(detailData['layoutType']) == "Anchor":
-            self.showBoxLayoutDetails(detailData)
-        elif str(detailData['layoutType']) == "Float":
-            self.showBoxLayoutDetails(detailData)
+        #if str(detailData['layoutType']) == "Box" or str(detailData['layoutType']) == "Select layout type":
+        self.showBoxLayoutDetails(detailData)
+        #elif str(detailData['layoutType']) == "Grid":
+        #    self.showBoxLayoutDetails(detailData)
+        #elif str(detailData['layoutType']) == "Anchor":
+        #    self.showBoxLayoutDetails(detailData)
+        #elif str(detailData['layoutType']) == "Float":
+        #    self.showBoxLayoutDetails(detailData)
 
     # Save details fast solution for now BUTTON
     def saveDetails(self, elementID, elementType,  instance):
@@ -1638,6 +1651,7 @@ class EditorMain(BoxLayout):
             "pos_y": self.detailsCommonPositionY.text,
             "pos_hint_x": self.detailsCommonPositionXHint.text,
             "pos_hint_y": self.detailsCommonPositionYHint.text,
+            "swipe_threshold": self.swipeThresholdPageLayout.text
         }
         # ? maybe
         # Collect data
@@ -1759,7 +1773,7 @@ class EditorMain(BoxLayout):
             print('The dimensions checkbox', value1, 'is inactive')
 
     def closeWithNoSaveDetails(self, instance):
-        self.currentProjectMenuDropdown.open(self)
+        # self.currentProjectMenuDropdown.open(self)
         if self.editorElementDetails is None:
             return 0
         self.remove_widget(self.editorElementDetails)
@@ -2092,7 +2106,30 @@ class EditorMain(BoxLayout):
                     self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Page":
+                    # PageLayout does not currently honor the 
+                    # size_hint, size_hint_min, size_hint_max, or pos_hint properties.
+                    # page: 3
+                    # border: 120
+                    # swipe_threshold: .4
                     Attacher = PageLayout
+                    myAttacher = Attacher(
+                        page=1,
+                        border=120,
+                        swipe_threshold=item['swipe_threshold']
+                        )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+                    self._readElementar(myAttacher, item['elements'])
+
                 elif item['layoutType'] == "Relative":
                     Attacher = Relative
                 elif item['layoutType'] == "Scatter":
@@ -2101,7 +2138,6 @@ class EditorMain(BoxLayout):
                     Attacher = Stack
 
                 # print('its lauout ,read sub items ->>>')
-                print('its lauout ,read sub items ->>>', item["layoutType"])
 
     def updateScene(self):
 

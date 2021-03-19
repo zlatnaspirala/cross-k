@@ -131,7 +131,7 @@ class EditorOperationButton():
         content.add_widget(self.buttonHintY)
 
         self.attachEventCurrentElement = Label(
-                text="Event script (recommended edit from details box)",
+                text="print('recommended edit from details box')",
                 size_hint=(1,None),
                 height=30
             )
@@ -172,7 +172,7 @@ class EditorOperationButton():
             on_press=lambda a:self.closePopup(self))
         content.add_widget(cancelBtn)
 
-    def closePopup(self):
+    def closePopup(self, instance):
         self.popup.dismiss()
 
     def __add_elementar(self, localStagedElements, calculatedLabelData):

@@ -22,11 +22,14 @@ class MyApp(App):
     def aboutCrossK(self, instance):
         print("-------------------------------------------------")
         print("-CrossK engine 0.1.0                           .-")
+        print(" Beta                                          .-")
+        print(" - Support UI context [add/edit gui]           .-")
+        print("  - Button, Layout, Label                      .-")
+        print(" - Bind Script [extend kivy2/python3.9]        .-")
         print("-------------------------------------------------")
 
     def build(self):
-        self.title = 'CrossK game engine beta 0.1.0'
-
+        self.title = 'CrossK app/game engine'
         return EditorMain()
 
 if __name__ == '__main__':

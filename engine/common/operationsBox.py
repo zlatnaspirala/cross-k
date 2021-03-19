@@ -266,7 +266,8 @@ class EditorOperationBox():
             "size_hint_y": str(self.buttonHintY.text),
             "dimensionRole": dimensionRole,
             "anchor_x": localAnchor_x,
-            "anchor_y": localAnchor_y
+            "anchor_y": localAnchor_y,
+            "swipe_threshold": 0.4
         } 
 
         # print('what is the type of layout', self.selectBtn.text)
@@ -277,19 +278,23 @@ class EditorOperationBox():
             localStagedElements = self.store.get('renderComponentArray')['elements']
             #######################
             # First just root
-            isFounded = False
-            for index, item in enumerate(localStagedElements):
-                if item['id'] == self.currentLayoutId:
-                    localStagedElements[index]['elements'].append(calculatedButtonData)
-                    isFounded = True
-                    break
-            if isFounded == False:
+
+            if self.currentLayoutId == None:
+                localStagedElements.append(calculatedButtonData)
+            else:
+                isFounded = False
                 for index, item in enumerate(localStagedElements):
-                    if item['type'] == 'LAYOUT':
-                        for sindex, sitem in enumerate(item['elements']):
-                            if sitem['id'] == self.currentLayoutId:
-                                localStagedElements[index]['elements'][sindex]['elements'].append(calculatedButtonData)
-                                break
+                    if item['id'] == self.currentLayoutId:
+                        localStagedElements[index]['elements'].append(calculatedButtonData)
+                        isFounded = True
+                        break
+                if isFounded == False:
+                    for index, item in enumerate(localStagedElements):
+                        if item['type'] == 'LAYOUT':
+                            for sindex, sitem in enumerate(item['elements']):
+                                if sitem['id'] == self.currentLayoutId:
+                                    localStagedElements[index]['elements'][sindex]['elements'].append(calculatedButtonData)
+                                    break
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
