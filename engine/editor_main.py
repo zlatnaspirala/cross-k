@@ -1,3 +1,21 @@
+
+#########################################################
+# CrossK Editor                                         #
+# Version: 0.2.0 Beta/WIP                               #
+# Under GPL V3  - Nikola Lukic @zlatnaspirala           #
+#########################################################
+
+#########################################################
+# Python core                                           #
+#########################################################
+from builtins import chr
+import os
+import threading
+import uuid
+
+#########################################################
+# Kivy dependency                                       #
+#########################################################
 import kivy
 from kivy.config import Config
 
@@ -26,6 +44,10 @@ from kivy.uix.dropdown import DropDown
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
 from kivy.graphics import Color, Rectangle
+
+#########################################################
+# CrossK Editor dependency                              #
+#########################################################
 from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUICOntainer import SceneGUIContainer
 from engine.editor.scripter import EventsEngineLayout
@@ -35,27 +57,19 @@ from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
 from engine.common.operationsButton import EditorOperationButton
 from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
+from engine.common.operationsPicture import EditorOperationPicture
 from engine.common.enginePackage import PackagePopup
-# from engine.editor.events import EngineLayoutEvents
-from builtins import chr
 
-# from datetime import datetime
-
-# Only Editor reference
-import os
-import threading
-import uuid
+#########################################################
+# CrossK App level dependency                           #
+#########################################################
+from engine.common.crossk.imageClickable import PictureClickable
 
 print("Current platform :", kivy.utils.platform)
-print("Editor Engine Running")
+print("Editor Engine Running rigth now.")
 
 if (kivy.utils.platform == 'win'):
     from win32api import GetSystemMetrics
-
-# Selected source
-#from win32api import GetSystemMetrics
-#print("Width =", GetSystemMetrics(0))
-#print("Height =", GetSystemMetrics(1))
 
 # Storage/Files operations
 # from jnius import autoclass  # SDcard Android
@@ -196,7 +210,13 @@ class EditorMain(BoxLayout):
             )
             return 0
 
-        print("NEW PROJECT PROCEDURE")
+        CURRENT_ASSET_PATH = os.path.abspath(
+          os.path.join(os.path.dirname(__file__), '../projects/' + self.projectName.text + "/data")
+        )
+        if not os.path.exists(CURRENT_ASSET_PATH):
+            print('Asset data folder created.')
+            os.mkdir(CURRENT_ASSET_PATH)
+
 
         ###############################################################
         # App root layout instance
@@ -237,6 +257,7 @@ class EditorMain(BoxLayout):
         self.store.put('projectInfo', name=self.projectName.text, version='beta')
         self.store.put('defaultLayout', layoutType='boxLayout', orientation='horizontal')
         self.store.put('renderComponentArray', elements=[])
+        self.store.put('assetsComponentArray', elements=[])
 
         # Sync call SceneGUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
@@ -422,9 +443,17 @@ class EditorMain(BoxLayout):
                       background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewLabelGUI)
+        toolsAddPicture = Button(text='Add Picture',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(None, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                      on_press=self.addNewPictureGUI)
+
         self.currentProjectMenuDropdown.add_widget(toolsAddBox)
         self.currentProjectMenuDropdown.add_widget(toolsAddBtn)
         self.currentProjectMenuDropdown.add_widget(toolsAddText)
+        self.currentProjectMenuDropdown.add_widget(toolsAddPicture)
 
         self.editorMenuLayout.add_widget(self.currentProjectMenuDropdown)
 
@@ -526,6 +555,14 @@ class EditorMain(BoxLayout):
             engineRoot=self
         )
 
+    def addNewPictureGUI(self, instance):
+        print('PICTURE.....................................')
+        operationAddTest = EditorOperationPicture(
+            store=self.store,
+            currentLayout='SCENE_ROOT',
+            engineRoot=self
+        )
+
     # Button Label block
     def showCommonDetails(self, detailData, instance):
         print("DETAILS.................................... ", detailData)
@@ -584,7 +621,7 @@ class EditorMain(BoxLayout):
         # text
         self.editorElementDetails.add_widget(
             Button(
-                text= currentType + " Text",
+                text= "[Over picture] Text",
                 size_hint=(1,None),
                 color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
                 background_normal= '',
@@ -742,6 +779,129 @@ class EditorMain(BoxLayout):
             self.showButtonDetails(detailData)
         elif  str(detailData['type']) == "LABEL":
             self.showLabelDetails(detailData)
+        elif  str(detailData['type']) == "PICTURE_CLICKABLE":
+            self.showPictureDetails(detailData)
+
+    def showPictureDetails(self, detailData):
+
+        # FontSize
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Image",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
+
+        self.detailsPictureImage = TextInput(
+            text=detailData['image'],
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.detailsPictureImage)
+
+        
+        # FontSize
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Over Text Font size ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
+
+        self.buttonDetailsFontSize = TextInput(
+            text=detailData['fontSize'],
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.buttonDetailsFontSize)
+
+        localScripterGUIBox = BoxLayout()
+        localScripterGUIBox.add_widget(Button(
+                text="Simulate event",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                on_press=partial(self.engineLayout.attachEvent, detailData['attacher'])
+            ))
+
+        localScripterGUIBox.add_widget(Button(
+                text="Open Scripter Editor",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                on_press=partial(self.showScripter, detailData)
+            ))
+
+        self.editorElementDetails.add_widget(localScripterGUIBox)
+
+        self.attachEventCurrentElement = TextInput(
+                text=str(detailData['attacher']),
+                size_hint=(1,None),
+                height=30,
+                # color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                # background_normal= '',
+                # background_color=(self.engineConfig.getThemeCustomColor('warn')),
+              )
+        self.editorElementDetails.add_widget(self.attachEventCurrentElement)
+
+        self.editorElementDetails.add_widget(
+            Label(
+                text="Delete picture '" + detailData['name'] + "' ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+            ))
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Delete picture",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
+            )
+
+        self.editorElementDetails.add_widget(
+            Button(
+                border=(3,3,3,3),
+                markup=True,
+                text="[b]Save changes[/b]",
+                font_size=18,
+                size_hint=(1,None),
+                height=100,
+                color=self.engineConfig.getThemeTextColor(),
+                # color=(1,1,1,0.1),
+                # background_normal='engine/assets/nidzaBorder002.png',
+                # background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                # background_color=(1,1,1,0.8),
+                on_release=partial(self.savePictureDetails, str(detailData['id']), str(detailData['type']) ))
+            )
+
+        self.editorElementDetails.add_widget(
+            Button(
+                border=(10,10,10,10),
+                markup=True,
+                font_size=18,
+                text="[b]Cancel[/b]",
+                size_hint=(1,None),
+                height=100,
+                #background_normal='engine/assets/nidzaBorder001-250x250_yellow_black.png',
+                #background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                #background_color=(0.1,0.1,0,0.5),
+                on_release=self.closeWithNoSaveDetails
+            ))
+
 
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
@@ -1428,7 +1588,7 @@ class EditorMain(BoxLayout):
         #    self.showBoxLayoutDetails(detailData)
 
     # Save details fast solution for now BUTTON
-    def saveDetails(self, elementID, elementType,  instance):
+    def savePictureDetails(self, elementID, elementType,  instance):
         print("Save detail for ->" , elementID)
         # predefinition
         dimensionRole = "pixel"
@@ -1463,6 +1623,7 @@ class EditorMain(BoxLayout):
             "id": elementID,
             "name": self.commonDetailsNameText.text, # tag
             "type": elementType,
+            "image": self.detailsPictureImage.text,
             "text": self.detailsCommonText.text,
             "fontSize": self.buttonDetailsFontSize.text,
             "color": self.newDetailsColor,
@@ -2147,6 +2308,91 @@ class EditorMain(BoxLayout):
                     Attacher = Stack
 
                 # print('its lauout ,read sub items ->>>')
+
+            if item != None and item['type'] == 'PICTURE_CLICKABLE':
+                local_size_hintX = None
+                local_size_hintY= None
+
+                constructedApplicationButton = None
+
+                ##"pos_x": "0",
+                #"pos_y": "0",
+                #"pos_hint_x": "0",
+                #"pos_hint_y": "0"
+
+                if item['dimensionRole'] == "pixel":
+                    local_size_hintX = None
+                    local_size_hintY= None
+                    testLocalPosHint = (float(item['pos_hint_x']), float(item['pos_hint_y']))
+                    print(testLocalPosHint)
+                    constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        # pos_hint=testLocalPosHint, # maybe disable
+                        font_size=item['fontSize'],
+                        pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= item['image'],
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'],
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'] ) ) 
+
+                elif item['dimensionRole'] == "hint":
+
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
+                        text=item['text'],
+                        font_size=item['fontSize'],
+                        color=item['color'],
+                        background_normal= item['image'],
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'])
+                    ) 
+
+                elif item['dimensionRole'] == "combine":
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    constructedApplicationButton = Button(
+                        #pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint_x=float(item['pos_hint_x']),
+                        #pos_hint_y=float(item['pos_hint_y']),
+                        #font_size=item['fontSize'],
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= item['image'],
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'],
+                        # on_press=partial(self.engineLayout.attachEvent, item['attacher'])
+                    )
+
+                currentCointainer.add_widget(constructedApplicationButton)
 
     def updateScene(self):
 

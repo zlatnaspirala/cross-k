@@ -32,7 +32,7 @@ class SceneGUIContainer(ScrollView):
                     halign="left", valign="middle",
                     padding_x= self.deepTest * 10,
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]Button[/u]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
@@ -49,7 +49,7 @@ class SceneGUIContainer(ScrollView):
                     halign="left", valign="middle",
                     padding_x= self.deepTest * 10,
                     font_size=15,
-                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i]',
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]Label[/u]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineRoot.engineConfig.getThemeCustomColor('sceneGUIbgLabel')),
@@ -86,6 +86,24 @@ class SceneGUIContainer(ScrollView):
                 if len(item['elements']) > 0:
                     self.deepTest=self.deepTest+1
                     self._update(  item['elements'] , self.localGrid, item['name'])
+
+            if item['type'] == 'PICTURE_CLICKABLE':
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    padding_x= self.deepTest * 10,
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]Picture[/u]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= item['image'],
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                )
+                container.add_widget(test)
+                test.bind(size=test.setter('text_size'))
+
 
             if (_index==len(loadElements)-1):
                 self.deepTest=0
