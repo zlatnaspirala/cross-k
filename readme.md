@@ -168,13 +168,13 @@ from MS Visual Code Editor.
 </pre>
 
 
-# [TODO-LIST]
+# [STATUS-LIST-TODO-LIST]
 
 <pre>
 
 ACTUAL VERSION [no release]
 
-BETA VERSION [0.1.0] STATUS
+BETA VERSION [0.2.0] STATUS
 
 [EDITOR]
 
@@ -193,14 +193,19 @@ BETA VERSION [0.1.0] STATUS
  - Add Element type:
        - Button element                         [DONE]
        - Label element                          [DONE]
-       - Image element                          [0.1.1]
-       - CheckBox element                       [0.1.2]
-       - ....
+       - CheckBox element                       [NEXT]
+       - Picture Clickable                        [DONE]
 
-       - Layouts (dinamic with props) element   [DONE][must be upgraded]
- - Layouts - Handle sub components              [DONE][must be upgraded]
- - Layouts ( Details commands (ADD_BTN) )       [DONE][must be upgraded]
+       - Layouts (dinamic with props) element   [DONE]
+ - Layouts - Handle sub components              [DONE]
+ - Layouts ( Details commands (ADD_BTN) )       [DONE]
  - Basic script bind attacher for live (app) buttons. [DONE]
+
+[ASSETS EDITOR]
+
+ - Operation (add imageResource)                     [WIP]
+ - Operation ()                                      [WIP]
+
 
 [PACKAGE-SYSTEM]
  - Package for windows                             [DONE]
