@@ -52,9 +52,10 @@ from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUIContainer import SceneGUIContainer
 from engine.editor.resourcesGUIContainer import ResourcesGUIContainer
 from engine.editor.scripter import EventsEngineLayout
+from engine.common.enginePackageAssetsEditor import AssetsEditorPopup
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
-from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
+from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operationsButton import EditorOperationButton
 from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
@@ -357,9 +358,13 @@ class EditorMain(BoxLayout):
     def loadNewProjectGUICancel(self, instance):
         self.remove_widget(self.createLoadProjectLayoutEditor)
 
+    def showAssetsEditor(self, instance):
+        local = AssetsEditorPopup(engineConfig=self.engineConfig)
+        print("Assets Editor for engine started.")
+
     def packageWinApp(self, instance):
-        test = PackagePopup(engineConfig=self.engineConfig)
-        print("Package application for windows started")
+        local = PackagePopup(engineConfig=self.engineConfig)
+        print("Package application for engine started.")
 
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
@@ -414,7 +419,10 @@ class EditorMain(BoxLayout):
 
         # predefined var for Details
         self.editorElementDetails = None
-        
+
+        self.assetsDropdown = DropDown()
+        self.assetsDropdown.dismiss()
+
         self.packageDropdown = DropDown()
         self.packageDropdown.dismiss()
 
@@ -433,6 +441,25 @@ class EditorMain(BoxLayout):
         self.packageDropdown.add_widget(packWindows)
         self.packageDropdown.add_widget(packLinux)
         self.editorMenuLayout.add_widget(self.packageDropdown)
+
+        # Assets
+        assetEditorTool = Button(text='Assets Editor',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(1, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                      on_press=self.showAssetsEditor)
+        sep = Button(text='--------------------',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(1, None),  height=30, width=300,
+                      background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                      #on_press=self.packageWinApp
+                      )
+        self.assetsDropdown.add_widget(assetEditorTool)
+        self.assetsDropdown.add_widget(sep)
+        self.editorMenuLayout.add_widget(self.assetsDropdown)
+
 
         #
         self.currentProjectMenuDropdown = DropDown()
@@ -515,6 +542,15 @@ class EditorMain(BoxLayout):
                      )
         MakePackageBtn.bind(on_release=self.packageDropdown.open)
         self.editorMenuLayout.add_widget(MakePackageBtn)
+
+        AssetsBtn = Button(text='Project Assets',
+                     color=(self.engineConfig.getThemeTextColor()),
+                     size_hint=(None, None), height=30, width=300,
+                     background_normal= '',
+                     background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                     )
+        AssetsBtn.bind(on_release=self.assetsDropdown.open)
+        self.editorMenuLayout.add_widget(AssetsBtn)
 
         editorTools = Button(
                              markup=True, text='[b]Tools[/b]',
@@ -1000,7 +1036,7 @@ class EditorMain(BoxLayout):
                 # background_down='engine/assets/nidzaBorder001-250x250_yellow_black_Over.png',
                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                 # background_color=(1,1,1,0.8),
-                on_release=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+                on_release=partial(self.savePictureDetails, str(detailData['id']), str(detailData['type']) ))
             )
 
         self.editorElementDetails.add_widget(

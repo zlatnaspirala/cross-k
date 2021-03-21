@@ -40,6 +40,7 @@ class EditorOperationPicture():
                 height=30)
         content.add_widget(self.pictureNameText)
 
+
         if platform == 'win':
             user_path = dirname(expanduser('~')) + '\\' + 'Documents'
         else:
@@ -48,7 +49,11 @@ class EditorOperationPicture():
               path=self.engineRoot.engineConfig.currentProjectName + '/data/',
               size_hint=(1,3)
            )
+
+        content.add_widget(Label(text='Select Image assets', size_hint=(1,None),
+                height=30))
         content.add_widget(browser)
+
         browser.bind(
                     on_success=self._fbrowser_success,
                     on_canceled=self._fbrowser_canceled)

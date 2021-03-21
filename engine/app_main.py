@@ -41,7 +41,7 @@ from engine.editor.sceneGUIContainer import SceneGUIContainer
 from engine.editor.scripter import EventsEngineLayout
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
-from engine.common.commons import getAboutGUI, getMessageBoxYesNo, deepSearch
+from engine.common.commons import getAboutGUI, getMessageBoxYesNo
 from engine.common.operationsButton import EditorOperationButton
 from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
