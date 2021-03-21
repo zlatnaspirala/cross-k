@@ -49,7 +49,8 @@ from kivy.graphics import Color, Rectangle
 # CrossK Editor dependency                              #
 #########################################################
 from engine.editor.layout import EngineLayout
-from engine.editor.sceneGUICOntainer import SceneGUIContainer
+from engine.editor.sceneGUIContainer import SceneGUIContainer
+from engine.editor.resourcesGUIContainer import ResourcesGUIContainer
 from engine.editor.scripter import EventsEngineLayout
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
@@ -246,9 +247,10 @@ class EditorMain(BoxLayout):
         self.remove_widget(self.createNewProjectLayoutEditor)
         self.add_widget(self.engineLayout)
 
-        # Loading RENDER ELEMETS
-
+        # Creating
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
+
+        self.assetsStore = JsonStore(self.engineLayout.currentProjectPath + '/data/' + self.projectName.text + '.json')
 
         print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
         # error
@@ -257,7 +259,7 @@ class EditorMain(BoxLayout):
         self.store.put('projectInfo', name=self.projectName.text, version='beta')
         self.store.put('defaultLayout', layoutType='boxLayout', orientation='horizontal')
         self.store.put('renderComponentArray', elements=[])
-        self.store.put('assetsComponentArray', elements=[])
+        self.assetsStore.put('assetsComponentArray', elements=[])
 
         # Sync call SceneGUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
@@ -269,6 +271,17 @@ class EditorMain(BoxLayout):
         )
         # orientation="vertical"
         self.editorMenuLayout.add_widget(self.sceneGUIContainer)
+
+        # Sync call GUIContainer constructor
+        # pass store path like arg to get clear updated data intro sceneGUIContainer...
+        self.resourceGUIContainer = ResourcesGUIContainer(
+            storePath=self.fullProjectStorePath,
+            orientation='vertical',
+            engineRoot=self,
+            size_hint=(1, 1),
+        )
+        # orientation="vertical"
+        self.editorMenuLayout.add_widget(self.resourceGUIContainer)
 
         # or guess the key/entry for a part of the key
         #for item in store.find(name='Gabriel'):

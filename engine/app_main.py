@@ -4,6 +4,11 @@
 # 0.1.0 Beta
 #################################################
 
+from builtins import chr
+import os
+import threading
+import uuid
+
 import kivy
 from kivy.config import Config
 
@@ -32,7 +37,7 @@ from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
 from kivy.graphics import Color, Rectangle
 from engine.editor.layout import EngineLayout
-from engine.editor.sceneGUICOntainer import SceneGUIContainer
+from engine.editor.sceneGUIContainer import SceneGUIContainer
 from engine.editor.scripter import EventsEngineLayout
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
@@ -41,15 +46,6 @@ from engine.common.operationsButton import EditorOperationButton
 from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
 from engine.common.enginePackage import PackagePopup
-# from engine.editor.events import EngineLayoutEvents
-from builtins import chr
-
-# from datetime import datetime
-
-# Only Editor reference
-import os
-import threading
-import uuid
 
 print("Current platform :", kivy.utils.platform)
 print("Application Part Running")
@@ -72,6 +68,7 @@ class EditorMain(BoxLayout):
                 "null"
             )
             return 0
+            
 
         # print("LOAD PROJECT PROCEDURE")
         ###############################################################

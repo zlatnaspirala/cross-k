@@ -1,5 +1,7 @@
+
 import re
 import uuid
+from os.path import join, dirname, expanduser
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -9,6 +11,8 @@ from kivy.uix.colorpicker import ColorPicker
 from kivy.uix.checkbox import CheckBox
 from engine.common.modifycation import AlignedTextInput
 from kivy.uix.textinput import TextInput
+from kivy.uix.filechooser import FileChooserListView
+from kivy.utils import platform
 
 class EditorOperationPicture():
 
@@ -27,7 +31,7 @@ class EditorOperationPicture():
         print("Access store -> ", self.store)
 
         # Prepare content
-        content = GridLayout( cols=2, padding=[150,0,150,0])
+        content = GridLayout( cols=2, padding=[100,0,100,0])
         clrPickerTextColor = ColorPicker(size_hint=(1, 3))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 3))
         content.add_widget(Label(text='Picture Name(Tag)', size_hint=(1,None),
@@ -35,6 +39,19 @@ class EditorOperationPicture():
         self.pictureNameText = TextInput(text='MyPicture', halign="center", size_hint=(1,None),
                 height=30)
         content.add_widget(self.pictureNameText)
+
+        if platform == 'win':
+            user_path = dirname(expanduser('~')) + '\\' + 'Documents'
+        else:
+            user_path = expanduser('~') + '/' + 'Documents'
+        browser = FileChooserListView(# select_string='Select', dirselect: True
+              path=self.engineRoot.engineConfig.currentProjectName + '/data/',
+              size_hint=(1,3)
+           )
+        content.add_widget(browser)
+        browser.bind(
+                    on_success=self._fbrowser_success,
+                    on_canceled=self._fbrowser_canceled)
 
         content.add_widget(Label(text='[Over Picture] Text: empty default', size_hint=(1,None),
                 height=30))
@@ -170,6 +187,12 @@ class EditorOperationPicture():
             color=self.engineRoot.engineConfig.getThemeTextColor(),
             on_press=lambda a:self.closePopup(self))
         content.add_widget(cancelBtn)
+
+    def _fbrowser_canceled(self, instance):
+        print ('cancelled, Close self.')
+
+    def _fbrowser_success(self, instance):
+        print (instance.selection)
 
     def closePopup(self, instance):
         self.popup.dismiss()
