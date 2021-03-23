@@ -75,8 +75,7 @@ if (kivy.utils.platform == 'win'):
 
 # Storage/Files operations
 # from jnius import autoclass  # SDcard Android
-from shutil import copyfile
-# copyfile(src, dst)
+
 
 # Editor main is only editor not inpact projects files.
 class EditorMain(BoxLayout):

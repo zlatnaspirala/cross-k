@@ -14,7 +14,7 @@ from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
 import os
 
-class Picture():
+class PictureInternal():
 
     def __init__(self, **kwargs):
         # get any files into images directory
@@ -31,6 +31,19 @@ class Picture():
 
     def on_pause(self):
         return True
+
+class PictureAPath():
+
+    def __init__(self, **kwargs):
+        # get any files into images directory
+        self.injectWidget = kwargs.get("injectWidget")
+        self.accessAssets = kwargs.get("accessAssets")
+        #curdir = dirname(__file__)
+        # backward 
+        # path = os.getcwd()
+        # print(os.path.abspath(os.path.join(path, os.pardir)))
+        picture1 = AsyncImage(source=self.accessAssets, size_hint=(1, 1))
+        self.injectWidget.add_widget(picture1)
 
 def crossKValidateNumbers(txt):
     return re.findall('[^0-9]', txt)
@@ -50,7 +63,7 @@ def getAboutGUI(instance):
             font_size=25,
             size_hint=(1,0.1)
         ))
-    Picture(injectWidget=box, accessAssets="logo")
+    PictureInternal(injectWidget=box, accessAssets="logo")
     box.add_widget(Label(markup=True,
         text="""Based on kivy 2.0 python framework. GPL-3.0 License with avavailable source code.
         CrossK is a small but conspiratorial app engine based on kivy opengles2.0 in background.

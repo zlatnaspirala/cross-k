@@ -4,7 +4,7 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.boxlayout import BoxLayout
-from engine.common.commons import Picture
+from engine.common.commons import PictureInternal
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 import os
@@ -22,7 +22,7 @@ class PackagePopup():
         box = BoxLayout(orientation="vertical")
 
         self.infoBtn = Button(text='Cancel')
-        Picture(injectWidget=box, accessAssets="logo")
+        PictureInternal(injectWidget=box, accessAssets="logo")
         box.add_widget(Label(text='Make windows app.exe final application package.'))
 
         _local1 = '[b]Relative path:[b] ' + self.engineConfig.currentProjectName
