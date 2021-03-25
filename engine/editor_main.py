@@ -52,7 +52,8 @@ from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUIContainer import SceneGUIContainer
 from engine.editor.resourcesGUIContainer import ResourcesGUIContainer
 from engine.editor.scripter import EventsEngineLayout
-from engine.common.enginePackageAssetsEditor import AssetsEditorPopup
+from engine.common.assetsEditorOperation import AssetsEditorPopupAdd
+from engine.common.assetsEditor import AssetsEditorPopup
 from engine.config import EngineConfig
 from engine.common.modifycation import AlignedTextInput
 from engine.common.commons import getAboutGUI, getMessageBoxYesNo
@@ -140,6 +141,17 @@ class EditorMain(BoxLayout):
             )
             return 0
 
+        CURRENT_ASSET_PATH = os.path.abspath(
+          os.path.join(os.path.dirname(__file__), '../projects/' + self.projectName.text + "/data/")
+        )
+        if not os.path.exists(CURRENT_ASSET_PATH):
+            getMessageBoxYesNo(
+                "Not exist project with name `" + self.projectName.text + "`. Please look at /projects/ root folder. Subfolder name is project name.",
+                "OK",
+                "null"
+            )
+            return 0
+
         # print("LOAD PROJECT PROCEDURE")
         ###############################################################
         # App root layout instance
@@ -150,6 +162,7 @@ class EditorMain(BoxLayout):
         # ProjectName and ProjectPath root , also setup config.
         self.engineConfig.currentProjectName = self.projectName.text
         self.engineConfig.currentProjectPath = CURRENT_PATH
+        self.engineConfig.currentProjectAssetPath = CURRENT_ASSET_PATH
         self.engineLayout.currentProjectPath=self.engineConfig.currentProjectPath
         self.engineLayout.currentProjectName=self.engineConfig.currentProjectName
 
@@ -184,6 +197,17 @@ class EditorMain(BoxLayout):
         )
         # orientation="vertical"
         self.editorMenuLayout.add_widget(self.sceneGUIContainer)
+
+        # Sync call GUIContainer constructor
+        # pass store path like arg to get clear updated data intro ResourcesGUIContainer...
+        self.resourceGUIContainer = ResourcesGUIContainer(
+            assetsPath=self.engineConfig.currentProjectAssetPath,
+            orientation='vertical',
+            engineRoot=self,
+            size_hint=(1, 1),
+        )
+        # orientation="vertical"
+        self.editorMenuLayout.add_widget(self.resourceGUIContainer)
 
         # print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
         # error
@@ -228,11 +252,13 @@ class EditorMain(BoxLayout):
         # ProjectName and ProjectPath root , also setup config.
         self.engineConfig.currentProjectName = self.projectName.text
         self.engineConfig.currentProjectPath = CURRENT_PATH
+        self.engineConfig.currentProjectAssetPath = CURRENT_ASSET_PATH
         self.engineLayout.currentProjectPath=self.engineConfig.currentProjectPath
         self.engineLayout.currentProjectName=self.engineConfig.currentProjectName
 
         # help
         self.fullProjectStorePath = self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json'
+
         print("Project name:", self.engineConfig.currentProjectName )
         print("Project root:", self.engineConfig.currentProjectPath )
 
@@ -250,7 +276,7 @@ class EditorMain(BoxLayout):
         # Creating
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
 
-        self.assetsStore = JsonStore(self.engineLayout.currentProjectPath + '/data/' + self.projectName.text + '.json')
+        self.assetsStore = JsonStore(self.engineLayout.currentProjectPath + '/data/assets.json')
 
         print(" >>self.engineLayout.currentProjectName>> ", self.engineLayout.currentProjectPath)
         # error
@@ -275,7 +301,7 @@ class EditorMain(BoxLayout):
         # Sync call GUIContainer constructor
         # pass store path like arg to get clear updated data intro sceneGUIContainer...
         self.resourceGUIContainer = ResourcesGUIContainer(
-            storePath=self.fullProjectStorePath,
+            assetsPath=self.engineConfig.currentProjectAssetPath,
             orientation='vertical',
             engineRoot=self,
             size_hint=(1, 1),
@@ -358,7 +384,17 @@ class EditorMain(BoxLayout):
         self.remove_widget(self.createLoadProjectLayoutEditor)
 
     def showAssetsEditor(self, instance):
-        local = AssetsEditorPopup(engineConfig=self.engineConfig)
+        local = AssetsEditorPopupAdd(
+                engineConfig=self.engineConfig,
+                currentAsset=None
+            )
+        print("Assets Editor for engine started.")
+
+    def showCurrentAssetsEditor(self, instance, asset):
+        local = AssetsEditorPopup(
+                engineConfig=self.engineConfig,
+                currentAsset=asset
+            )
         print("Assets Editor for engine started.")
 
     def packageWinApp(self, instance):

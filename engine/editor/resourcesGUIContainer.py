@@ -1,3 +1,5 @@
+
+from functools import partial
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
@@ -34,21 +36,38 @@ class ResourcesGUIContainer(ScrollView):
     def _update(self, loadElements, container, parentName):
 
         for _index, item in enumerate(loadElements):
-            print("update _index ", _index)
+            localBox = BoxLayout(size_hint=(1, None), height=30)
             test = Button(
                 markup=True,
                 halign="left", valign="middle",
-                padding_x= self.deepTest * 10,
+                padding_x= 10,
                 font_size=15,
-                text='[b] RESOURCE NAME' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]Asset[/u]',
+                text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
                 color=self.engineRoot.engineConfig.getThemeTextColor(),
                 background_normal= '',
                 background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
-                on_press=partial(self.engineRoot.showCommonDetails, item),
+                on_press=partial(self.engineRoot.showCurrentAssetsEditor, item),
                 size_hint=(1, None),
                 height=30
             )
-            container.add_widget(test)
+            localBox.add_widget(test)
+
+            deleteAssetBtn = Button(
+                markup=True,
+                halign="left", valign="middle",
+                padding_x= 10,
+                font_size=15,
+                text='[b]Delete[/b]',
+                color=(self.engineRoot.engineConfig.getThemeCustomColor("alert")),
+                background_normal= '',
+                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('background')),
+                on_press=partial(self.engineRoot.showCurrentAssetsEditor, item),
+                size_hint=(0.2, None),
+                height=30
+            )
+            localBox.add_widget(deleteAssetBtn)
+
+            container.add_widget(localBox)
             test.bind(size=test.setter('text_size'))
 
             if (_index==len(loadElements)-1):
@@ -57,7 +76,7 @@ class ResourcesGUIContainer(ScrollView):
     def selfUpdate(self):
 
         self.clear_widgets()
-        self.assetsPath = JsonStore(self.assetsPath)
+        self.assetsStore = JsonStore('projects/' + self.engineRoot.engineConfig.currentProjectName + '/data/assets.json')
 
         # call theme, improve aplha arg
         self.sceneScroller = GridLayout(
@@ -82,6 +101,6 @@ class ResourcesGUIContainer(ScrollView):
                 )
 
         self.add_widget(self.sceneScroller)
-        loadElements = self.assetsPath.get('assetsComponentArray')['elements']
+        loadElements = self.assetsStore.get('assetsComponentArray')['elements']
 
         self._update( loadElements, self.sceneScroller, 'rootScene')

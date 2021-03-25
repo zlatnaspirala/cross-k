@@ -15,13 +15,20 @@ from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image, AsyncImage
 from kivy.graphics import Color, Rectangle
+from kivy.storage.jsonstore import JsonStore
 from engine.common.commons import PictureAPath
 
-class AssetsEditorPopup():
+class AssetsEditorPopupAdd():
 
     def __init__(self, **kwargs):
 
         self.engineConfig = kwargs.get("engineConfig")
+        self.currentAsset = kwargs.get("currentAsset")
+
+        # self.currentAsset is flag for editor Assets Details fomrs
+        # if self.currentAsset == None:  -> it is strick add procedure
+        if self.currentAsset != None:
+            print('current asset need load')
 
         self.isFreeRigthBox = True
 
@@ -119,12 +126,12 @@ class AssetsEditorPopup():
         # self.box.add_widget(self.infoBtn)
 
         _local = 'CrossK ' + self.engineConfig.getVersion() + ' Assets Editor'
-        popup = Popup(title=_local , content=self.box, auto_dismiss=False)
+        self.popup = Popup(title=_local , content=self.box, auto_dismiss=False)
 
-        self.cancelBtn.bind(on_press=popup.dismiss)
+        self.cancelBtn.bind(on_press=self.popup.dismiss)
         self.addImageRes.bind(on_press=lambda a:self.showImageAssetGUI())
 
-        popup.open()
+        self.popup.open()
 
     def showImageAssetGUI(self):
         if self.isFreeRigthBox == True:
@@ -132,35 +139,73 @@ class AssetsEditorPopup():
             self.isFreeRigthBox = False
 
     def resolvePathFolder(self):
-
         ASSETPACK_PATH = os.path.abspath(
           os.path.join(os.path.dirname(__file__), '../../projects/' + self.engineConfig.currentProjectName + "/data/")
         )
         if not os.path.exists(ASSETPACK_PATH):
-            print("MAKE ASSETPACK_PATH")
+            print("MAKE_ASSETPACK_PATH")
             os.mkdir(ASSETPACK_PATH)
         else:
-            print("ASSETPACK_PATH DIR EXIST...")
-        print("Assets pack read meta data.")
+            print('ASSETPACK_EXIST')
 
     def resolveAssetPathFolder(self):
 
         CURRENT_ASSETPACK_PATH = os.path.abspath(
           os.path.join(os.path.dirname(__file__), '../../projects/' + self.engineConfig.currentProjectName + "/data/" + self.assetName.text)
         )
+
+        collectExt = ''
+        print("Create Image Resource ->")
+        local = self.fileBrowser.selection[0][::-1]
+        for item in local:
+            if item == '.':
+                print("Create Image Resource -> Break EXT = ", collectExt)
+                break
+            else:
+                collectExt += item;
+        collectExt = collectExt[::-1]
+        print(collectExt)
+
+
         if not os.path.exists(CURRENT_ASSETPACK_PATH):
             print("MAKE ASSETS PACK DIR")
             os.mkdir(CURRENT_ASSETPACK_PATH)
-            copyfile(self.fileBrowser.selection, CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text))
         else:
-            print("PACK DIR EXIST...")
-        print("Assets pack read meta data.")
+            if self.currentAsset == None:
+                print('current asset need load')
+                print("SOMETHIND WRONG - ASSETS ALREADY EXIST")
+                return None
+
+        print("Assets pack write meta data.")
+
+        copyfile(self.fileBrowser.selection[0], CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text) + '.' + collectExt)
+        self.assetsStore = JsonStore(self.engineConfig.currentProjectAssetPath+ '/assets.json')
+        localElements = self.assetsStore.get('assetsComponentArray')['elements']
+
+        ########################
+        # Must be detail show
+        if self.currentAsset != None:
+            print('# Must be detail show')
+
+        ########################
+        asset = {
+            'name': self.assetName.text,
+            'type': 'ImageResource',
+            'ext': collectExt,
+            'source': CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text) + '.' + collectExt,
+            'path': 'projects/' + self.engineConfig.currentProjectName + "/data/"+ str(self.assetName.text) + "/" + str(self.assetName.text) + "." + collectExt,
+            'version': self.engineConfig.getVersion()
+        }
+        localElements.append(asset)
+        self.assetsStore.put('assetsComponentArray', elements=localElements)
 
     def createImageAssets(self, instance):
         print("Creating first assets ... ")
         # resolvePathFolder
         self.resolvePathFolder()
         self.resolveAssetPathFolder()
+        self.popup.dismiss()
+
 
     def load_from_filechooser(self, instance , selectedData):
         print("Selected data: ", selectedData)
