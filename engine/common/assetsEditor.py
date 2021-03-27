@@ -14,10 +14,12 @@ from kivy.uix.filechooser import FileChooserListView, FileChooserIconView
 from kivy.uix.popup import Popup
 from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image, AsyncImage
+from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from engine.common.commons import PictureAPath
 from engine.common.commons import getMessageBoxYesNo
+from engine.common.fontFactory import FontFactory
 
 class AssetsEditorPopup():
 
@@ -38,6 +40,16 @@ class AssetsEditorPopup():
         self.isFreeRigthBox = True
 
         self.box = BoxLayout(orientation="horizontal")
+
+        #fontFamily = FontFactory(engineConfig=self.engineConfig)
+        # TEST WORK
+        #lbl1 = Label(
+        #    text="BLABLA", 
+        #    #font_context=fontFamily.constructCtxName,
+        #    font_name='spacetime.ttf')
+        #self.box.add_widget(lbl1)
+        #
+
         self.leftBox = BoxLayout(orientation="vertical")
         self.imageResourceGUIBox = BoxLayout(orientation="vertical")
 
@@ -68,18 +80,32 @@ class AssetsEditorPopup():
         self.imageResourceGUIBox.add_widget(self.fileBrowser)
         self.fileBrowser.bind(selection=partial(self.load_from_filechooser))
 
-        self.imageResourceGUIBox.add_widget(Label(text='Application assets full source path:'))
-        self.selectedPathLabel = Label(text='...')
+        self.imageResourceGUIBox.add_widget(Label(text='Application assets full source path:',
+                                                  size_hint=(1, None),  height=40, font_size=15 ))
+        self.selectedPathLabel = Label(text='...', size_hint=(1, None),  height=40, font_size=12, underline=True)
         self.imageResourceGUIBox.add_widget(self.selectedPathLabel)
 
-        self.imageResourceGUIBox.add_widget(Label(text='Application assets relative path:'))
-        self.selectedRelativePathLabel = Label(text='...')
+        self.imageResourceGUIBox.add_widget(Label(text='Application assets relative path:', size_hint=(1, None), height=40))
+        self.selectedRelativePathLabel = Label(text='...', size_hint=(1, None), height=40, font_size=12, underline=True)
         self.imageResourceGUIBox.add_widget(self.selectedRelativePathLabel)
 
-        self.assetName = TextInput( text='MyAssets1',
-                                    size_hint=(1, None),  height=65)
+        self.assetNameGUINAme = Label( text='Name of assets reference (READ ONLY)',
+                                color=(self.engineConfig.getThemeTextColor()),
+                                font_size=15,
+                                size_hint=(1, None),  height=40)
+
+        self.imageResourceGUIBox.add_widget(self.assetNameGUINAme)
+
+        self.assetName = Label( text='MyAssets1',
+                                color=(self.engineConfig.getThemeTextColor()),
+                                font_size=12, # add
+                                underline=True,    # add
+                                size_hint=(1, None),  height=40)
         with self.assetName.canvas.before:
-            Color(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+            Color(self.engineConfig.getThemeCustomColor('warn')[0],
+                  self.engineConfig.getThemeCustomColor('warn')[1],
+                  self.engineConfig.getThemeCustomColor('warn')[2],
+                  self.engineConfig.getThemeCustomColor('warn')[3])
             self.assetName.rect = Rectangle(size=self.assetName.size,
             pos=self.assetName.pos)
             # self.engineConfig.getThemeTextColor()
@@ -92,12 +118,16 @@ class AssetsEditorPopup():
         self.imageResourceGUIBox.add_widget( Button(text='Update selected image asset',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=65,
+                      font_size=15,
+                      bold=True,
                       background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=partial(self.createImageAssets))
             )
 
-        self.leftBox.add_widget(Label(text='CrossK assets editor', size_hint=(1, 0.1) ))
+        self.leftBox.add_widget(Label(text='CrossK assets editor', size_hint=(1, 0.1),
+                        font_size=25,
+                        bold=True, ))
        
         titleText = Label(
                 text='CrossK assets editor',
@@ -125,25 +155,41 @@ class AssetsEditorPopup():
 
         loadAssetElements = self.assetsStore.get('assetsComponentArray')['elements']
 
+        self.sceneScroller = ScrollView(
+            size_hint=(1, None),
+            height=600,
+            # orientation='horizontal'
+            # cols=1,
+            # pos_hint= {'center_x':0.5,'top': 1}
+            )
 
+        alllocalBox = BoxLayout(size_hint=(1, 1), orientation='vertical')
         for _index, item in enumerate(loadAssetElements):
-            localBox = BoxLayout(size_hint=(1, None), height=30)
-            test = Button(
+
+            localBox = BoxLayout(size_hint=(1, 1), orientation='horizontal')
+            currentColor = (self.engineConfig.getThemeBgSceneBtnColor())
+            if item['type'] == 'ImageResource':
+                currentColor = (self.engineConfig.getThemeBgSceneBoxColor())
+
+            localBox.add_widget(Button(
                 markup=True,
                 halign="left", valign="middle",
                 padding_x= 10,
                 font_size=15,
-                text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
+                text='[b]' + item['name'] + '[/b][u][i]' + item['type'] + '[/i][/u]',
                 color=self.engineConfig.getThemeTextColor(),
                 background_normal= '',
-                background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
+                background_color=currentColor,
                 on_press=partial(self.showAssetGUI, item),
                 size_hint=(1, None),
-                height=30
-            )
-            localBox.add_widget(test)
-
-            deleteAssetBtn = Button(
+                height=90
+            ))
+            if item['type'] == 'ImageResource':
+                localBox.add_widget( AsyncImage(source=item['path'], size_hint=(0.4, None) , height=90 ))
+            elif item['type'] == 'FontResource':
+                localBox.add_widget( Label(font_name=item['path'], size_hint=(0.4, None) , height=90, text = 'Font' ))
+            
+            localBox.add_widget(Button(
                 markup=True,
                 halign="left", valign="middle",
                 padding_x= 10,
@@ -153,14 +199,17 @@ class AssetsEditorPopup():
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('background')),
                 on_press=partial(self.showAssetGUI, item),
-                size_hint=(0.2, None),
-                height=30
-            )
-            localBox.add_widget(deleteAssetBtn)
+                size_hint=(1, None),
+                height=90
+            ))
+            print('ADDED ', item)
+            alllocalBox.add_widget(localBox)
 
-        self.leftBox.add_widget(localBox)
+        self.sceneScroller.add_widget(alllocalBox)
 
-        fillSpace = Label(text='', size_hint=(1,1))
+        self.leftBox.add_widget(self.sceneScroller)
+
+        fillSpace = Label(text='where is ', size_hint=(1,0.1))
         with fillSpace.canvas.before:
             Color(self.engineConfig.getThemeTextColorByComp('background')['r'],
                   self.engineConfig.getThemeTextColorByComp('background')['g'],
@@ -181,8 +230,14 @@ class AssetsEditorPopup():
 
         self.previewBox = BoxLayout(size_hint=(1,None), height=250)
         self.previewPicture = AsyncImage(source="", size_hint=(1, 1))
-        self.previewBox.add_widget(Label(text='Preview Box'))
+        self.previewFont = Label(
+                                  size_hint=(1, 1),
+                                  markup=True,
+                                  font_size=50,
+                                  text="Font [b]Bold[/b]!")
+        self.previewBox.add_widget(Label(text='Preview Box', bold= True, font_size=15 ))
         self.previewBox.add_widget(self.previewPicture)
+        self.previewBox.add_widget(self.previewFont)
 
         self.imageResourceGUIBox.add_widget(self.previewBox)
 
@@ -192,23 +247,16 @@ class AssetsEditorPopup():
         # self.box.add_widget(self.infoBtn)
 
         _local = 'CrossK ' + self.engineConfig.getVersion() + ' Assets Editor'
-        popup = Popup(title=_local , content=self.box, auto_dismiss=False)
+        self.popup = Popup(title=_local , content=self.box, auto_dismiss=False)
 
-        self.cancelBtn.bind(on_press=popup.dismiss)
+        self.cancelBtn.bind(on_press=self.popup.dismiss)
 
-        popup.open()
+        self.popup.open()
 
     def showAssetGUI(self, item, instance):
 
-        
-        test1 = os.path.join( '../../', 'projects/' + self.engineConfig.currentProjectName + "/")
-        print("RRRRRRRRRRRRRRRRRR ", test1)
-
-        print("ITEMinstanceIS ", os.path.dirname(__file__))
-
         transformPath = item['path'].replace('/', '\\')
-        self.previewPicture.source=transformPath
-        # det type of assets
+
         if item['type'] == 'ImageResource':
             if self.isFreeRigthBox == True:
                 self.box.add_widget(self.imageResourceGUIBox)
@@ -216,6 +264,20 @@ class AssetsEditorPopup():
             self.assetName.text = item['name']
             self.selectedPathLabel.text = item['source']
             self.selectedRelativePathLabel.text = item['path']
+            self.previewPicture.source=transformPath
+            self.previewFont.size_hint = (0,0)
+            self.previewPicture.size_hint = (1,1)
+        elif item['type'] == 'FontResource':
+            if self.isFreeRigthBox == True:
+                self.box.add_widget(self.imageResourceGUIBox)
+                self.isFreeRigthBox = False
+            self.assetName.text = item['name']
+            self.selectedPathLabel.text = item['source']
+            self.selectedRelativePathLabel.text = item['path']
+            self.previewPicture.size_hint = (0.1,1)
+            self.previewFont.size_hint = (1,1)
+            self.previewFont.font_name=item['path']
+
 
 
     def resolvePathFolder(self):
@@ -283,13 +345,20 @@ class AssetsEditorPopup():
             'version': self.engineConfig.getVersion()
         }
 
-        # localElements.append(asset)
+        localCheckIsExist = False
         for _index, item in enumerate(localElements):
             if item['name'] == asset['name']:
-                print("GOOOOD")
+                localCheckIsExist = True
                 localElements[_index] = asset
+        def catchErr1():
+            print("catchErr1")
 
-        self.assetsStore.put('assetsComponentArray', elements=localElements)
+        if localCheckIsExist == True:
+            self.assetsStore.put('assetsComponentArray', elements=localElements)
+            # resourceGUIContainer 
+            self.popup.dismiss()
+        else:
+            getMessageBoxYesNo(message='Something wrong with updating asset name => ' + asset['name'], msgType='OK', callback=catchErr1)
 
     def createImageAssets(self, instance):
         print("Creating first assets ... ")
@@ -297,22 +366,20 @@ class AssetsEditorPopup():
         self.resolvePathFolder()
         self.resolveAssetPathFolder()
 
-
     def load_from_filechooser(self, instance , selectedData):
         print("Selected data: ", selectedData)
-
-        #self.load(self.fileBrowser.path, self.fileBrowser.selection)
+        # self.load(self.fileBrowser.path, self.fileBrowser.selection)
         # localHandler = self.fileBrowser.selection[0].replace(self.fileBrowser.path, '')
-
-        if str(self.fileBrowser.selection[0]).find('.png') != -1 and 
-           str(self.fileBrowser.selection[0]).find('.jpg') != -1:
-            print "Found!"
+        # Selector
+        if str(self.fileBrowser.selection[0]).find('.png') != -1 or str(self.fileBrowser.selection[0]).find('.jpg') != -1:
+            print("Found!")
         else:
-            print "Not found!"
+            print("Not found!")
+            return None
 
-        self.selectedPathLabel.text = localHandler
+        self.selectedPathLabel.text = self.fileBrowser.selection[0]
         self.previewPicture.source=self.fileBrowser.selection[0]
 
     def setFileBrowserPath(self, instance):
         self.fileBrowser.path = instance.text
-        print( '>>>>instance.text>>>' , instance.text)
+        print( 'Selected:' , instance.text)

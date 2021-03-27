@@ -98,14 +98,16 @@ def getAboutGUI(instance):
     infoBtn.bind(on_press=popup.dismiss)
     popup.open()
 
-def getMessageBoxYesNo(message, msgType, callback):
+def getMessageBoxYesNo(message, msgType, callback=None):
 
     box = BoxLayout(orientation="vertical")
-    yesBtn = Button(text='YES')
-    noBtn = Button(text='NO')
-    box.add_widget(Label(text=message))
-    box.add_widget(Label(text='Maybe you wanna load project'))
-    box.add_widget(Label(text='crossK engine'))
+    yesBtn = Button(text='YES', size_hint=(1,0.15), font_size=18)
+    noBtn = Button(text='NO', size_hint=(1,0.15), font_size=18)
+    box.add_widget(Label(text=message,
+                         color=(1,0.2,0.1,1),
+                         font_size=20,
+                         underline=True,
+                         ))
 
     if (msgType == "OK"):
         yesBtn.text = "OK"

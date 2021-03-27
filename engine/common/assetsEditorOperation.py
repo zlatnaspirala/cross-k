@@ -16,7 +16,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.image import Image, AsyncImage
 from kivy.graphics import Color, Rectangle
 from kivy.storage.jsonstore import JsonStore
-from engine.common.commons import PictureAPath
+from engine.common.commons import PictureAPath, getMessageBoxYesNo
 
 class AssetsEditorPopupAdd():
 
@@ -25,11 +25,7 @@ class AssetsEditorPopupAdd():
         self.engineConfig = kwargs.get("engineConfig")
         self.currentAsset = kwargs.get("currentAsset")
 
-        # self.currentAsset is flag for editor Assets Details fomrs
-        # if self.currentAsset == None:  -> it is strick add procedure
-        if self.currentAsset != None:
-            print('current asset need load')
-
+        self.operationStatus = True
         self.isFreeRigthBox = True
 
         self.box = BoxLayout(orientation="horizontal")
@@ -80,13 +76,15 @@ class AssetsEditorPopupAdd():
 
         self.imageResourceGUIBox.add_widget(self.assetName)
 
-        self.imageResourceGUIBox.add_widget( Button(text='Add selected image',
-                      color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(1, None),  height=65,
-                      background_normal= '',
-                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                      on_press=partial(self.createImageAssets))
-            )
+        self.commandBtn = Button(text='Add selected image',
+                                 color=(self.engineConfig.getThemeTextColor()),
+                                 size_hint=(1, None),  height=65,
+                                 background_normal= '',
+                                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')) )
+                                 #on_press=partial(self.createImageAssets))
+        self.commandBtn.bind(on_press=partial(self.createImageAssets))
+
+        self.imageResourceGUIBox.add_widget(self.commandBtn)
 
         self.leftBox.add_widget(Label(text='Application assets package operation.'))
         self.cancelBtn = Button(text='Cancel',
@@ -130,11 +128,24 @@ class AssetsEditorPopupAdd():
 
         self.cancelBtn.bind(on_press=self.popup.dismiss)
         self.addImageRes.bind(on_press=lambda a:self.showImageAssetGUI())
+        self.addFontRes.bind(on_press=lambda a:self.showFontAssetGUI())
 
         self.popup.open()
 
     def showImageAssetGUI(self):
         if self.isFreeRigthBox == True:
+            self.box.add_widget(self.imageResourceGUIBox)
+            self.isFreeRigthBox = False
+
+    def showFontAssetGUI(self):
+        if self.isFreeRigthBox == True:
+
+            # prepare
+            self.fileBrowser.filters = ['*.ttf']
+            self.commandBtn.text = 'Add Font Family'
+            self.commandBtn.unbind(on_press=partial(self.createImageAssets)),
+            self.commandBtn.bind(on_press=partial(self.createFontAssets))
+
             self.box.add_widget(self.imageResourceGUIBox)
             self.isFreeRigthBox = False
 
@@ -148,7 +159,7 @@ class AssetsEditorPopupAdd():
         else:
             print('ASSETPACK_EXIST')
 
-    def resolveAssetPathFolder(self):
+    def resolveAssetPathFolder(self, typeOfAsset):
 
         CURRENT_ASSETPACK_PATH = os.path.abspath(
           os.path.join(os.path.dirname(__file__), '../../projects/' + self.engineConfig.currentProjectName + "/data/" + self.assetName.text)
@@ -172,10 +183,14 @@ class AssetsEditorPopupAdd():
             os.mkdir(CURRENT_ASSETPACK_PATH)
         else:
             if self.currentAsset == None:
-                print('current asset need load')
                 print("SOMETHIND WRONG - ASSETS ALREADY EXIST")
+                getMessageBoxYesNo(
+                    message="Asset reference path with this name already exist. Please use some different name.",
+                    msgType="OK")
+                    #callback=wtf)
                 return None
 
+        self.operationStatus = False
         print("Assets pack write meta data.")
 
         copyfile(self.fileBrowser.selection[0], CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text) + '.' + collectExt)
@@ -183,28 +198,44 @@ class AssetsEditorPopupAdd():
         localElements = self.assetsStore.get('assetsComponentArray')['elements']
 
         ########################
-        # Must be detail show
-        if self.currentAsset != None:
-            print('# Must be detail show')
-
         ########################
         asset = {
             'name': self.assetName.text,
-            'type': 'ImageResource',
+            'type': typeOfAsset,
             'ext': collectExt,
             'source': CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text) + '.' + collectExt,
             'path': 'projects/' + self.engineConfig.currentProjectName + "/data/"+ str(self.assetName.text) + "/" + str(self.assetName.text) + "." + collectExt,
             'version': self.engineConfig.getVersion()
         }
-        localElements.append(asset)
-        self.assetsStore.put('assetsComponentArray', elements=localElements)
+
+        # Check it if exist
+        localCheckDouble = False
+        for checkItem in localElements:
+            if checkItem['name'] == asset['name']:
+                localCheckDouble = True
+                getMessageBoxYesNo(
+                    message="Asset reference with this name already exist. Please use some different name.",
+                    msgType="OK")
+                    #callback=wtf)
+        if localCheckDouble == False:
+            localElements.append(asset)
+            self.assetsStore.put('assetsComponentArray', elements=localElements)
 
     def createImageAssets(self, instance):
-        print("Creating first assets ... ")
-        # resolvePathFolder
-        self.resolvePathFolder()
-        self.resolveAssetPathFolder()
-        self.popup.dismiss()
+        if self.operationStatus == True:
+            print("Creating first assets ... ")
+            # resolvePathFolder
+            self.resolvePathFolder()
+            self.resolveAssetPathFolder('ImageResource')
+            self.popup.dismiss()
+
+    def createFontAssets(self, instance):
+        if self.operationStatus == True:
+            print("Creating first assets ... ")
+            # resolvePathFolder
+            self.resolvePathFolder()
+            self.resolveAssetPathFolder('FontResource')
+            self.popup.dismiss()
 
 
     def load_from_filechooser(self, instance , selectedData):

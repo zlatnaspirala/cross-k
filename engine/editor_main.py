@@ -990,6 +990,27 @@ class EditorMain(BoxLayout):
     # def showButtonDetails(self, detailData, instance):
     def showButtonDetails(self, detailData):
 
+        self.editorElementDetails.add_widget(
+            Label(
+                text="Button background image:",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+            ))
+
+        if 'image' in detailData:
+            collectImageData = detailData['image']
+        else:
+            collectImageData = ''
+
+        self.detailsPictureImage = TextInput(
+            text=collectImageData,
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.detailsPictureImage)
+
+
         # FontSize
         self.editorElementDetails.add_widget(
             Button(
