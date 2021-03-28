@@ -383,19 +383,21 @@ class EditorMain(BoxLayout):
     def loadNewProjectGUICancel(self, instance):
         self.remove_widget(self.createLoadProjectLayoutEditor)
 
-    def showAssetsEditor(self, instance):
+    def showAssetsEditorAdd(self, instance):
         local = AssetsEditorPopupAdd(
                 engineConfig=self.engineConfig,
+                engineRoot=self,
                 currentAsset=None
             )
         print("Assets Editor for engine started.")
 
-    def showCurrentAssetsEditor(self, instance, asset):
+    def showCurrentAssetsEditor(self, asset, instance):
         local = AssetsEditorPopup(
                 engineConfig=self.engineConfig,
-                currentAsset=asset
+                currentAsset=asset,
+                engineRoot=self
             )
-        print("Assets Editor for engine started.")
+        print("Assets Editor for engine started. asset" , asset , ' instance ', instance)
 
     def packageWinApp(self, instance):
         local = PackagePopup(engineConfig=self.engineConfig)
@@ -478,18 +480,18 @@ class EditorMain(BoxLayout):
         self.editorMenuLayout.add_widget(self.packageDropdown)
 
         # Assets
-        assetEditorTool = Button(text='Assets Editor',
+        assetEditorTool = Button(text='Add Assets',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
                       background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
-                      on_press=self.showAssetsEditor)
-        sep = Button(text='--------------------',
+                      on_press=self.showAssetsEditorAdd)
+        sep = Button(text='Edit assets',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
                       background_normal= '',
-                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
-                      #on_press=self.packageWinApp
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                      on_press=partial(self.showCurrentAssetsEditor, None)
                       )
         self.assetsDropdown.add_widget(assetEditorTool)
         self.assetsDropdown.add_widget(sep)

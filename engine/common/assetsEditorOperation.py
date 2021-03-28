@@ -23,6 +23,7 @@ class AssetsEditorPopupAdd():
     def __init__(self, **kwargs):
 
         self.engineConfig = kwargs.get("engineConfig")
+        self.engineRoot = kwargs.get("engineRoot")
         self.currentAsset = kwargs.get("currentAsset")
 
         self.operationStatus = True
@@ -69,7 +70,6 @@ class AssetsEditorPopupAdd():
             Color(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
             self.assetName.rect = Rectangle(size=self.assetName.size,
             pos=self.assetName.pos)
-            # self.engineConfig.getThemeTextColor()
         def update_rect(instance, value):
             instance.rect.pos = instance.pos
             instance.rect.size = instance.size
@@ -121,7 +121,6 @@ class AssetsEditorPopupAdd():
         self.leftBox.add_widget(self.addFontRes)
 
         self.leftBox.add_widget(self.cancelBtn)
-        # self.box.add_widget(self.infoBtn)
 
         _local = 'CrossK ' + self.engineConfig.getVersion() + ' Assets Editor'
         self.popup = Popup(title=_local , content=self.box, auto_dismiss=False)
@@ -133,13 +132,13 @@ class AssetsEditorPopupAdd():
         self.popup.open()
 
     def showImageAssetGUI(self):
+        # no prepare it si initial
         if self.isFreeRigthBox == True:
             self.box.add_widget(self.imageResourceGUIBox)
             self.isFreeRigthBox = False
 
     def showFontAssetGUI(self):
         if self.isFreeRigthBox == True:
-
             # prepare
             self.fileBrowser.filters = ['*.ttf']
             self.commandBtn.text = 'Add Font Family'
@@ -166,7 +165,6 @@ class AssetsEditorPopupAdd():
         )
 
         collectExt = ''
-        print("Create Image Resource ->")
         local = self.fileBrowser.selection[0][::-1]
         for item in local:
             if item == '.':
@@ -175,11 +173,10 @@ class AssetsEditorPopupAdd():
             else:
                 collectExt += item;
         collectExt = collectExt[::-1]
-        print(collectExt)
-
+        # print(collectExt)
 
         if not os.path.exists(CURRENT_ASSETPACK_PATH):
-            print("MAKE ASSETS PACK DIR")
+            print("MAKE_ASSETS_PACK_DIR")
             os.mkdir(CURRENT_ASSETPACK_PATH)
         else:
             if self.currentAsset == None:
@@ -191,14 +188,11 @@ class AssetsEditorPopupAdd():
                 return None
 
         self.operationStatus = False
-        print("Assets pack write meta data.")
-
+        print("Assets pack write meta data...")
         copyfile(self.fileBrowser.selection[0], CURRENT_ASSETPACK_PATH + '/' + str(self.assetName.text) + '.' + collectExt)
         self.assetsStore = JsonStore(self.engineConfig.currentProjectAssetPath+ '/assets.json')
         localElements = self.assetsStore.get('assetsComponentArray')['elements']
 
-        ########################
-        ########################
         asset = {
             'name': self.assetName.text,
             'type': typeOfAsset,
@@ -220,27 +214,22 @@ class AssetsEditorPopupAdd():
         if localCheckDouble == False:
             localElements.append(asset)
             self.assetsStore.put('assetsComponentArray', elements=localElements)
+            self.engineRoot.resourceGUIContainer.selfUpdate()
 
     def createImageAssets(self, instance):
         if self.operationStatus == True:
-            print("Creating first assets ... ")
-            # resolvePathFolder
             self.resolvePathFolder()
             self.resolveAssetPathFolder('ImageResource')
             self.popup.dismiss()
 
     def createFontAssets(self, instance):
         if self.operationStatus == True:
-            print("Creating first assets ... ")
-            # resolvePathFolder
             self.resolvePathFolder()
             self.resolveAssetPathFolder('FontResource')
             self.popup.dismiss()
 
-
     def load_from_filechooser(self, instance , selectedData):
         print("Selected data: ", selectedData)
-
         #self.load(self.fileBrowser.path, self.fileBrowser.selection)
         localHandler = self.fileBrowser.selection[0].replace(self.fileBrowser.path, '')
 
@@ -249,4 +238,4 @@ class AssetsEditorPopupAdd():
 
     def setFileBrowserPath(self, instance):
         self.fileBrowser.path = instance.text
-        print( '>>>>instance.text>>>' , instance.text)
+        print( 'setFileBrowserPath: ' , instance.text)

@@ -6,15 +6,17 @@ class EngineConfig:
 
   def __init__(self, *args, **kwargs):
 
-    # Engine version 0.1.0 beta
-    self.version = "0.1.0"
+    # Engine version 0.2.0 beta
+    self.version = "0.2.0"
+    self.licence = "GPL v3"
 
     # Windows solution
     self.runInFullScreen = False
 
     self.programmer = {
       "nickname": "Nikola Lukic",
-      "slogan" : "Everything is possible"
+      "slogan" : "Everything is possible",
+      "www": "https://maximumroulette.com"
     }
 
     self.auth = {
