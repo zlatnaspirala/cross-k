@@ -25,7 +25,19 @@ sudo apt-get install -y \
     gstreamer1.0-plugins-good
 
 sudo add-apt-repository ppa:kivy-team/kivy
-
 sudo apt-get update
-
 sudo apt-get install python3-kivy
+
+
+
+apt update
+$ apt install python3 python3-venv python3-pip python3-dev build-essential libgl1-mesa-dev
+works
+python3 -m PyInstaller --onefile --name SOCIAL_NETWORK_TEST --distpath packages/projectTest --workpath .cache/ app.py
+export PATH="/home/nidza/.local/bin/pyinstaller:$PATH"
+
+python3 -m venv my_kivy_project
+$ cd my_kivy_project
+$ source bin/activate
+(my_kivy_project) $ pip install kivy
+
