@@ -47,10 +47,10 @@ from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
 from engine.common.enginePackage import PackagePopup
 
-print("Current platform :", kivy.utils.platform)
+print("Current platform :", platform)
 print("Application Part Running")
 
-if (kivy.utils.platform == 'win'):
+if (platform == 'win'):
     from win32api import GetSystemMetrics
 
 # Editor main is only editor not inpact projects files.
@@ -104,7 +104,7 @@ class EditorMain(BoxLayout):
         self.MONITOR_W = 1200
         self.MONITOR_H = 780
 
-        if (kivy.utils.platform == 'win'):
+        if (platform == 'win'):
             print("Desktop platform block.")
             self.MONITOR_W = GetSystemMetrics(0)
             self.MONITOR_H = GetSystemMetrics(1)

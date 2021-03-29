@@ -282,7 +282,7 @@ class AssetsEditorPopup():
 
     def showAssetGUI(self, item, instance):
 
-        if (kivy.utils.platform == 'win'):
+        if (platform == 'win'):
             transformPath = item['path'].replace('/', '\\')
         else:
             transformPath = item['path']
@@ -457,7 +457,21 @@ class AssetsEditorPopup():
                 height=90
             ))
             if item['type'] == 'ImageResource':
-                localBox.add_widget( AsyncImage(source=item['path'], size_hint=(0.4, None) , height=90 ))
+                localPrevListBox = AsyncImage(
+                                      source=item['path'], size_hint=(0.4, None) , height=90 )
+                with localPrevListBox.canvas.before:
+                    Color(self.engineConfig.getThemeCustomColor('background')[0],
+                                 self.engineConfig.getThemeCustomColor('background')[1],
+                                 self.engineConfig.getThemeCustomColor('background')[2],
+                                 self.engineConfig.getThemeCustomColor('background')[3])
+                    localPrevListBox.rect = Rectangle(size=localPrevListBox.size,
+                                                      pos=localPrevListBox.pos)
+                def update_rect(instance, value):
+                    instance.rect.pos = instance.pos
+                    instance.rect.size = instance.size
+                localPrevListBox.bind(pos=update_rect, size=update_rect)
+
+                localBox.add_widget(localPrevListBox)
             elif item['type'] == 'FontResource':
                 localBox.add_widget( Label(font_name=item['path'], size_hint=(0.4, None) , height=90, text = 'Font' ))
             

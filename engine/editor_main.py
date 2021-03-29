@@ -62,16 +62,16 @@ from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
 from engine.common.operationsPicture import EditorOperationPicture
 from engine.common.enginePackage import PackagePopup
-
+from kivy.utils import platform
 #########################################################
 # CrossK App level dependency                           #
 #########################################################
 from engine.common.crossk.imageClickable import PictureClickable
 
-print("Current platform :", kivy.utils.platform)
+print("Current platform :", platform)
 print("Editor Engine Running rigth now.")
 
-if (kivy.utils.platform == 'win'):
+if (platform == 'win'):
     from win32api import GetSystemMetrics
 
 # Storage/Files operations
@@ -415,7 +415,7 @@ class EditorMain(BoxLayout):
         self.MONITOR_W = self.engineConfig.platformRoles['win']['initialWidth']
         self.MONITOR_H = self.engineConfig.platformRoles['win']['initialHeight']
 
-        if (kivy.utils.platform == 'win'):
+        if (platform == 'win'):
             print("Current platform: windows")
             self.MONITOR_W = GetSystemMetrics(0)
             self.MONITOR_H = GetSystemMetrics(1)
