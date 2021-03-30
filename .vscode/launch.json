@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "Ubuntu Debugger",
       "type": "python",
       "request": "launch",
-      "program": "G:\\web_server\\xampp\\htdocs\\PRIVATE_SERVER\\PYTHON\\cross-k\\cross-k\\main.py",
+      "program": "/home/nidza/Desktop/cross-k/cross-k/main.py",
       "console": "integratedTerminal"
     }
   ]

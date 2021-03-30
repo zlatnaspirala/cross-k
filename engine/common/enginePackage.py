@@ -73,6 +73,7 @@ class PackagePopup():
             print("PACK DIR EXIST...")
 
         bashCommand = "python3 -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
+        
         import subprocess
         #  stdout=PIPE, stderr=STDOUT
         process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
