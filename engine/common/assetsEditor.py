@@ -7,7 +7,6 @@ from shutil import copyfile, rmtree
 from functools import partial
 from kivy.app import App
 from kivy.utils import platform
-from kivy.utils import platform
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button

@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['main.py'],
-             pathex=['G:\\web_server\\xampp\\htdocs\\PRIVATE_SERVER\\PYTHON\\cross-k\\cross-k'],
+a = Analysis(['app.py'],
+             pathex=['/home/nidza/Desktop/cross-k/cross-k'],
              binaries=[],
              datas=[],
              hiddenimports=[],
