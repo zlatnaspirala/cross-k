@@ -57,7 +57,7 @@ class AssetsEditorPopup():
                         background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
                 ))
                 print(" drive: ", item)
-            if platform == 'linux' or True:
+            elif platform == 'linux' or True:
                 self.drivesChooseBox.add_widget(Button(
                     text=item.mountpoint ,
                     on_press=partial(self.setFileBrowserPath),
@@ -81,7 +81,7 @@ class AssetsEditorPopup():
                 dirselect= False,
                 on_submit=self.load_from_filechooser
             )
-        if platform == 'linux' or True:
+        elif platform == 'linux' or True:
             self.fileBrowser = FileChooserListView(# select_string='Select', dirselect: True
                 # path='projects/' + self.engineConfig.currentProjectName + '/data/',
                 filters=['*.png', '*.jpg'],

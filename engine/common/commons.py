@@ -56,12 +56,22 @@ def getAboutGUI(instance):
     infoBtn = Button(markup=True, 
                      text='[b]ok[/b]',
                      font_size=22,
-                     size_hint=(1,0.2))
+                     size_hint=(1,0.2),
+                     color=(1,1,1,1),
+                     background_color=(0.2,0.2,0.2,1) )
     box.add_widget(Label(
             markup=True, 
             text='[b]maximumroulette.com production[/b]',
-            font_size=25,
-            size_hint=(1,0.1)
+            font_size=22,
+            size_hint=(1,None),
+            height=50
+        ))
+    box.add_widget(Label(
+            markup=True, 
+            text='[b]'+ 'current version 0.3.0' +'[/b]',
+            font_size=12,
+            size_hint=(1,None),
+            height=20
         ))
     PictureInternal(injectWidget=box, accessAssets="logo")
     box.add_widget(Label(markup=True,
@@ -94,7 +104,7 @@ def getAboutGUI(instance):
     
     box.add_widget(infoBtn)
         
-    popup = Popup(title='About CrossK 0.1.0 beta version', content=box, auto_dismiss=False)
+    popup = Popup(title='About CrossK 0.3.0 beta version', content=box, auto_dismiss=False)
     infoBtn.bind(on_press=popup.dismiss)
     popup.open()
 

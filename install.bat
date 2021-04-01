@@ -8,5 +8,6 @@ pip3 install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew
 pip3 install kivy
 pip3 install kivy.deps.gstreamer
 pip3 install kivy.deps.angle
+pip3 install psutil
 pip3 install --upgrade pyinstaller
 ECHO =INSTALLATION FOR CROSSK ENGINE DONE

@@ -115,19 +115,12 @@ class EditorMain(BoxLayout):
         self.engineConfig = EngineConfig()
         self.engineConfig.getVersion()
 
-        # self.packageWinApp()
-        # Initial call for aboutGUI
-        # getAboutGUI()
-
         Window.size = (sp(self.MONITOR_W - 10), sp(self.MONITOR_H - 70))
         Window.top = 30
         Window.left = 5
         #Window.fullscreen = True
         Window.clearcolor = self.engineConfig.getThemeBackgroundColor()
-       
-        # Run time schortcut vars
-        #self.orientation='vertical'
-        # self.cols = 1
+
         """  # Get path to SD card Android
         try:
             Environment = autoclass('android.os.Environment')

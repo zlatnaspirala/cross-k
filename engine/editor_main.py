@@ -82,6 +82,10 @@ if (platform == 'win'):
 class EditorMain(BoxLayout):
 
     def CreateLoadInstanceGUIBox(self, instance):
+
+        if self.programStatus != 'FREE':
+            return None
+
         print("CreateLoadInstanceGUIBox ..." )
         #self.rows = 2  row_force_default=True, row_default_height=10
 
@@ -219,8 +223,12 @@ class EditorMain(BoxLayout):
         #    print('tshirtmans index key is', item[0])
         #    print('his key value pairs are', str(item[1]))
         print("CrossK project with name -> ", self.projectName.text, " -> loaded.")
+        self.programStatus = 'IN_USE'
 
     def createProjectFiles(self, instance):
+
+        if self.programStatus != 'FREE':
+            return None
 
         CURRENT_PATH = os.path.abspath(
           os.path.join(os.path.dirname(__file__), '../projects/' + self.projectName.text + "/")
@@ -313,10 +321,14 @@ class EditorMain(BoxLayout):
         #for item in store.find(name='Gabriel'):
         #    print('tshirtmans index key is', item[0])
         #    print('his key value pairs are', str(item[1]))
+        self.programStatus = 'IN_USE'
         print("CrossK project with name -> ", self.projectName.text, " -> created.")
 
     def CreateNewInstanceGUIBox(self, instance):
 
+        if self.programStatus != 'FREE':
+            return None
+            
         print("CreateNewInstanceGUIBox ..." )
         self.createNewProjectLayoutEditor = GridLayout(padding= 0,
                                                        spacing=1,
@@ -384,6 +396,10 @@ class EditorMain(BoxLayout):
         self.remove_widget(self.createLoadProjectLayoutEditor)
 
     def showAssetsEditorAdd(self, instance):
+
+        if self.programStatus != 'FREE':
+            return None
+
         local = AssetsEditorPopupAdd(
                 engineConfig=self.engineConfig,
                 engineRoot=self,
@@ -392,6 +408,10 @@ class EditorMain(BoxLayout):
         print("Assets Editor for engine started.")
 
     def showCurrentAssetsEditor(self, asset, instance):
+
+        if self.programStatus != 'FREE':
+            return None
+
         local = AssetsEditorPopup(
                 engineConfig=self.engineConfig,
                 currentAsset=asset,
@@ -400,6 +420,10 @@ class EditorMain(BoxLayout):
         print("Assets Editor for engine started. asset" , asset , ' instance ', instance)
 
     def packageWinApp(self, instance):
+
+        if self.programStatus != 'FREE':
+            return None
+
         local = PackagePopup(engineConfig=self.engineConfig)
         print("Package application for engine started.")
 
@@ -411,6 +435,9 @@ class EditorMain(BoxLayout):
         ####################################################
         self.engineConfig = EngineConfig()
         self.engineConfig.getVersion()
+
+        # Prevent action flag
+        self.programStatus = 'FREE'
 
         self.MONITOR_W = self.engineConfig.platformRoles['win']['initialWidth']
         self.MONITOR_H = self.engineConfig.platformRoles['win']['initialHeight']
@@ -483,13 +510,13 @@ class EditorMain(BoxLayout):
         assetEditorTool = Button(text='Add Assets',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.showAssetsEditorAdd)
         sep = Button(text='Edit assets',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=partial(self.showCurrentAssetsEditor, None)
                       )
@@ -497,33 +524,31 @@ class EditorMain(BoxLayout):
         self.assetsDropdown.add_widget(sep)
         self.editorMenuLayout.add_widget(self.assetsDropdown)
 
-
-        #
         self.currentProjectMenuDropdown = DropDown()
         self.currentProjectMenuDropdown.dismiss()
         
         toolsAddBox = Button(text='Add Box',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewBoxGUI)
         toolsAddBtn = Button(text='Add Button',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewButtonGUI)
         toolsAddText = Button(text='Add Text',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewLabelGUI)
         toolsAddPicture = Button(text='Add Picture',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(None, None),  height=30, width=300,
-                      background_normal= '',
+                      #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewPictureGUI)
 
@@ -538,27 +563,28 @@ class EditorMain(BoxLayout):
         self.appMenuDropdown = DropDown()
         self.appMenuDropdown.dismiss()
 
-        btn = Button(text='Create new project',
+        btn = Button(markup=True, text='Create new project',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(1, None), height=30, width=300, 
-                     background_normal= '',
+                     # background_normal= '',
                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
                     )
         self.appMenuDropdown.add_widget(btn)
 
-        loadBtn = Button(text='Load project',
+        loadBtn = Button(markup=True, text='Load project',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(1, None), height=30, width=300,
-                     background_normal= '',
+                     # background_normal= '',
                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
                      )
 
         self.appMenuDropdown.add_widget(loadBtn)
 
-        aboutBtn = Button(text='About CrossK Engine',
+        aboutBtn = Button(markup=True,
+                     text='About CrossK Engine',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(1, None), height=30, width=300,
-                     background_normal= '',
+                     # background_normal= '',
                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
                      )
 
@@ -571,7 +597,7 @@ class EditorMain(BoxLayout):
 
         btn.bind(on_press=self.CreateNewInstanceGUIBox)
 
-        MakePackageBtn = Button(text='Make package',
+        MakePackageBtn = Button(markup=True, text='[b]Make package[/b]',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=300,
                      background_normal= '',
@@ -580,7 +606,7 @@ class EditorMain(BoxLayout):
         MakePackageBtn.bind(on_release=self.packageDropdown.open)
         self.editorMenuLayout.add_widget(MakePackageBtn)
 
-        AssetsBtn = Button(text='Project Assets',
+        AssetsBtn = Button(markup=True, text='[b]Project Assets[/b]',
                      color=(self.engineConfig.getThemeTextColor()),
                      size_hint=(None, None), height=30, width=300,
                      background_normal= '',
@@ -599,22 +625,15 @@ class EditorMain(BoxLayout):
         editorTools.bind(on_release=self.currentProjectMenuDropdown.open)
         self.editorMenuLayout.add_widget(editorTools)
 
-        mainbutton = Button(markup=True , text='[b][color=ff3333]A[/color]pplication[/b]',
+        mainbutton = Button(markup=True , text='[b]Application[/b]',
                             color=(self.engineConfig.getThemeTextColor()), 
                             size_hint=(None, None), height=30, width=300,
                             background_normal= '',
-                            background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
-                            )
-        # mainbutton.bind(on_release=lambda mainbutton:self.openApplicationMenuBtn(self))
+                            background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')))
         mainbutton.bind(on_release=self.appMenuDropdown.open)
         self.editorMenuLayout.add_widget(mainbutton)
 
-    def openApplicationMenuBtn(self, instance):
-        #self.appMenuDropdown.open(self)
-        print("test >!>>!, self.appMenuDropdown", self.appMenuDropdown)
-
     def get_input(self, v, h):
-        # Test stage for this
         return AlignedTextInput(text='Project1', halign=h, valign=v, height=44)
 
     def addNewButtonGUI(self, instance):
@@ -1312,7 +1331,12 @@ class EditorMain(BoxLayout):
                 ))
             self.editorElementDetails.add_widget(self.rowsInput)
 
-        self.swipeThresholdPageLayout = TextInput(text=detailData['swipe_threshold'], size_hint=(1, None), height=30)
+        self.swipeThresholdPageLayout = None
+        if 'swipe_threshold' in detailData:
+            self.swipeThresholdPageLayout = TextInput(text=str(detailData['swipe_threshold']), size_hint=(1, None), height=30)
+        else:
+            self.swipeThresholdPageLayout = TextInput(text='0.4', size_hint=(1, None), height=30)
+
         if str(detailData['layoutType']) == "Page":
             self.editorElementDetails.add_widget(
                 Label(
@@ -2158,6 +2182,7 @@ class EditorMain(BoxLayout):
                     local_size_hintX = None
                     local_size_hintY= None
                     test = Label(
+                        multiline=True,
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
@@ -2392,7 +2417,7 @@ class EditorMain(BoxLayout):
                     myAttacher = Attacher(
                         page=1,
                         border=120,
-                        swipe_threshold=item['swipe_threshold']
+                        swipe_threshold=float(item['swipe_threshold'])
                         )
                     with myAttacher.canvas.before:
                         Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])

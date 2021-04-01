@@ -2,6 +2,10 @@
 # Cross-K project
 ### Based on kivy 2.0 framework (Python3)
 
+    Based on kivy 2.0 python framework. GPL-3.0 License with avavailable source code.
+    CrossK is a small but conspiratorial app engine based on kivy opengles2.0 in background.
+    Created to make future fast and quick. No builds losing time any more.
+
 ### Objective:
     Create multiplatform target builds with real time net driver.
     Basic : 2D UI visual app creator. Future features player, networking, 3d/2d canvas based engine.
@@ -66,27 +70,24 @@ python3 -m pip install
 
 ## Run Engine:
 
+You can use it like this if have some `paths` problem `kivy_venv/Scripts/python.exe`.
+
 ```
-python3 main.py
+python main.py
 ```
 
 # Package System
 
 [WINDOWS]
 
-Pack for windows10 [DONE]
-```js
-kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_PROJECT1 --distpath packages/projectTest --workpath .cache/ app.py
-```
+Pack Application for windows10 with GUI command.
 
-
-For now i make package for whole engine windows10: [DONE]
-
+Manual you can package whole engine not just application project.
 ```js
 kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_PROJECT1 --distpath packages/projectTest --workpath .cache/ main.py
 ```
 
-[ANDROID] [0.2.0] [WIP]
+[ANDROID] WIP
 
 ```js
 docker run \
@@ -144,88 +145,91 @@ from MS Visual Code Editor.
 ├── .vscode/                       (VisualCode/debugger)
 ├── components/                    (empty for now)
 ├── demos/                         (not project files)
+├── main.py                        (Engine Instance)
+├── app.py                         (App Instance)
 ├── engine/
 |   ├── assets/
 |   ├── common/
+|   |   └── assetsEditor.py
+|   |   └── assetsEditorOperation.py
 |   |   └── commons.py
 |   |   └── enginePackage.py
 |   |   └── modification.py
 |   |   └── operationBox.py
 |   |   └── operationButton.py
 |   |   └── operationLabel.py
+|   |   └── operationsPicture.py
 |   ├── editor/
 |   |   └── layout.py
-|   |   └── networking.py           [BASIC]
-|   |   └── resources.py            [EMPTY]
-|   |   └── scripter.py             Future visual node sub editor
+|   |   └── networking.py
+|   |   └── resources.py
+|   |   └── scripter.py            Future visual node sub editor,text script for now
+|   |   └── resourcesGUIContainer.py
 |   |   └── sceneGUIContainer.py
 |   ├── config.py                  (Engine editor config)
 |   ├── editor_main.py             Main Engine File
-|   ├── app_main.py                Main Final App File [Used for package procces]
-|   ├── kivy_venv/
+|   ├── app_main.py                Main Final App File [Used for package proccess]
+|   ├── kivy_venv/                 (Auto generated - env libraries)
 |   ├── projects/                  (Auto generated - Project files)
 |   ├── shader-editor/             (non project files)
 </pre>
 
-
-# [STATUS-LIST-TODO-LIST]
+# [CROSSK-STATUS-LIST]
 
 <pre>
 
-ACTUAL VERSION [no release]
+ACTUAL VERSION [no release] BETA
 
-BETA VERSION [0.2.0] STATUS
+BETA VERSION [0.3.0] STATUS
 
 [EDITOR]
 
  - Add option solution for dimension ref system
-   (use pixels, percents or combine)            [DONE]
+   (use pixels, percents or combine)  
 
  - Add option solution for frameLayout and 
    position hint also.
-   (use pixels, percents or combine)            [DONE]
+   (use pixels, percents or combine)   
 
- - Manage scene element 
-     - Details box with save options            [DONE]
-     - SceneContainer to select and preview
-       in left side -scroll added               [DONE]
+ - Manage scene element
+     - Details box with save options
+     - SceneContainer to select and preview render elements
+       in left side of engine window -scroll added
+     - AssetsContainer to select and preview assets items
+       in left side of engine window -scroll added
 
  - Add Element type:
-       - Button element                         [DONE]
-       - Label element                          [DONE]
-       - CheckBox element                       [NEXT]
-       - Picture Clickable                        [DONE]
-
-       - Layouts (dinamic with props) element   [DONE]
- - Layouts - Handle sub components              [DONE]
- - Layouts ( Details commands (ADD_BTN) )       [DONE]
- - Basic script bind attacher for live (app) buttons. [DONE]
+       - Button element
+       - Label element
+       - CheckBox element
+       - Picture Clickable
+       - Layouts (dinamic with props) element
+ - Layouts - Handle sub components
+ - Layouts ( Details commands:
+                      - Add button
+                      - Add Label
+                      - Add layout )
+ - CrossK Scripter, Basic script bind attacher for live (app) buttons.
 
 [ASSETS EDITOR]
 
- - Operation (add imageResource)                     [WIP]
- - Operation ()                                      [WIP]
-
+ - Operation ( Type of Asset:
+                          - imageResource,
+                          - fontResource)
+ - OperationAdd
 
 [PACKAGE-SYSTEM]
- - Package for windows                             [DONE]
- - Package for android                             [WIP]
- - Package for macOS                               [WIP]
- - Package for Linux                               [WIP]
+
+ - Package for windows                             [SUPPORTED]
+ - Package for Linux                               [SUPPORTED]
+ - Package for android                             [NOTESTED]
+ - Package for macOS                               [NOTESTED]
 
 [PACKAGE-ANDROID]
- - Test kivy solution                               [WIP]
- - Test canvas solution (if ti posible)             [WIP]
- - Test opengles2/3                                 [WIP]
 
-[EDITOR_PLATFORM-WINDOWS]
-  - DONE
-
-[EDITOR_PLATFORM-LINUX]
-  - Test
-
-[EDITOR_PLATFORM-MACOS]
-  - Test
+ - Test kivy solution                               [NOTESTED]
+ - Test canvas solution (if ti posible)             [NOTESTED]
+ - Test opengles2/3 in native canvas manir          [NOTESTED]
 
 </pre>
 
@@ -233,10 +237,8 @@ BETA VERSION [0.2.0] STATUS
 ### Android WIP
 
 Best choose Linux Ubuntu
-
 ```
 pip install python-for-android
 ```
 
 For windows users use docker
-

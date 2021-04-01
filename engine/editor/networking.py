@@ -12,10 +12,9 @@ from kivy.network.urlrequest import UrlRequest
 
 class Networking():
 
-    # Test
-    def callbackAnalyzeJson(self, data):
+    # Override
+    def onAnalyzeJson(self, data):
         print('not overrided.', data)
-    # Test
 
     def on_error(self, error):
         print("Networking - on_error", error)
@@ -28,8 +27,7 @@ class Networking():
 
     def analyzeJson(self, *args):
         # Abstract determination
-        print("Networking - analyzeJson args    -> ")# args)
-
+        print("Networking - analyzeJson args    -> ")
         if (type(args) is tuple) == True:
             for index, item in enumerate(args):
                 print(' ---> {} '.format(item))
@@ -51,7 +49,6 @@ class Networking():
 
     def getJson(self):
         req = UrlRequest('https://maximumroulette.com/apps/crossk/get-countries/countries.json', 
-        #self.analyzeJson, None, self.on_error ,self.on_error)
             on_error=lambda *args: self.on_error(args),
             on_failure=lambda *args: self.on_failure(args),
             on_redirect=lambda *args: self.on_redirect(args),
