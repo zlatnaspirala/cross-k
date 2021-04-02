@@ -1,7 +1,9 @@
 import os
 import io
+import psutil
 import threading
 import string
+from kivy.utils import platform
 from shutil import copyfile
 from functools import partial
 from kivy.app import App
@@ -33,30 +35,62 @@ class AssetsEditorPopupAdd():
         self.leftBox = BoxLayout(orientation="vertical")
         self.imageResourceGUIBox = BoxLayout(orientation="vertical")
 
-        drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+        print("DEBUG", platform)
+
+        if platform == 'linux':
+            drives = psutil.disk_partitions()
+
+        if platform == 'win':
+            drives = ['%s:' % d for d in string.ascii_uppercase if os.path.exists('%s:' % d)]
+
+        for item in drives:
+            print(item)
 
         self.drivesChooseBox = BoxLayout(size_hint=(1, None),  height=40,)
         for item in drives:
-            self.drivesChooseBox.add_widget(Button(
-                text=item + '/',
-                on_press=partial(self.setFileBrowserPath),
-                        color=(self.engineConfig.getThemeTextColor()),
-                      size_hint=(1, None),  height=65,
-                      background_normal= '',
-                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
-            ))
-            print(" drive: ", item)
+            if platform == 'win':
+                self.drivesChooseBox.add_widget(Button(
+                    text=item + '/',
+                    on_press=partial(self.setFileBrowserPath),
+                            color=(self.engineConfig.getThemeTextColor()),
+                        size_hint=(1, None),  height=65,
+                        background_normal= '',
+                        background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                ))
+                print(" drive: ", item)
+            elif platform == 'linux' or True:
+                self.drivesChooseBox.add_widget(Button(
+                    text=item.mountpoint ,
+                    on_press=partial(self.setFileBrowserPath),
+                            color=(self.engineConfig.getThemeTextColor()),
+                        size_hint=(1, None),  height=65,
+                        background_normal= '',
+                        background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                ))
+                print(" drive: ", item)
+
 
         self.imageResourceGUIBox.add_widget(self.drivesChooseBox)
 
-        self.fileBrowser = FileChooserListView(# select_string='Select', dirselect: True
-              # path='projects/' + self.engineConfig.currentProjectName + '/data/',
-              filters=['*.png', '*.jpg'],
-              path= drives[1] + '/',
-              size_hint=(1,3),
-              dirselect= True,
-              on_submit=self.load_from_filechooser
-           )
+        if platform == 'win':
+            self.fileBrowser = FileChooserListView(# select_string='Select', dirselect: True
+                # path='projects/' + self.engineConfig.currentProjectName + '/data/',
+                filters=['*.png', '*.jpg'],
+                path= drives[0] + '/',
+                size_hint=(1,3),
+                dirselect= True,
+                on_submit=self.load_from_filechooser
+            )
+        if platform == 'linux' or True:
+            self.fileBrowser = FileChooserListView(# select_string='Select', dirselect: True
+                # path='projects/' + self.engineConfig.currentProjectName + '/data/',
+                filters=['*.png', '*.jpg'],
+                path= drives[0].mountpoint + '/',
+                size_hint=(1,3),
+                dirselect= True,
+                on_submit=self.load_from_filechooser
+            )
+            
         self.imageResourceGUIBox.add_widget(self.fileBrowser)
         self.fileBrowser.bind(selection=partial(self.load_from_filechooser))
 

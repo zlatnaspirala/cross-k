@@ -4,8 +4,18 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    /*
+      Best way is to use just one for current platform.
+      If you use linux os then remove windows configuration...
     {
-      "name": "Python: Current File",
+      "name": "Ubuntu Debugger",
+      "type": "python",
+      "request": "launch",
+      "program": "/home/nidza/Desktop/cross-k/cross-k/main.py",
+      "console": "integratedTerminal"
+    }, */
+    {
+      "name": "Windows Debugger",
       "type": "python",
       "request": "launch",
       "program": "G:\\web_server\\xampp\\htdocs\\PRIVATE_SERVER\\PYTHON\\cross-k\\cross-k\\main.py",

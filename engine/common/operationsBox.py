@@ -267,7 +267,7 @@ class EditorOperationBox():
             "dimensionRole": dimensionRole,
             "anchor_x": localAnchor_x,
             "anchor_y": localAnchor_y,
-            "swipe_threshold": 0.4
+            "swipe_threshold": str(0.4)
         } 
 
         # print('what is the type of layout', self.selectBtn.text)

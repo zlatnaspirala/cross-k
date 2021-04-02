@@ -3,4 +3,8 @@
 *.spec
 components/__pycache__/layout.cpython-39.pyc
 *.pyc
+packages/*
 projects/
+ubuntu-env/
+macos-env/
+win-env/
