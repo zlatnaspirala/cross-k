@@ -13,7 +13,15 @@
       "request": "launch",
       "program": "/home/nidza/Desktop/cross-k/cross-k/main.py",
       "console": "integratedTerminal"
-    }, */
+    }, 
+        {
+      "name": "MacOS Debugger",
+      "type": "python",
+      "request": "launch",
+      "program": "/Users/nidzatest/Documents/Projects/cross-k/main.py",
+      "console": "integratedTerminal"
+    },
+    */
     {
       "name": "Windows Debugger",
       "type": "python",
