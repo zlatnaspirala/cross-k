@@ -19,6 +19,7 @@ from kivy.uix.image import Image, AsyncImage
 from kivy.graphics import Color, Rectangle
 from kivy.storage.jsonstore import JsonStore
 from engine.common.commons import PictureAPath, getMessageBoxYesNo
+from engine.common.jsonN import JsonN
 
 class AssetsEditorPopupAdd():
 
@@ -81,7 +82,7 @@ class AssetsEditorPopupAdd():
                 dirselect= True,
                 on_submit=self.load_from_filechooser
             )
-        if platform == 'linux' or True:
+        elif platform == 'linux' or True:
             self.fileBrowser = FileChooserListView(# select_string='Select', dirselect: True
                 # path='projects/' + self.engineConfig.currentProjectName + '/data/',
                 filters=['*.png', '*.jpg'],
@@ -94,25 +95,32 @@ class AssetsEditorPopupAdd():
         self.imageResourceGUIBox.add_widget(self.fileBrowser)
         self.fileBrowser.bind(selection=partial(self.load_from_filechooser))
 
-        self.imageResourceGUIBox.add_widget(Label(text='Application assets pack path'))
+        self.imageResourceGUIBox.add_widget(Label(text='Application assets pack path' , size_hint=(1, None),  height=40 ), )
         self.selectedPathLabel = Label(text='...')
         self.imageResourceGUIBox.add_widget(self.selectedPathLabel)
 
-        self.assetName = TextInput( text='MyAssets1',
-                                    size_hint=(1, None),  height=65)
+        self.assetName = TextInput( text='MyAssets1', foreground_color=(0,1,1, 1),
+                                    size_hint=(1, None),  height=40)
         with self.assetName.canvas.before:
-            Color(self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+            Color(self.engineConfig.getThemeCustomColor('background')[0],
+                     self.engineConfig.getThemeCustomColor('background')[1],
+                     self.engineConfig.getThemeCustomColor('background')[2],
+                     self.engineConfig.getThemeCustomColor('background')[3])
             self.assetName.rect = Rectangle(size=self.assetName.size,
-            pos=self.assetName.pos)
+                                            pos=self.assetName.pos)
         def update_rect(instance, value):
             instance.rect.pos = instance.pos
             instance.rect.size = instance.size
 
         self.imageResourceGUIBox.add_widget(self.assetName)
 
+        # self.assetName.bind(pos=update_rect, size=update_rect)
+
+        self.assetName.foreground_color = (1,1,1,1)
+
         self.commandBtn = Button(text='Add selected image',
                                  color=(self.engineConfig.getThemeTextColor()),
-                                 size_hint=(1, None),  height=65,
+                                 size_hint=(1, None),  height=60,
                                  background_normal= '',
                                  background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')) )
                                  #on_press=partial(self.createImageAssets))
@@ -139,7 +147,7 @@ class AssetsEditorPopupAdd():
         # Add button  - ImageResource
         self.addImageRes = Button(markup=True, text='[b]Add Image Resource[b]',
                                 color=(self.engineConfig.getThemeTextColor()),
-                                size_hint=(1, None),  height=80,
+                                size_hint=(1, None),  height=60,
                                 background_normal= '',
                                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')))
 
@@ -148,13 +156,26 @@ class AssetsEditorPopupAdd():
         # Others  - Fonts
         self.addFontRes = Button(markup=True, text='[b]Add Font Resource[b]',
                                 color=(self.engineConfig.getThemeTextColor()),
-                                size_hint=(1, None),  height=80,
+                                size_hint=(1, None),  height=60,
                                 background_normal= '',
                                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')))
 
-        self.leftBox.add_widget(self.addFontRes)
+        # Add JSON Data  - JSONResource
+        self.addJSONResBtn = Button(markup=True, text='[b]Add JSON DATA Resource[b]',
+                                color=(self.engineConfig.getThemeTextColor()),
+                                size_hint=(1, None),  height=60,
+                                background_normal= '',
+                                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')))
 
+        self.leftBox.add_widget(self.addJSONResBtn)
+        self.leftBox.add_widget(self.addFontRes)
         self.leftBox.add_widget(self.cancelBtn)
+
+        self.previewFont = Label(
+                                  size_hint=(1, 1),
+                                  markup=True,
+                                  font_size=50,
+                                  text="Font [b]Bold[/b]!")
 
         _local = 'CrossK ' + self.engineConfig.getVersion() + ' Assets Editor'
         self.popup = Popup(title=_local , content=self.box, auto_dismiss=False)
@@ -162,6 +183,7 @@ class AssetsEditorPopupAdd():
         self.cancelBtn.bind(on_press=self.popup.dismiss)
         self.addImageRes.bind(on_press=lambda a:self.showImageAssetGUI())
         self.addFontRes.bind(on_press=lambda a:self.showFontAssetGUI())
+        self.addJSONResBtn.bind(on_press=lambda a:self.showJSONAssetGUI())
 
         self.popup.open()
 
@@ -171,6 +193,9 @@ class AssetsEditorPopupAdd():
             self.box.add_widget(self.imageResourceGUIBox)
             self.isFreeRigthBox = False
 
+            self.previewPicture.size_hint = (1,1)
+            self.previewFont.size_hint = (0,0)
+
     def showFontAssetGUI(self):
         if self.isFreeRigthBox == True:
             # prepare
@@ -178,6 +203,24 @@ class AssetsEditorPopupAdd():
             self.commandBtn.text = 'Add Font Family'
             self.commandBtn.unbind(on_press=partial(self.createImageAssets)),
             self.commandBtn.bind(on_press=partial(self.createFontAssets))
+
+            self.previewPicture.size_hint = (0,0)
+            self.previewFont.size_hint = (1,1)
+
+            self.box.add_widget(self.imageResourceGUIBox)
+            self.isFreeRigthBox = False
+
+    def showJSONAssetGUI(self):
+        if self.isFreeRigthBox == True:
+            # prepare
+            self.fileBrowser.filters = ['*.json']
+            self.commandBtn.text = 'Add JSON Object Data'
+
+            self.commandBtn.unbind(on_press=partial(self.createImageAssets)),
+            self.commandBtn.bind(on_press=partial(self.createJSONAssets))
+
+            self.previewPicture.size_hint = (0,0)
+            # self.previewFont.size_hint = (0,0)
 
             self.box.add_widget(self.imageResourceGUIBox)
             self.isFreeRigthBox = False
@@ -262,13 +305,33 @@ class AssetsEditorPopupAdd():
             self.resolveAssetPathFolder('FontResource')
             self.popup.dismiss()
 
+    def createJSONAssets(self, instance):
+        if self.operationStatus == True:
+            self.resolvePathFolder()
+            self.resolveAssetPathFolder('JSONResource')
+            self.popup.dismiss()
+
     def load_from_filechooser(self, instance , selectedData):
         print("Selected data: ", selectedData)
         #self.load(self.fileBrowser.path, self.fileBrowser.selection)
         localHandler = self.fileBrowser.selection[0].replace(self.fileBrowser.path, '')
 
         self.selectedPathLabel.text = localHandler
-        self.previewPicture.source=self.fileBrowser.selection[0]
+
+        # check type assets
+        print(">>", self.fileBrowser.filters)
+        if self.fileBrowser.filters[0] ==  '*.png' or self.fileBrowser.filters[0] == '*.jpg':
+            self.previewPicture.source=self.fileBrowser.selection[0]
+
+        # JSON Nidza
+        if '.json' in localHandler:
+            self.imageResourceGUIBox.remove_widget(self.previewBox)
+
+            testJSONNidzaLOader = JsonN(
+                    assetsPath=self.fileBrowser.selection[0],
+                    currentContainer=self.imageResourceGUIBox,
+                    engineRoot=self.engineRoot
+                )
 
     def setFileBrowserPath(self, instance):
         self.fileBrowser.path = instance.text

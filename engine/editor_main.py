@@ -397,7 +397,7 @@ class EditorMain(BoxLayout):
 
     def showAssetsEditorAdd(self, instance):
 
-        if self.programStatus != 'FREE':
+        if self.programStatus == 'FREE':
             return None
 
         local = AssetsEditorPopupAdd(
@@ -409,7 +409,7 @@ class EditorMain(BoxLayout):
 
     def showCurrentAssetsEditor(self, asset, instance):
 
-        if self.programStatus != 'FREE':
+        if self.programStatus == 'FREE':
             return None
 
         local = AssetsEditorPopup(
@@ -421,7 +421,7 @@ class EditorMain(BoxLayout):
 
     def packageWinApp(self, instance):
 
-        if self.programStatus != 'FREE':
+        if self.programStatus == 'FREE':
             return None
 
         local = PackagePopup(engineConfig=self.engineConfig)
