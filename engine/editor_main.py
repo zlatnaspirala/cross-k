@@ -889,6 +889,9 @@ class EditorMain(BoxLayout):
 
     def showPictureDetails(self, detailData):
 
+        # cool man
+        self.showAssetsDrop(self.editorElementDetails, 'PICTURE_CLICKABLE')
+
         # FontSize
         self.editorElementDetails.add_widget(
             Button(
@@ -2503,3 +2506,45 @@ class EditorMain(BoxLayout):
         self.engineLayout.clear_widgets()
 
         self._readElementar(self.engineLayout ,loadElements)
+
+
+
+    def showAssetsDrop(self, container, typeOFAsset):
+        self.assetsStore = JsonStore('projects/' + self.engineConfig.currentProjectName + '/data/assets.json')
+        loadElements = self.assetsStore.get('assetsComponentArray')['elements']
+        self._updateDrop(container, loadElements, 'PICTURE_CLICKABLE')
+        print('ssssssss')
+
+    def _updateDrop(self, container, loadElements, typeOFAsset):
+
+        container.add_widget(Label(text='Select assets:', size_hint=(1, None), height=30))
+
+        test2 = Button(text='Select asset',size_hint=(1, None), height=30)
+        assetDropdown = DropDown()
+        assetDropdown.dismiss()
+
+        for _index, item in enumerate(loadElements):
+            localBox = BoxLayout(size_hint=(1, None), height=30)
+            test = Button(
+                markup=True,
+                halign="left", valign="middle",
+                padding_x= 5,
+                font_size=15,
+                text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
+                color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
+                on_press=partial(self.onSelectAsset, item),
+                size_hint=(1, None),
+                height=30
+            )
+            localBox.add_widget(test)
+            assetDropdown.add_widget(localBox)
+            test.bind(size=test.setter('text_size'))
+
+        container.add_widget(assetDropdown)
+        container.add_widget(test2)
+        test2.bind(on_release=assetDropdown.open)
+
+    def onSelectAsset():
+        print('good')

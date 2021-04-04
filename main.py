@@ -23,6 +23,7 @@ class MyApp(App):
         print(" Version Beta                                  .-")
         print(" - Support UI context [add/edit gui]           .-")
         print("  ->Button, Layout, Label, PictureCliclable    .-")
+        print("  ->Scene container                            .-")
         print(" - Bind Script [extend kivy2/python3.9]        .-")
         print("-------------------------------------------------")
 

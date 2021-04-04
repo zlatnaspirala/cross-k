@@ -21,13 +21,15 @@ class MyApp(App):
     def aboutCrossK(self):
 
         print("-------------------------------------------------")
-        print("-CrossK engine App build 0.1.0 BETA            .-")
+        print("-CrossK engine App build 0.4.0 BETA            .-")
         print("-This is build pack root class for final app   .-")
         print("-build. Optimised and represent single target  .-")
         print("-point. We build all platforms with this class .-")
         print("-------------------------------------------------")
         print("- ACTION NEEDED                                .-")
         print("- CHANGE PROJECT NAME -> pack='Project1'       .-")
+        print("-------------------------------------------------")
+        print("-SUPPORT PACKAGE TARGETS: WIN, LINUX-------------")
         print("-------------------------------------------------")
 
     def build(self):

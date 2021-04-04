@@ -36,7 +36,7 @@ class ResourcesGUIContainer(ScrollView):
     def _update(self, loadElements, container, parentName):
 
         for _index, item in enumerate(loadElements):
-            localBox = BoxLayout(size_hint=(1, None), height=30)
+            localBox = BoxLayout(size_hint=(1, None), height=30, orientation='vertical')
             test = Button(
                 markup=True,
                 halign="left", valign="middle",
