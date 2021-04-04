@@ -198,6 +198,16 @@ class EditorOperationBox():
         self.selectBtn.text = instance.text
         self.layoutTypeList.select(self.btnBox.text)
 
+    def _add(self,localStagedElements, calculatedButtonData, currentLayoutId ):
+        for index, item in enumerate(localStagedElements):
+            if item['id'] == currentLayoutId:
+                localStagedElements[index]['elements'].append(calculatedButtonData)
+                return localStagedElements
+                break
+            if item['type'] == 'LAYOUT':
+                self._add(item['elements'], calculatedButtonData, currentLayoutId )
+        return False
+
     def oAddBox(self, instance):
         ####################################################
         # Operation `Add`
@@ -278,23 +288,12 @@ class EditorOperationBox():
             localStagedElements = self.store.get('renderComponentArray')['elements']
             #######################
             # First just root
-
             if self.currentLayoutId == None:
                 localStagedElements.append(calculatedButtonData)
             else:
-                isFounded = False
-                for index, item in enumerate(localStagedElements):
-                    if item['id'] == self.currentLayoutId:
-                        localStagedElements[index]['elements'].append(calculatedButtonData)
-                        isFounded = True
-                        break
-                if isFounded == False:
-                    for index, item in enumerate(localStagedElements):
-                        if item['type'] == 'LAYOUT':
-                            for sindex, sitem in enumerate(item['elements']):
-                                if sitem['id'] == self.currentLayoutId:
-                                    localStagedElements[index]['elements'][sindex]['elements'].append(calculatedButtonData)
-                                    break
+                TEST = self._add(localStagedElements, calculatedButtonData , self.currentLayoutId)
+
+        print('RETURN OF ADD_ELEMNET ', TEST)
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)

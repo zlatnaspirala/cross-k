@@ -1775,24 +1775,7 @@ class EditorMain(BoxLayout):
         # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
-
-        isFounded = False
-        for index, item in enumerate(loadElements):
-            print("index", index)
-            if item['id'] == elementID:
-                print('I FOUND REFS REPLACE UPDATE STORE ')
-                loadElements[index] = calculatedButtonData
-                isFounded = True
-
-        if isFounded == False:
-            for index, item in enumerate(loadElements):
-                if item['type'] == 'LAYOUT':
-                    for sindex, sitem in enumerate(item['elements']):
-                        if sitem['id'] == elementID:
-                            loadElements[index]['elements'][sindex] = calculatedButtonData
-                            print('I FOUND LAYOUT EFS IN SUB REPLACE UPDATE STORE ', sitem['dimensionRole'])
-
-        # TEST
+        self._add(loadElements, calculatedButtonData, elementID)
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )
@@ -1802,6 +1785,18 @@ class EditorMain(BoxLayout):
 
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
+
+    ##############################################################################
+    def _add(self,localStagedElements, calculatedLabelData, currentLayoutId):
+        for index, item in enumerate(localStagedElements):
+            if item['id'] == currentLayoutId:
+                localStagedElements[index] = calculatedLabelData
+                return localStagedElements
+                break
+            if item['type'] == 'LAYOUT':
+                self._add(item['elements'], calculatedLabelData, currentLayoutId)
+        return False
+    ##############################################################################
 
     # Save details fast solution for now
     def saveLabelDetails(self, elementID, elementType,  instance):
@@ -1864,20 +1859,8 @@ class EditorMain(BoxLayout):
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
         
-        isFounded = False
-        for index, item in enumerate(loadElements):
-            print("index", index)
-            if item['id'] == elementID:
-                print('I FOUND REFS REPLACE UPDATE STORE ', item['dimensionRole'])
-                loadElements[index] = calculatedLabelData
-                isFounded = True
-        if isFounded == False:
-            for index, item in enumerate(loadElements):
-                if item['type'] == 'LAYOUT':
-                    for sindex, sitem in enumerate(item['elements']):
-                        if sitem['id'] == elementID:
-                            loadElements[index]['elements'][sindex] = calculatedLabelData
-                            print('I FOUND LAYOUT LABEL REFS IN SUB level1')
+        TEST = self._add(loadElements, calculatedLabelData , elementID)
+        print("AFTER ADD SAVE DETAIL S ELEMENTAR", TEST)
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements)
@@ -1961,26 +1944,7 @@ class EditorMain(BoxLayout):
         # Load fresh data then replace for specific id and save it
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         loadElements = self.store.get('renderComponentArray')['elements']
-
-        # First just root
-        isFounded = False
-        for index, item in enumerate(loadElements):
-            print("index", index)
-            if item['id'] == detailData['id']:
-                print('I FOUND LAYOUT REFS IN ROOT REPLACE UPDATE STORE ', item['dimensionRole'])
-                loadElements[index] = calculatedButtonData
-                isFounded = True
-        
-        # deep look
-        if isFounded == False:
-            for index, item in enumerate(loadElements):
-                print("index", index)
-                if item['type'] == 'LAYOUT':
-                    for sindex, sitem in enumerate(item['elements']):
-                        if sitem['id'] == detailData['id']:
-                            loadElements[index]['elements'][sindex] = calculatedButtonData
-                            # sitem = calculatedButtonData
-                            print('I FOUND LAYOUT IN SUB REPLACE UPDATE STORE')
+        self._add(loadElements, calculatedButtonData, detailData['id'])
 
         print("SAVE -> " , loadElements)
         self.store.put('renderComponentArray', elements=loadElements )

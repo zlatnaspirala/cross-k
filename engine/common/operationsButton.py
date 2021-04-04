@@ -175,31 +175,15 @@ class EditorOperationButton():
     def closePopup(self, instance):
         self.popup.dismiss()
 
-    def __add_elementar(self, localStagedElements, calculatedLabelData):
-        # print('add btn elemntar')
-        founded = False
+    def _add(self,localStagedElements, calculatedLabelData, currentLayoutId ):
         for index, item in enumerate(localStagedElements):
-            if item['type'] == 'LAYOUT' and item['id'] == self.currentLayout:
-                print('FOUNDED')
-                founded = True
+            if item['id'] == currentLayoutId:
                 localStagedElements[index]['elements'].append(calculatedLabelData)
+                return localStagedElements
                 break
-
-        if founded == True:
-            return True
-
-        for index, item in enumerate(localStagedElements):
             if item['type'] == 'LAYOUT':
-                print('SEARCH LAYOUT', item['id'])
-                for subIndex, sub in enumerate(item['elements']):
-                    if item['type'] == 'LAYOUT' and sub['id'] == self.currentLayout:
-                        founded = True
-                        localStagedElements[index]['elements'][subIndex]['elements'].append(calculatedLabelData)
-                        return founded
-                        break
-
-        # print("founded return ", founded)
-        return founded
+                self._add(item['elements'], calculatedLabelData, currentLayoutId )
+        return False
 
     def oAddBtn(self, instance):
         ####################################################
@@ -269,7 +253,8 @@ class EditorOperationButton():
             if self.currentLayout == 'SCENE_ROOT':
                 localStagedElements.append(calculatedButtonData)
             else:
-                self.__add_elementar(localStagedElements, calculatedButtonData)
+                TEST = self._add(localStagedElements, calculatedButtonData , self.currentLayout)
+                print("AFTER ADD ELEMENTAR", TEST)
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
