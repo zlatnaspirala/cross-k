@@ -25,7 +25,7 @@ class SceneGUIContainer(ScrollView):
             parentName = "[" + parentName + "]"
 
         for _index, item in enumerate(loadElements):
-            print("update _index ", _index)
+            # print("update _index ", _index)
             if item['type'] == 'BUTTON':
                 test = Button(
                     markup=True,

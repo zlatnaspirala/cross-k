@@ -126,13 +126,10 @@ class PackagePopup():
         import subprocess
         #  stdout=PIPE, stderr=STDOUT
         process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        print(process.stdout)
         #with process.stdout:
         #    self.log_subprocess_output(process.stdout)
-        self.myLogs = []
-        for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
-            self.testLog = str(line)
-            self.LOGS.text = self.testLog
-            print ("PACKAGE:",  self.testLog)
-            # self.LOGS.text = '->' + test
+        #for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
+        #    print ("PACKAGE:",  str(line))
 
         print("Package application for windows ended.")

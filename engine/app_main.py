@@ -409,7 +409,7 @@ class EditorMain(BoxLayout):
                 # determinate type
                 if item['layoutType'] == "Box":
                     Attacher = BoxLayout
-                    print("BOX LOAD>>>>>>>>>>>>>>")
+                    # print("BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         #text=item['text'],
                         orientation=item['orientation'],
@@ -437,7 +437,7 @@ class EditorMain(BoxLayout):
 
                 elif item['layoutType'] == "Anchor":
                     Attacher = AnchorLayout
-                    print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
+                    # print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         anchor_x=item['anchor_x'],
                         anchor_y=item['anchor_y'],
@@ -456,13 +456,13 @@ class EditorMain(BoxLayout):
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
 
-                    print(">>>>", item['elements'])
+                    # print(">>>>", item['elements'])
                     self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Float":
                     Attacher = FloatLayout
 
-                    print("BOX FloatLayout LOAD>>>>>>>>>>>>>>")
+                    # print("BOX FloatLayout LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         #text=item['text'],
                         size=(300, 300),
@@ -487,7 +487,7 @@ class EditorMain(BoxLayout):
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
 
-                    print(">>>>", item['elements'])
+                    # print(">>>>", item['elements'])
                     self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType']  == "Grid":
@@ -527,7 +527,7 @@ class EditorMain(BoxLayout):
                     Attacher = Stack
 
                 # print('its lauout ,read sub items ->>>')
-                print('its lauout ,read sub items ->>>', item["layoutType"])
+                # print('its lauout ,read sub items ->>>', item["layoutType"])
 
     def updateScene(self):
 
