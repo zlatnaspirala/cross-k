@@ -2524,27 +2524,33 @@ class EditorMain(BoxLayout):
         assetDropdown.dismiss()
 
         for _index, item in enumerate(loadElements):
-            localBox = BoxLayout(size_hint=(1, None), height=30)
-            test = Button(
-                markup=True,
-                halign="left", valign="middle",
-                padding_x= 5,
-                font_size=15,
-                text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
-                color=self.engineConfig.getThemeTextColor(),
-                background_normal= '',
-                background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
-                on_press=partial(self.onSelectAsset, item),
-                size_hint=(1, None),
-                height=30
-            )
-            localBox.add_widget(test)
-            assetDropdown.add_widget(localBox)
-            test.bind(size=test.setter('text_size'))
+            if item['type'] == 'ImageResource':
+                localBox = BoxLayout(size_hint=(1, None), height=30)
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    padding_x= 5,
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
+                    color=self.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
+                    on_press=partial(self.onSelectAsset, item),
+                    size_hint=(1, None),
+                    height=30
+                )
+                localBox.add_widget(test)
+                assetDropdown.add_widget(localBox)
+                test.bind(size=test.setter('text_size'))
 
+
+    
         container.add_widget(assetDropdown)
         container.add_widget(test2)
         test2.bind(on_release=assetDropdown.open)
+        self.assetsDropdown = assetDropdown
 
-    def onSelectAsset():
-        print('good')
+    def onSelectAsset(self, currentAsset, instance):
+        print('good currentAsset ', currentAsset['type'])
+        self.detailsPictureImage.text = currentAsset['path']
+        self.assetsDropdown.dismiss()

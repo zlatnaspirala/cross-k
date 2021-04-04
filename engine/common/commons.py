@@ -1,4 +1,5 @@
 import re
+import os
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
@@ -12,7 +13,7 @@ from kivy.app import App
 from kivy.logger import Logger
 from kivy.uix.scatter import Scatter
 from kivy.properties import StringProperty
-import os
+from kivy.graphics import Color, Rectangle
 
 class PictureInternal():
 
@@ -37,13 +38,21 @@ class PictureAPath():
     def __init__(self, **kwargs):
         # get any files into images directory
         self.injectWidget = kwargs.get("injectWidget")
-        self.accessAssets = kwargs.get("accessAssets")
+        self.source = kwargs.get("source")
         #curdir = dirname(__file__)
         # backward 
         # path = os.getcwd()
         # print(os.path.abspath(os.path.join(path, os.pardir)))
-        picture1 = AsyncImage(source=self.accessAssets, size_hint=(1, 1))
+        picture1 = AsyncImage(source=self.source, size_hint=(1, 1))
+        with picture1.canvas.before:
+            Color(0.3,0.3,0.4,1)
+            picture1.rect = Rectangle(size=picture1.size,
+                                                pos=picture1.pos)
+        def update_rect(instance, value):
+            instance.rect.pos = instance.pos
+            instance.rect.size = instance.size
         self.injectWidget.add_widget(picture1)
+        picture1.bind(pos=update_rect, size=update_rect)
 
 def crossKValidateNumbers(txt):
     return re.findall('[^0-9]', txt)

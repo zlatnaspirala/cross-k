@@ -11,6 +11,8 @@ from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.properties import StringProperty, ObjectProperty
+from kivy.uix.image import Image, AsyncImage
+from engine.common.commons import PictureAPath
 # from kivy.cache.cache import Cache
 
 class ResourcesGUIContainer(ScrollView):
@@ -23,8 +25,6 @@ class ResourcesGUIContainer(ScrollView):
         self.engineRoot = kwargs.get("engineRoot")
 
         # Reset
-        self.orientation = 'horizontal'
-        self.cols = 1
         self.size_hint = (1,1)
         self.pos_hint = {'center_x':0.5,'top': 1}
 
@@ -36,38 +36,40 @@ class ResourcesGUIContainer(ScrollView):
     def _update(self, loadElements, container, parentName):
 
         for _index, item in enumerate(loadElements):
-            localBox = BoxLayout(size_hint=(1, None), height=30, orientation='vertical')
+            localBox = BoxLayout(size_hint=(1, None), height=99, orientation='horizontal')
             test = Button(
                 markup=True,
                 halign="left", valign="middle",
                 padding_x= 10,
                 font_size=15,
-                text='[b]' + item['name'] + '[/b][u][i] Image[/i][/u]',
+                text='[b]' + item['name'] + '[/b][u][i]' + item['type'] + '[/i][/u]',
                 color=self.engineRoot.engineConfig.getThemeTextColor(),
                 background_normal= '',
                 background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
                 on_press=partial(self.engineRoot.showCurrentAssetsEditor, item),
-                size_hint=(1, None),
-                height=30
+                size_hint=(0.55, None),
+                height=99
             )
             localBox.add_widget(test)
 
-            deleteAssetBtn = Button(
-                markup=True,
-                halign="left", valign="middle",
-                padding_x= 10,
-                font_size=15,
-                text='[b]Delete[/b]',
-                color=(self.engineRoot.engineConfig.getThemeCustomColor("alert")),
-                background_normal= '',
-                background_color=(self.engineRoot.engineConfig.getThemeCustomColor('background')),
-                on_press=partial(self.engineRoot.showCurrentAssetsEditor, item),
-                size_hint=(0.2, None),
-                height=30
-            )
-            localBox.add_widget(deleteAssetBtn)
+            # test__ = PictureAPath(injectWidget=localBox, source=item['path'])
+            if item['type'] == 'ImageResource':
+                picture1 = Button(background_normal=item['path'], size_hint=(0.3, None), height=99)
+            elif item['type'] == 'FontResource':
+                picture1 = Button(font_name=item['path'], text='Font', font_size=28, size_hint=(0.3, None), height=99)
 
+            with picture1.canvas.before:
+                Color(0.3,0.3,0.4,1)
+                picture1.rect = Rectangle(size=picture1.size,
+                                                    pos=picture1.pos)
+            def update_rect(instance, value):
+                instance.rect.pos = instance.pos
+                instance.rect.size = instance.size
+
+            localBox.add_widget(picture1)
+            picture1.bind(pos=update_rect, size=update_rect)
             container.add_widget(localBox)
+
             test.bind(size=test.setter('text_size'))
 
             if (_index==len(loadElements)-1):
@@ -77,17 +79,19 @@ class ResourcesGUIContainer(ScrollView):
 
         self.clear_widgets()
         self.assetsStore = JsonStore('projects/' + self.engineRoot.engineConfig.currentProjectName + '/data/assets.json')
+        loadElements = self.assetsStore.get('assetsComponentArray')['elements']
 
         # call theme, improve aplha arg
-        self.sceneScroller = GridLayout(
-            orientation='lr-tb',
+        self.sceneScroller = BoxLayout(
+            # cols=2,
+            orientation='vertical',
             size_hint=(1, None),
-            height=600
+            height=len(loadElements) * 99 + 35
         )
 
-        self.sceneScroller.cols = 1
+        # self.sceneScroller.cols = 2
         self.sceneScroller.size_hint_y= None
-        self.sceneScroller.spacing = 1
+        self.sceneScroller.spacing = 0
 
         self.sceneScroller.add_widget( Button(
                     markup=True,
@@ -101,6 +105,5 @@ class ResourcesGUIContainer(ScrollView):
                 )
 
         self.add_widget(self.sceneScroller)
-        loadElements = self.assetsStore.get('assetsComponentArray')['elements']
 
         self._update( loadElements, self.sceneScroller, 'rootScene')
