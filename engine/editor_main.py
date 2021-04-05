@@ -1461,14 +1461,10 @@ class EditorMain(BoxLayout):
         )
 
     def callAddNewLayoutGUIBox(self, currentData, instance):
-        print('ADD SUB ELEMENT LAYOUT......................[object]...............', currentData['id'])
-        print('ADD SUB ELEMENT LAYOUT......................type...............', currentData['type'])
-        print('ADD SUB ELEMENT LAYOUT......................elements...............', currentData['elements'])
-        # NEED PARENT LAYOUT REAL REFERENCE INSTANCE
         operationAddTest = EditorOperationBox(
             store=self.store,
             currentLayoutId=currentData['id'],
-            engineRoot=self,  # currentData['id']
+            engineRoot=self,
         )
 
     def __setLayoutType(self, instance):

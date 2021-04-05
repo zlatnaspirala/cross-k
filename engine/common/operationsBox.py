@@ -1,5 +1,6 @@
 import re
 import uuid
+from functools import partial
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
@@ -7,24 +8,15 @@ from kivy.uix.colorpicker import ColorPicker
 from kivy.uix.checkbox import CheckBox
 from kivy.uix.dropdown import DropDown
 from kivy.uix.textinput import TextInput
-#Anchor layout:
 from kivy.uix.anchorlayout import AnchorLayout
-#Box layout: 
 from kivy.uix.boxlayout import BoxLayout
-#Float layout:
 from kivy.uix.floatlayout import FloatLayout
-#Grid layout:
 from kivy.uix.gridlayout import GridLayout
-#Page Layout:
 from kivy.uix.pagelayout import PageLayout
-#Relative layout:
 from kivy.uix.relativelayout import RelativeLayout
-#Scatter layout:
 from kivy.uix.scatterlayout import ScatterLayout
-# Stack layout: 
 from kivy.uix.stacklayout import StackLayout
 from engine.common.modifycation import AlignedTextInput
-from functools import partial
 
 class EditorOperationBox():
 
@@ -43,7 +35,7 @@ class EditorOperationBox():
         print("Access currentLayoutId -> ", self.currentLayoutId)
 
         # Prepare content
-        content = BoxLayout(orientation="vertical", padding=[150,0,150,0])
+        content = GridLayout(orientation="lr-tb", padding=[150,0,150,0], cols=2)
         clrPickerTextColor = ColorPicker(size_hint=(1, 1))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 1))
         
@@ -103,15 +95,17 @@ class EditorOperationBox():
 
         content.add_widget(self.layoutTypeList)
 
-
         colorHolder = BoxLayout(size_hint=(1,None), height=160)
         content.add_widget(colorHolder)
 
         colorHolder.add_widget(Label(text='Button background color'))
         colorHolder.add_widget(clrPickerBackgroundColor)
-        colorHolder.add_widget(Label(text='Button text color'))
-        colorHolder.add_widget(clrPickerTextColor)
 
+        colorHolderT = BoxLayout(size_hint=(1,None), height=160)
+        content.add_widget(colorHolderT)
+
+        colorHolderT.add_widget(Label(text='Button text color'))
+        colorHolderT.add_widget(clrPickerTextColor)
 
         content.add_widget(Label(text='Orientation'))
         self.orientation = TextInput(text='vertical')
@@ -174,9 +168,9 @@ class EditorOperationBox():
         content.add_widget(Label(text='Position Hint Y'))
         self.buttonPositionHintY = TextInput(text='0', halign="center")
         content.add_widget(self.buttonPositionHintY)
-        
+
         # Popup
-        self.popup = Popup(title='Add new [b]Layout[/b] editor box', content=content, auto_dismiss=False)
+        self.popup = Popup(title='Add new Layout editor box', content=content, auto_dismiss=False)
 
         # Events attach
         clrPickerTextColor.bind(color=self.on_color) # pylint: disable=no-member
@@ -189,9 +183,21 @@ class EditorOperationBox():
             text='Add new Layout',
             size_hint=(1, None),
             height=88,
+            color=self.engineRoot.engineConfig.getThemeTextColor(),
+            background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
             on_press=lambda a:self.oAddBox(self)
         )
         content.add_widget(commitBtn)
+
+        cancelBtn = Button(
+            text='Cancel',
+            size_hint=(1, None),
+            height=88,
+            color=self.engineRoot.engineConfig.getThemeTextColor(),
+            background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+            on_press=lambda a:self.DissmisPopup(self)
+        )
+        content.add_widget(cancelBtn)
 
     def __setLayoutType(self, instance):
         print("__setLayoutType", instance)
@@ -291,9 +297,7 @@ class EditorOperationBox():
             if self.currentLayoutId == None:
                 localStagedElements.append(calculatedButtonData)
             else:
-                TEST = self._add(localStagedElements, calculatedButtonData , self.currentLayoutId)
-
-        print('RETURN OF ADD_ELEMNET ', TEST)
+                self._add(localStagedElements, calculatedButtonData , self.currentLayoutId)
 
         # Final
         self.store.put('renderComponentArray', elements=localStagedElements)
