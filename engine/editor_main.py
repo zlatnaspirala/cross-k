@@ -1963,36 +1963,13 @@ class EditorMain(BoxLayout):
             if item['type'] == 'LAYOUT':
                 self.__deleteElementar(item['elements'], elementID)
         return False
-
-        # DELETE DETAILS GUI BOX
         self.editorElementDetails.clear_widgets()
 
     def delete(self, elementID, elementType,  instance):
 
-        # print("delete element type ", elementType)
-        # print("delete element ID ", elementID)
-        # print("instance ", instance)
-
-        # updaet always
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
         rootElements = self.store.get('renderComponentArray')['elements']
-
-        self.FLAG_MICA = []
-
         modifitedData = self.__deleteElementar(rootElements, elementID)
- 
-        print(self.FLAG_MICA)
-
-        # harcode
-        #
-        if len(self.FLAG_MICA) == 4:
-            rootElements[self.FLAG_MICA[0]]['elements'][self.FLAG_MICA[1]]['elements'][self.FLAG_MICA[2]]['elements'].pop(self.FLAG_MICA[3])
-        if len(self.FLAG_MICA) == 3:
-            rootElements[self.FLAG_MICA[0]]['elements'][self.FLAG_MICA[1]]['elements'].pop(self.FLAG_MICA[2])
-        elif len(self.FLAG_MICA) == 2:
-            rootElements[self.FLAG_MICA[0]]['elements'].pop(self.FLAG_MICA[1])
-        elif len(self.FLAG_MICA) == 1:
-            rootElements.pop(self.FLAG_MICA[0])
 
         self.closeWithNoSaveDetails(None)
         self.store.put('renderComponentArray', elements=rootElements)
@@ -2535,8 +2512,6 @@ class EditorMain(BoxLayout):
                 assetDropdown.add_widget(localBox)
                 test.bind(size=test.setter('text_size'))
 
-
-    
         container.add_widget(assetDropdown)
         container.add_widget(test2)
         test2.bind(on_release=assetDropdown.open)
