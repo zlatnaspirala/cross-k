@@ -17,14 +17,12 @@ class SceneGUIContainer(ScrollView):
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
 
-    # TEST
     def checkDeepNidza(self, loadElements, sumOfElements):
-        local = sumOfElements
-        sumOfElements += sumOfElements + len(loadElements)
         for _index, item in enumerate(loadElements):
+            self.local += 1
             if item['type'] == 'LAYOUT':
-                return self.checkDeepNidza(item['elements'], sumOfElements)
-        return sumOfElements
+                self.checkDeepNidza(item['elements'], self.local)
+        return self.local
 
     def _update(self, loadElements, container, parentName):
 
@@ -117,16 +115,23 @@ class SceneGUIContainer(ScrollView):
             if (_index==len(loadElements)-1):
                 self.deepTest=0
 
+    def getAbsoluteSUmElements(self, elements):
+        return self.checkDeepNidza(elements, len(elements) )
+
     def selfUpdate(self):
 
         self.clear_widgets()
         self.myStore = JsonStore(self.storePath)
+        loadElements = self.myStore.get('renderComponentArray')['elements']
+
+        self.local = 0
+        determinateNumberOfElements = self.getAbsoluteSUmElements(loadElements)
 
         # call theme, improve aplha arg
         self.sceneScroller = GridLayout(
             orientation='lr-tb',
             size_hint=(1, None),
-            height=600
+            height=(determinateNumberOfElements + 3 )* 30
         )
 
         self.sceneScroller.cols = 1
@@ -145,8 +150,6 @@ class SceneGUIContainer(ScrollView):
                 )
 
         self.add_widget(self.sceneScroller)
-        loadElements = self.myStore.get('renderComponentArray')['elements']
-
         self._update( loadElements, self.sceneScroller, 'rootScene')
 
     def __init__(self, **kwargs):
@@ -154,6 +157,8 @@ class SceneGUIContainer(ScrollView):
 
         self.storePath = kwargs.get("storePath", "null")
         self.engineRoot = kwargs.get("engineRoot")
+
+        self.local = 0
 
         self.deepTest = 0
 
