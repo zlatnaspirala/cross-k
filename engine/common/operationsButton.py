@@ -27,7 +27,7 @@ class EditorOperationButton():
         print("Access store -> ", self.store)
 
         # Prepare content
-        content = GridLayout( cols=2, padding=[150,0,150,0])
+        content = GridLayout( cols=2, padding=[150,0,150,0], spacing=1)
         clrPickerTextColor = ColorPicker(size_hint=(1, 3))
         clrPickerBackgroundColor = ColorPicker(size_hint=(1, 3))
         content.add_widget(Label(text='Button Name(Tag)', size_hint=(1,None),
@@ -76,19 +76,19 @@ class EditorOperationButton():
                 height=30)
         content.add_widget(self.buttonPositionHintY)
 
-        myCheckDimSys = BoxLayout(size_hint=(1,None),
-                height=30)
-        myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
+        # myCheckDimSys = BoxLayout(size_hint=(1,None),
+        #        height=30)
+        content.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
                 height=30))
-        content.add_widget(myCheckDimSys)
+        # content.add_widget(myCheckDimSys)
         self.checkboxDim = CheckBox(size_hint=(1,None),
                 height=30)
-        myCheckDimSys.add_widget(self.checkboxDim)
+        content.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use Pixel Dimensions', size_hint=(1,None),
-                height=30))
+        #content.add_widget(Label(text='Use Pixel Dimensions Width', size_hint=(1,None),
+        #        height=30))
 
         content.add_widget(Label(text='Width', size_hint=(1,None),
                 height=30))
@@ -104,18 +104,18 @@ class EditorOperationButton():
                 height=30)
         content.add_widget(self.buttonHeightText)
 
-        myCheckPerSys = BoxLayout(size_hint=(1,None),
-                height=30)
-        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions range[0-1]', size_hint=(1,None),
+        # myCheckPerSys = BoxLayout(size_hint=(1,None),
+        #        height=30)
+        content.add_widget(Label(text='Use Percent Dimensions range[0-1]', size_hint=(1,None),
                 height=30))
-        content.add_widget(myCheckPerSys)
+        # content.add_widget(myCheckPerSys)
         self.checkboxPer = CheckBox(active=True, size_hint=(1,None),
                 height=30)
-        myCheckPerSys.add_widget(self.checkboxPer)
+        content.add_widget(self.checkboxPer)
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use percent dimensions. Use 0.2 is 20%\ of parent width/height ', size_hint=(1,None),
-                height=30))
+        #content.add_widget(Label(text='Use percent dimensions. Use 0.2 is 20%\ of parent width/height ', size_hint=(1,None),
+        #        height=30))
 
         content.add_widget(Label(text='Width in percent range[0-1]', size_hint=(1,None),
                 height=30))
@@ -156,9 +156,10 @@ class EditorOperationButton():
         # Bind elements
         infoBtn2 = Button(
             text='Add new button', 
+            size_hint=(1, None), height=70,
             font_size=18,
             background_normal= '',
-            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+            background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
             color=self.engineRoot.engineConfig.getThemeTextColor(),
             on_press=lambda a:self.oAddBtn(self))
         content.add_widget(infoBtn2)
@@ -166,8 +167,9 @@ class EditorOperationButton():
         cancelBtn = Button(
             text='Cancel',
             font_size=18,
+            size_hint=(1, None), height=70,
             background_normal= '',
-            background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+            background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
             color=self.engineRoot.engineConfig.getThemeTextColor(),
             on_press=lambda a:self.closePopup(self))
         content.add_widget(cancelBtn)

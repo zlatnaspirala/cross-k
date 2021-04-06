@@ -1955,33 +1955,13 @@ class EditorMain(BoxLayout):
         self.currentProjectMenuDropdown.open(self)
 
     def __deleteElementar(self, currElements, elementID):
-
-        print("delete element in root first  ", currElements)
-        isPassed = False
-
         for index, item in enumerate(currElements):
-            print("index", index)
-
             if item['id'] == elementID:
                 print('I FOUND REFS IN ROOT DELETE - UPDATE STORE ', item['name'])
                 currElements.pop(index)
-                isPassed = True
                 return currElements
-                break
-
-            print("isPassed ", isPassed)
-            if isPassed == False:
-                for index, item in enumerate(currElements):
-                    print("search subs in ", currElements)
-
-                    if item['type'] == "LAYOUT" and len(item['elements']) > 0:
-                        print('I FOUND [DELETE]  layout with elements - DEEP SEARCH ', item['name'])
-                        for indexSub, itemSub in enumerate(item['elements']):
-                            if itemSub['id'] == elementID:
-                                currElements[index]['elements'].pop(indexSub)
-                                isPassed = True
-                                return currElements
-                                break
+            if item['type'] == "LAYOUT" and len(item['elements']) > 0:
+                self.__deleteElementar(item['elements'], elementID)
         
         # DELETE DETAILS GUI BOX
         self.editorElementDetails.clear_widgets()
@@ -1997,7 +1977,7 @@ class EditorMain(BoxLayout):
         rootElements = self.store.get('renderComponentArray')['elements']
 
         modifitedData = self.__deleteElementar(rootElements, elementID)
-        # print(modifitedData)
+        print(modifitedData)
         self.closeWithNoSaveDetails(None)
         self.store.put('renderComponentArray', elements=modifitedData)
         self.updateScene()

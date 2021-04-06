@@ -17,6 +17,15 @@ class SceneGUIContainer(ScrollView):
     currentProjectPath = StringProperty('null')
     currentProjectName = StringProperty('null')
 
+    # TEST
+    def checkDeepNidza(self, loadElements, sumOfElements):
+        local = sumOfElements
+        sumOfElements += sumOfElements + len(loadElements)
+        for _index, item in enumerate(loadElements):
+            if item['type'] == 'LAYOUT':
+                return self.checkDeepNidza(item['elements'], sumOfElements)
+        return sumOfElements
+
     def _update(self, loadElements, container, parentName):
 
         if parentName == "rootScene":
@@ -62,10 +71,10 @@ class SceneGUIContainer(ScrollView):
                 container.add_widget(test)
 
             if item['type'] == 'LAYOUT':
-                self.localGrid = GridLayout(
-                    cols=1,
-                    size_hint=(1, None),
-                    height=30 * (len(item['elements']) + 1))
+                #self.localGrid = GridLayout(
+                #    cols=1,
+                #    size_hint=(1, 1) ,
+                #    height=30 * (len(item['elements']) + 1) + self.checkDeepNidza(item['elements'], 0) * 30 + 30)
                 localTest = Button(
                     markup=True,
                     halign="left", valign="middle",
@@ -80,12 +89,12 @@ class SceneGUIContainer(ScrollView):
                     height=30
                 )
                 localTest.bind(size=localTest.setter('text_size'))
-                self.localGrid.add_widget(localTest)
+                #self.localGrid.add_widget(localTest)
 
-                container.add_widget( self.localGrid )
+                container.add_widget( localTest )
                 if len(item['elements']) > 0:
                     self.deepTest=self.deepTest+1
-                    self._update(  item['elements'] , self.localGrid, item['name'])
+                    self._update(  item['elements'] , container, item['name'])
 
             if item['type'] == 'PICTURE_CLICKABLE':
                 test = Button(

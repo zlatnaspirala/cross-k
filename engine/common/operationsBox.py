@@ -128,30 +128,32 @@ class EditorOperationBox():
         self.layoutSpacing = TextInput(text="0")
         content.add_widget(self.layoutSpacing)
 
-        myCheckDimSys = BoxLayout()
-        myCheckDimSys.add_widget(Label(text='Use Pixel Dimensions'))
-        content.add_widget(myCheckDimSys)
+        #myCheckDimSys = BoxLayout()
+        content.add_widget(Label(text='Use Pixel Dimensions'))
+        #content.add_widget(myCheckDimSys)
         self.checkboxDim = CheckBox()
-        myCheckDimSys.add_widget(self.checkboxDim)
+        content.add_widget(self.checkboxDim)
 
         self.checkboxDim.bind(active=self.on_checkbox_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use Pixel Dimensions'))
+        content.add_widget(Label(text='Use Pixel For Width'))
         self.buttonWidthText = TextInput(text='200')
         content.add_widget(self.buttonWidthText)
+        content.add_widget(Label(text='Use Pixel For Height'))
         self.buttonHeightText = TextInput(text='100')
         content.add_widget(self.buttonHeightText)
 
-        myCheckPerSys = BoxLayout()
-        myCheckPerSys.add_widget(Label(text='Use Percent Dimensions'))
-        content.add_widget(myCheckPerSys)
+        #myCheckPerSys = BoxLayout()
+        content.add_widget(Label(text='Use Percent Dimensions'))
+        #content.add_widget(myCheckPerSys)
         self.checkboxPer = CheckBox(active=True)
-        myCheckPerSys.add_widget(self.checkboxPer)
+        content.add_widget(self.checkboxPer)
         self.checkboxPer.bind(active=self.on_checkbox_per_active) # pylint disable=no-member
 
-        content.add_widget(Label(text='Use percent dimensions range(0 - 1).'))
+        content.add_widget(Label(text='Use percent dimensions range(0 - 1). Width'))
         self.buttonHintX = TextInput(text='1')
         content.add_widget(self.buttonHintX)
+        content.add_widget(Label(text='Use percent dimensions range(0 - 1). Height'))
         self.buttonHintY = TextInput(text='1')
         content.add_widget(self.buttonHintY)
 
@@ -184,7 +186,7 @@ class EditorOperationBox():
             size_hint=(1, None),
             height=88,
             color=self.engineRoot.engineConfig.getThemeTextColor(),
-            background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+            background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
             on_press=lambda a:self.oAddBox(self)
         )
         content.add_widget(commitBtn)
@@ -194,7 +196,7 @@ class EditorOperationBox():
             size_hint=(1, None),
             height=88,
             color=self.engineRoot.engineConfig.getThemeTextColor(),
-            background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+            background_color=(self.engineRoot.engineConfig.getThemeCustomColor('engineBtnsBackground')),
             on_press=lambda a:self.DissmisPopup(self)
         )
         content.add_widget(cancelBtn)
