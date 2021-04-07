@@ -122,7 +122,7 @@ class PackagePopup():
         else:
             print("PACK DIR EXIST...")
 
-        bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
+        bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"
         import subprocess
         #  stdout=PIPE, stderr=STDOUT
         # process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
