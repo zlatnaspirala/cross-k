@@ -9,3 +9,4 @@ ubuntu-env/
 macos-env/
 win-env/
 venv/
+*.spec

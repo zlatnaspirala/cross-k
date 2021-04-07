@@ -125,7 +125,9 @@ class PackagePopup():
         bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
         import subprocess
         #  stdout=PIPE, stderr=STDOUT
-        process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        # process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        process = subprocess.run(bashCommand.split())
+
         print(process.stdout)
         #with process.stdout:
         #    self.log_subprocess_output(process.stdout)
