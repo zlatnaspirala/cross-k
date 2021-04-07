@@ -2533,7 +2533,6 @@ class EditorMain(BoxLayout):
         container.add_widget(assetDropdown)
         container.add_widget(test2)
         test2.bind(on_release=assetDropdown.open)
-        self.assetsDropdown = assetDropdown
 
     def onSelectAsset(self, currentAsset, instance):
         print('good currentAsset ', currentAsset['type'])
