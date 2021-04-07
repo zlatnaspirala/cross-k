@@ -254,7 +254,7 @@ class EditorMain(BoxLayout):
         ###############################################################
         # App root layout instance
         ###############################################################
-        self.engineLayout = EngineLayout()
+        self.engineLayout = EngineLayout(orientation="vertical")
 
         # Step : runtime setup project global data.
         # ProjectName and ProjectPath root , also setup config.
@@ -1270,9 +1270,20 @@ class EditorMain(BoxLayout):
                 color=self.engineConfig.getThemeTextColor(),
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('warn')),
-                on_press=partial(self.callAddNewElementGUIBox, detailData))
+                on_press=partial(self.callAddNewButonGUI, detailData))
             )
         
+        localBox.add_widget(Button(
+            markup=True,
+            text="[b]Add Picture[/b]",
+            size_hint=(0.2,None),
+            height=30,
+            color=self.engineConfig.getThemeTextColor(),
+            background_normal= '',
+            background_color=(self.engineConfig.getThemeCustomColor('warn')),
+            on_press=partial(self.callAddNewPictureGUI, detailData))
+            )
+
         localBox.add_widget(
             Button(
                 markup=True,
@@ -1446,8 +1457,15 @@ class EditorMain(BoxLayout):
             ))
 
     # LAYOUTS BTN FRIST BLOCK
-    def callAddNewElementGUIBox(self, currentData, instance):
+    def callAddNewButonGUI(self, currentData, instance):
         operationAddTest = EditorOperationButton(
+            store=self.store,
+            currentLayout=currentData['id'], # works
+            engineRoot=self,
+        )
+
+    def callAddNewPictureGUI(self, currentData, instance):
+        operationAddTest = EditorOperationPicture(
             store=self.store,
             currentLayout=currentData['id'], # works
             engineRoot=self,
