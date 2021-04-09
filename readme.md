@@ -16,6 +16,9 @@
 ## This is the beginning of a beautiful friendship
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/engine/assets/logo/logo.png)
 
+## Video 10 min app
+https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
+
 ## First Demo with attaching script
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/CROSSK_APP_ENGINE_BETA.png)
 
