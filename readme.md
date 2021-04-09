@@ -7,20 +7,32 @@
     Created to make future fast and quick. No builds losing time any more.
 
 ### Objective:
-    Create multiplatform target builds with real time net driver.
+    - Create multiplatform target builds with real time net driver.
     Basic : 2D UI visual app creator. Future features player, networking, 3d/2d canvas based engine.
     Because html5 is excluded for now from this story maybe some real time networking makes fit for 
     all platforms. 
     In basic we can create server-client native application for any platform (desktops, android)
 
+    - Create server part with also visual GUI approach.
+    Strong implementation and relationship between creating server database entity with client
+    automatic adaptation in preview mode.
+
 ## This is the beginning of a beautiful friendship
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/engine/assets/logo/logo.png)
 
-## Video 10 min app
+## Video 10 min app demostration
 https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 
-## First Demo with attaching script
-![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/CROSSK_APP_ENGINE_BETA.png)
+## Screenshot Basic usage
+
+ - Left is Scene list and assets list scrollbars
+![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/0.4.0.png)
+
+- Label details box
+![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/details.png)
+
+- Images example
+![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/cross-k.png)
 
 After cloning this project only need to install python3, pip3and kivy 2.0 framework
 You need first time to create `kivy_venv`:
