@@ -22,6 +22,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.anchorlayout import AnchorLayout
+from kivy.uix.pagelayout import PageLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
@@ -58,12 +59,17 @@ class EditorMain(BoxLayout):
 
     def loadProjectFiles(self):
 
-        CURRENT_PATH = os.path.abspath(
-          os.path.join(os.path.dirname(__file__), '../projects/' + self.pack + '/')
-        )
+        #CURRENT_PATH = os.path.abspath(
+        #  os.path.join(os.getcwd(), '/'+ self.pack + '/')
+        #)
+        if platform == "win":
+            CURRENT_PATH = os.getcwd() + '\\'+ self.pack + '\\'
+        else:
+            CURRENT_PATH = os.getcwd() + '/'+ self.pack + '/'
+
         if not os.path.exists(CURRENT_PATH):
             getMessageBoxYesNo(
-                "Not exist project with name `' + self.pack + '`. Please look at /projects/ root folder. Subfolder name is project name.",
+                "Not exist project with name . Please look at /projects/ root folder. Subfolder name is project name.",
                 "OK",
                 "null"
             )
@@ -216,6 +222,7 @@ class EditorMain(BoxLayout):
                     constructedApplicationButton = Button(
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         # pos_hint=testLocalPosHint, # maybe disable
+                        font_size=item['fontSize'],
                         pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
                         text=item['text'],
                         color=item['color'],
@@ -243,6 +250,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         text=item['text'],
+                        font_size=item['fontSize'],
                         color=item['color'],
                         background_normal= '',
                         background_color= item['bgColor'],
@@ -266,6 +274,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         pos_hint_x=float(item['pos_hint_x']),
                         pos_hint_y=float(item['pos_hint_y']),
+                        font_size=item['fontSize'],
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -289,6 +298,7 @@ class EditorMain(BoxLayout):
                     local_size_hintX = None
                     local_size_hintY= None
                     test = Label(
+                        multiline=True,
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
@@ -409,7 +419,7 @@ class EditorMain(BoxLayout):
                 # determinate type
                 if item['layoutType'] == "Box":
                     Attacher = BoxLayout
-                    # print("BOX LOAD>>>>>>>>>>>>>>")
+                    print("BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         #text=item['text'],
                         orientation=item['orientation'],
@@ -437,7 +447,7 @@ class EditorMain(BoxLayout):
 
                 elif item['layoutType'] == "Anchor":
                     Attacher = AnchorLayout
-                    # print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
+                    print("Anchorlayout BOX LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         anchor_x=item['anchor_x'],
                         anchor_y=item['anchor_y'],
@@ -456,13 +466,13 @@ class EditorMain(BoxLayout):
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
 
-                    # print(">>>>", item['elements'])
+                    print(">>>>", item['elements'])
                     self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Float":
                     Attacher = FloatLayout
 
-                    # print("BOX FloatLayout LOAD>>>>>>>>>>>>>>")
+                    print("BOX FloatLayout LOAD>>>>>>>>>>>>>>")
                     myAttacher = Attacher(
                         #text=item['text'],
                         size=(300, 300),
@@ -487,21 +497,16 @@ class EditorMain(BoxLayout):
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
 
-                    # print(">>>>", item['elements'])
+                    print(">>>>", item['elements'])
                     self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType']  == "Grid":
                     Attacher = GridLayout
                     myAttacher = Attacher(
-                        #text=item['text'],
-                        # size=(300, 300),
-                        #orientation=item['orientation'],
-                        cols=2,
+                        cols=int(item['cols']),
+                        rows=int(item['rows']),
                         spacing=float(item['spacing']),
                         padding=float(item['padding']),
-                        color=item['color'],
-                        background_normal= '',
-                        background_color= item['bgColor'],
                         size_hint_x=local_size_hintX,
                         size_hint_y=local_size_hintY
                         )
@@ -516,9 +521,33 @@ class EditorMain(BoxLayout):
                     # listen to size and position changes
                     currentCointainer.add_widget(myAttacher)
                     myAttacher.bind(pos=update_rect, size=update_rect)
+                    self._readElementar(myAttacher, item['elements'])
 
                 elif item['layoutType'] == "Page":
+                    # PageLayout does not currently honor the 
+                    # size_hint, size_hint_min, size_hint_max, or pos_hint properties.
+                    # page: 3
+                    # border: 120
+                    # swipe_threshold: .4
                     Attacher = PageLayout
+                    myAttacher = Attacher(
+                        page=1,
+                        border=120,
+                        swipe_threshold=float(item['swipe_threshold'])
+                        )
+                    with myAttacher.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        myAttacher.rect = Rectangle(size=myAttacher.size,
+                        pos=myAttacher.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    # listen to size and position changes
+                    currentCointainer.add_widget(myAttacher)
+                    myAttacher.bind(pos=update_rect, size=update_rect)
+                    self._readElementar(myAttacher, item['elements'])
+
                 elif item['layoutType'] == "Relative":
                     Attacher = Relative
                 elif item['layoutType'] == "Scatter":
@@ -527,7 +556,92 @@ class EditorMain(BoxLayout):
                     Attacher = Stack
 
                 # print('its lauout ,read sub items ->>>')
-                # print('its lauout ,read sub items ->>>', item["layoutType"])
+
+            if item != None and item['type'] == 'PICTURE_CLICKABLE':
+                local_size_hintX = None
+                local_size_hintY= None
+
+                constructedApplicationButton = None
+
+                ##"pos_x": "0",
+                #"pos_y": "0",
+                #"pos_hint_x": "0",
+                #"pos_hint_y": "0"
+
+                if item['dimensionRole'] == "pixel":
+                    local_size_hintX = None
+                    local_size_hintY= None
+                    testLocalPosHint = (float(item['pos_hint_x']), float(item['pos_hint_y']))
+                    print(testLocalPosHint)
+                    constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        # pos_hint=testLocalPosHint, # maybe disable
+                        font_size=item['fontSize'],
+                        pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= item['image'].replace("projects/", ""),
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'],
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'] ) ) 
+
+                elif item['dimensionRole'] == "hint":
+
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    constructedApplicationButton = Button(
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
+                        text=item['text'],
+                        font_size=item['fontSize'],
+                        color=item['color'],
+                        background_normal= item['image'].replace("projects/", ""),
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        on_press=partial(self.engineLayout.attachEvent, item['attacher'])
+                    ) 
+
+                elif item['dimensionRole'] == "combine":
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    constructedApplicationButton = Button(
+                        #pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint_x=float(item['pos_hint_x']),
+                        #pos_hint_y=float(item['pos_hint_y']),
+                        #font_size=item['fontSize'],
+                        text=item['text'],
+                        color=item['color'],
+                        background_normal= item['image'].replace("projects/", ""),
+                        background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'],
+                        # on_press=partial(self.engineLayout.attachEvent, item['attacher'])
+                    )
+
+                currentCointainer.add_widget(constructedApplicationButton)
+
 
     def updateScene(self):
 

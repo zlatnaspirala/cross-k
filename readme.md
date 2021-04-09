@@ -180,7 +180,7 @@ from MS Visual Code Editor.
 
 ACTUAL VERSION [no release] BETA
 
-BETA VERSION [0.3.0] STATUS
+BETA VERSION [0.4.0] STATUS
 
 [EDITOR]
 
@@ -198,6 +198,7 @@ BETA VERSION [0.3.0] STATUS
      - AssetsContainer to select and preview assets items
        in left side of engine window -scroll added
 
+ - Remove elements
  - Add Element type:
        - Button element
        - Label element
