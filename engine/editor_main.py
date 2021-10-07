@@ -493,13 +493,13 @@ class EditorMain(BoxLayout):
         packWindows = Button(text='Make package for windows',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
-                      background_normal= '',
+                      # background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.packageWinApp)
         packLinux = Button(text='Make package for Linux',
                       color=(self.engineConfig.getThemeTextColor()),
                       size_hint=(1, None),  height=30, width=300,
-                      background_normal= '',
+                      # background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.packageWinApp)
         self.packageDropdown.add_widget(packWindows)

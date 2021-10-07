@@ -30,16 +30,67 @@ class PackagePopup():
         if not os.path.exists(CURRENT_PACK_PATH):
             print("MAKE PACK DIR.")
             os.mkdir(CURRENT_PACK_PATH)
-        else:
-            print("PACK DIR EXIST.")
+        print("CrossK Editor: copy data files in package folder.")
+        testpackfolder = "projects/" + self.engineConfig.currentProjectName + "/Package/"
+        if not os.path.exists(testpackfolder):
+            os.mkdir(testpackfolder)
 
-        # bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py Project1-app.spec"
+        if platform == 'win':
+            csrcdata = "projects/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName + ".json"
+            dsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName +".json"
+            startsrcdata = "projects/" + self.engineConfig.currentProjectName + "/data/"
+            destsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folder.")
+                os.mkdir(destsrcdata)
+            destsrcdata = destsrcdata + "/data/"
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            copyfile(csrcdata, dsrcdata)
+            for root, dirs, files in os.walk(startsrcdata):
+                for file in files:
+                    path_file = os.path.join(root,file)
+                    #print("CrossK Editor SRC = " + path_file)
+                    #print("CrossK Editor DEST = " + destsrcdata)
+                    collectName = file.split(".")[0]
+                    if file.split(".")[1] != "json" :
+                        finaldestdata = destsrcdata + "/" + collectName + "/"
+                    else:
+                        finaldestdata = destsrcdata + "/"
+                    if not os.path.exists(finaldestdata):
+                        os.mkdir(finaldestdata)
+                    shutil.copy2(path_file, finaldestdata, follow_symlinks=True)
+
+        elif platform == 'linux' or True:
+            csrcdata = "projects/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName + ".json"
+            dsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName +".json"
+            startsrcdata = "projects/" + self.engineConfig.currentProjectName + "/data/"
+            destsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            destsrcdata = destsrcdata + "/data/"
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            copyfile(csrcdata, dsrcdata)
+            for root, dirs, files in os.walk(startsrcdata):
+                for file in files:
+                    path_file = os.path.join(root,file)
+                    collectName = file.split(".")[0]
+                    if file.split(".")[1] != "json" :
+                        finaldestdata = destsrcdata + "/" + collectName + "/"
+                    else:
+                        finaldestdata = destsrcdata + "/"
+                    if not os.path.exists(finaldestdata):
+                        os.mkdir(finaldestdata)
+                    shutil.copy2(path_file, finaldestdata, follow_symlinks=True)
+
         bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"
-        # bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
         print("Pack script: ", bashCommand )
         import subprocess
         process = subprocess.run(bashCommand.split())
-
         try:
             if procces.stdout != None and procces.stdout != 'NoneType':
                 for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
@@ -54,7 +105,7 @@ class PackagePopup():
         print("showWindowsPackPopup....")
         box = BoxLayout(orientation="vertical", spacing=1)
 
-        self.infoBtn = Button(text='Cancel')
+        self.infoBtn = Button(text='Cancel', size_hint=(1, 0.5))
         PictureInternal(injectWidget=box, accessAssets="logo")
         if platform == 'win':
             box.add_widget(Label(size_hint=(1, 0.5), text='Make windows APP_NAME.exe final application package with PROJECT_NAME data folder. \n After packing You can use https://jrsoftware.org/isinfo.php '))
@@ -68,7 +119,7 @@ class PackagePopup():
         _local0 = '[b]Package Execute File destination path:[b] ' + self.engineConfig.currentProjectPath + '/Package/'
         box.add_widget(Label(size_hint=(1, 0.2), markup=True, text=_local0 ))
 
-        self.makeWinPackBtn = Button(markup=True, text='[b]Make Package[b]')
+        self.makeWinPackBtn = Button(markup=True, size_hint=(1, 0.5), text='[b]Make Package[b]')
 
         self.testLog = "test log"
         self.LOGS = TextInput(text='', foreground_color=(0,1,0,1) ,
@@ -104,13 +155,12 @@ class PackagePopup():
 
     # DISABLED
     def runInNewThreadLinux(self):
-
         t = threading.Thread(target=self.makeLinuxPack)
         t.start()
         print('...started')
         t.join()
         print('finished')
-  
+
     def log_subprocess_output(self, pipe):
         for line in io.TextIOWrapper(pipe, encoding="utf-8"):
             print(line)
@@ -118,7 +168,7 @@ class PackagePopup():
         #for line in iter(pipe.readline, b''): # b'\n'-separated lines
         #    self.infoBtn.text = str(line)
         #    print('got line from subprocess: %r', line)
-    
+
     def makeWinPack(self):
 
         CURRENT_PACK_PATH = os.path.abspath(
@@ -130,12 +180,10 @@ class PackagePopup():
         else:
             print("CrossK Editor: Package folder exist.")
 
-
         print("CrossK Editor: copy data files in package folder.")
 
         testpackfolder = "projects/" + self.engineConfig.currentProjectName + "/Package/"
         if not os.path.exists(testpackfolder):
-            print("CrossK Editor: Creating package data folders!!!")
             os.mkdir(testpackfolder)
 
         if platform == 'win':

@@ -42,14 +42,15 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 
  - 3) You need first time to create `kivy_venv`:
 
-  Windows command line
+  Windows command line [Only first time]
   ```cmd
     python -m pip install --upgrade --force-reinstall pip
     python -m pip install --upgrade pip setuptools virtualenv
     python -m virtualenv kivy_venv
   ```
 
-- 4) Activate env
+- 4) Activate env 
+     [you need to activate env every time before start to work on it]
 
   Windows command
   ```cmd

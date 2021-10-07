@@ -60,9 +60,6 @@ class EditorMain(BoxLayout):
 
     def loadProjectFiles(self):
 
-        #CURRENT_PATH = os.path.abspath(
-        #  os.path.join(os.getcwd(), '/'+ self.pack + '/')
-        #)
         if platform == "win":
             CURRENT_PATH = os.getcwd() + '\\'+ self.pack + '\\'
         else:
@@ -72,11 +69,10 @@ class EditorMain(BoxLayout):
             getMessageBoxYesNo(
                 "Not exist project data files with name . " + CURRENT_PATH,
                 "OK",
-                "null"
-            )
+                "null")
             return 0
 
-        print("LOAD EXE PROJECT PROCEDURE")
+        # print("LOAD EXE PROJECT PROCEDURE")
         ###############################################################
         # App root layout instance
         ###############################################################
