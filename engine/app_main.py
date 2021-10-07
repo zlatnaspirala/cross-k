@@ -8,6 +8,7 @@ from builtins import chr
 import os
 import threading
 import uuid
+import pkgutil
 
 import kivy
 from kivy.config import Config
@@ -69,14 +70,13 @@ class EditorMain(BoxLayout):
 
         if not os.path.exists(CURRENT_PATH):
             getMessageBoxYesNo(
-                "Not exist project with name . Please look at /projects/ root folder. Subfolder name is project name.",
+                "Not exist project data files with name . " + CURRENT_PATH,
                 "OK",
                 "null"
             )
             return 0
-            
 
-        # print("LOAD PROJECT PROCEDURE")
+        print("LOAD EXE PROJECT PROCEDURE")
         ###############################################################
         # App root layout instance
         ###############################################################
@@ -96,7 +96,7 @@ class EditorMain(BoxLayout):
         self.add_widget(self.engineLayout)
         # Loading
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.pack + '.json')
-        loadElements = self.store.get('renderComponentArray')['elements']
+        # loadElements = self.store.get('renderComponentArray')['elements']
         self.updateScene()
 
     def packageWinApp(self, instance):
@@ -642,12 +642,13 @@ class EditorMain(BoxLayout):
 
                 currentCointainer.add_widget(constructedApplicationButton)
 
-
     def updateScene(self):
 
         # self.closeWithNoSaveDetails()
-
+        # TEST 0.5.0
+        # help_bin = pkgutil.get_data('crosskpack', 'Project1.json' )
         self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.pack + '.json')
+
         loadElements = self.store.get('renderComponentArray')['elements']
 
         print('----------------------------------')

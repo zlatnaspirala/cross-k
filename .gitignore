@@ -10,3 +10,4 @@ macos-env/
 win-env/
 venv/
 *.spec
+*.pyc

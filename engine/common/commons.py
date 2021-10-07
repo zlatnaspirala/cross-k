@@ -18,7 +18,6 @@ from kivy.graphics import Color, Rectangle
 class PictureInternal():
 
     def __init__(self, **kwargs):
-        # get any files into images directory
         self.injectWidget = kwargs.get("injectWidget")
         self.accessAssets = kwargs.get("accessAssets")
         #curdir = dirname(__file__)
@@ -27,7 +26,10 @@ class PictureInternal():
         # path = os.getcwd()
         # print(os.path.abspath(os.path.join(path, os.pardir)))
         curdir2 =  assetsPath + '/engine/assets/' + self.accessAssets +  '/' + self.accessAssets + '.png'
-        picture1 = AsyncImage(source=curdir2, size_hint=(1, 1))
+        picture1 = AsyncImage(source=curdir2,
+                              allow_stretch=True,
+                              size_hint=( 1, None),
+                              height=225)
         self.injectWidget.add_widget(picture1)
 
     def on_pause(self):

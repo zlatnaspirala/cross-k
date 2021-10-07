@@ -11,6 +11,8 @@ from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.button import Button
 
+Config.set('kivy', 'keyboard_mode', 'systemandmulti')
+
 # Replace here
 from engine.app_main import EditorMain
 
@@ -21,16 +23,16 @@ class MyApp(App):
     def aboutCrossK(self):
 
         print("-------------------------------------------------")
-        print("-CrossK engine App build 0.4.0 BETA            .-")
-        print("-This is build pack root class for final app   .-")
-        print("-build. Optimised and represent single target  .-")
-        print("-point. We build all platforms with this class .-")
-        print("-------------------------------------------------")
-        print("- ACTION NEEDED                                .-")
-        print("- CHANGE PROJECT NAME -> pack='Project1'       .-")
-        print("-------------------------------------------------")
-        print("-SUPPORT PACKAGE TARGETS: WIN, LINUX-------------")
-        print("-------------------------------------------------")
+        print("-CrossK engine App build 0.5.0 BETA            .-")
+        print("-This is build pack root class for final app     .-")
+        print("-build. Optimised and represent single target    .-")
+        print("-point. We build all platforms with this class   .-")
+        print("---------------------------------------------------")
+        print("- ACTION NEEDED                                  .-")
+        print("- NEEDS COPY OF PROJECTNAMEFOLDER WITH DATA.      -")
+        print("--------------------------------------------------")
+        print("-SUPPORT PACKAGE TARGETS: WIN, LINUX--------------")
+        print("--------------------------------------------------")
 
     def build(self):
         self.title = 'CROSSK ENGINE'

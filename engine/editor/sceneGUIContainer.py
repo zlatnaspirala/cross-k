@@ -141,10 +141,10 @@ class SceneGUIContainer(ScrollView):
         self.sceneScroller.add_widget( Button(
                     markup=True,
                     text='[Scene-Root]',
-                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    color=self.engineRoot.engineConfig.getThemeBgSceneBoxColor(),
                     size_hint=(1, None),
                     background_normal= '',
-                    background_color=(self.engineRoot.engineConfig.getThemeBackgroundColor()),
+                    background_color=(self.engineRoot.engineConfig.getThemeTextColor()),
                     height=35
                     )
                 )

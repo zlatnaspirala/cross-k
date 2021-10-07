@@ -1,3 +1,4 @@
+import shutil
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
@@ -12,6 +13,9 @@ import os
 import io
 import threading
 from functools import partial
+from shutil import copyfile
+
+from engine.common.commons import getMessageBoxYesNo
 
 class PackagePopup():
 
@@ -29,7 +33,9 @@ class PackagePopup():
         else:
             print("PACK DIR EXIST.")
 
-        bashCommand = "python3 -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"
+        # bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py Project1-app.spec"
+        bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"
+        # bashCommand = "python -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ main.py"
         print("Pack script: ", bashCommand )
         import subprocess
         process = subprocess.run(bashCommand.split())
@@ -46,30 +52,30 @@ class PackagePopup():
     def showWindowsPackPopup(self):
 
         print("showWindowsPackPopup....")
-        box = BoxLayout(orientation="vertical")
+        box = BoxLayout(orientation="vertical", spacing=1)
 
         self.infoBtn = Button(text='Cancel')
         PictureInternal(injectWidget=box, accessAssets="logo")
         if platform == 'win':
-            box.add_widget(Label(text='Make windows app.exe final application package.'))
+            box.add_widget(Label(size_hint=(1, 0.5), text='Make windows APP_NAME.exe final application package with PROJECT_NAME data folder. \n After packing You can use https://jrsoftware.org/isinfo.php '))
         elif platform == 'linux':
-            box.add_widget(Label(text='Make final linux application package.'))
+            box.add_widget(Label(size_hint=(1, 0.5), text='Make final linux application package with PROJECT_NAME data folder.'))
         else:
-            box.add_widget(Label(text='Make final macos application package.'))
-        
+            box.add_widget(Label(size_hint=(1, 0.5), text='Make final macos application package with PROJECT_NAME data folder.'))
+
         _local1 = '[b]Relative path:[b] ' + self.engineConfig.currentProjectName
-        box.add_widget(Label(markup=True, text=_local1))
-        _local0 = '[b]Package Execute File destination path:[b] ' + self.engineConfig.currentProjectPath
-        box.add_widget(Label( markup=True, text=_local0 ))
-    
+        box.add_widget(Label(size_hint=(1, 0.2), markup=True, text=_local1))
+        _local0 = '[b]Package Execute File destination path:[b] ' + self.engineConfig.currentProjectPath + '/Package/'
+        box.add_widget(Label(size_hint=(1, 0.2), markup=True, text=_local0 ))
+
         self.makeWinPackBtn = Button(markup=True, text='[b]Make Package[b]')
-        
+
         self.testLog = "test log"
         self.LOGS = TextInput(text='', foreground_color=(0,1,0,1) ,
             background_color=self.engineConfig.getThemeBackgroundColor())
 
-        box.add_widget(Label(markup=True,
-                            text="""[b]Debug logs[b]"""))
+        self.debugLogTextLabel = Label(markup=True, text="Building final execute package in progress ... Editor will be freezed until packaging works. You can go to visual code terminal to see logs.")
+        box.add_widget(self.debugLogTextLabel)
         box.add_widget(self.LOGS)
 
         box.add_widget(self.makeWinPackBtn)
@@ -91,13 +97,14 @@ class PackagePopup():
     def runInNewThread(self):
         t = threading.Thread(target=self.makeWinPack)
         t.start()
-        print('...started')
+        print('started')
         t.join()
         print('finished')
-    
+        getMessageBoxYesNo("Packing finised. Please check your PROJECT_NAME/Package folder.", "OK")
+
     # DISABLED
     def runInNewThreadLinux(self):
- 
+
         t = threading.Thread(target=self.makeLinuxPack)
         t.start()
         print('...started')
@@ -106,7 +113,8 @@ class PackagePopup():
   
     def log_subprocess_output(self, pipe):
         for line in io.TextIOWrapper(pipe, encoding="utf-8"):
-           self.LOGS.text = self.infoBtn.text + line
+            print(line)
+            self.LOGS.text = self.LOGS.text + line
         #for line in iter(pipe.readline, b''): # b'\n'-separated lines
         #    self.infoBtn.text = str(line)
         #    print('got line from subprocess: %r', line)
@@ -117,21 +125,82 @@ class PackagePopup():
           os.path.join(os.path.dirname(__file__), '../../projects/' + self.engineConfig.currentProjectName + "/Package/")
         )
         if not os.path.exists(CURRENT_PACK_PATH):
-            print("MAKE PACK DIR")
+            print("CrossK Editor: Creating package folder. All nessesery files will be created intro "  + self.engineConfig.currentProjectName + "/package folder.")
             os.mkdir(CURRENT_PACK_PATH)
         else:
-            print("PACK DIR EXIST...")
+            print("CrossK Editor: Package folder exist.")
 
+
+        print("CrossK Editor: copy data files in package folder.")
+
+        testpackfolder = "projects/" + self.engineConfig.currentProjectName + "/Package/"
+        if not os.path.exists(testpackfolder):
+            print("CrossK Editor: Creating package data folders!!!")
+            os.mkdir(testpackfolder)
+
+        if platform == 'win':
+            csrcdata = "projects/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName + ".json"
+            dsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName +".json"
+            startsrcdata = "projects/" + self.engineConfig.currentProjectName + "/data/"
+            destsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            destsrcdata = destsrcdata + "/data/"
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            copyfile(csrcdata, dsrcdata)
+            for root, dirs, files in os.walk(startsrcdata):
+                for file in files:
+                    path_file = os.path.join(root,file)
+                    #print("CrossK Editor SRC = " + path_file)
+                    #print("CrossK Editor DEST = " + destsrcdata)
+                    collectName = file.split(".")[0]
+                    if file.split(".")[1] != "json" :
+                        finaldestdata = destsrcdata + "/" + collectName + "/"
+                    else:
+                        finaldestdata = destsrcdata + "/"
+                    if not os.path.exists(finaldestdata):
+                        os.mkdir(finaldestdata)
+                    shutil.copy2(path_file, finaldestdata, follow_symlinks=True)
+
+        elif platform == 'linux' or True:
+            csrcdata = "projects/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName + ".json"
+            dsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName + "/" + self.engineConfig.currentProjectName +".json"
+            startsrcdata = "projects/" + self.engineConfig.currentProjectName + "/data/"
+            destsrcdata = "projects/" + self.engineConfig.currentProjectName + "/Package/" + self.engineConfig.currentProjectName
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            destsrcdata = destsrcdata + "/data/"
+            if not os.path.exists(destsrcdata):
+                print("CrossK Editor: Creating package data folders!!!")
+                os.mkdir(destsrcdata)
+            copyfile(csrcdata, dsrcdata)
+            for root, dirs, files in os.walk(startsrcdata):
+                for file in files:
+                    path_file = os.path.join(root,file)
+                    #print("CrossK Editor SRC = " + path_file)
+                    #print("CrossK Editor DEST = " + destsrcdata)
+                    collectName = file.split(".")[0]
+                    if file.split(".")[1] != "json" :
+                        finaldestdata = destsrcdata + "/" + collectName + "/"
+                    else:
+                        finaldestdata = destsrcdata + "/"
+                    if not os.path.exists(finaldestdata):
+                        os.mkdir(finaldestdata)
+                    shutil.copy2(path_file, finaldestdata, follow_symlinks=True)
+
+        # bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py projects/Project1/Project1-app.spec"
         bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"
         import subprocess
-        #  stdout=PIPE, stderr=STDOUT
-        # process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
-        process = subprocess.run(bashCommand.split())
-
-        print(process.stdout)
-        #with process.stdout:
-        #    self.log_subprocess_output(process.stdout)
+        # stdout=PIPE, stderr=STDOUT
+        process = subprocess.Popen(bashCommand.split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        #process = subprocess.run(bashCommand.split())
+        # print(process.stdout)
+        with process.stdout:
+            self.log_subprocess_output(process.stdout)
         #for line in iter(process.stdout.readline, b'\n'): # b'\n'-separated lines
         #    print ("PACKAGE:",  str(line))
-
-        print("Package application for windows ended.")
+            print("Package application for windows ended.")

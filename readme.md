@@ -2,17 +2,15 @@
 # Cross-K project
 ### Based on kivy 2.0 framework (Python3)
 
-    Based on kivy 2.0 python framework. GPL-3.0 License with avavailable source code.
-    CrossK is a small but conspiratorial app engine based on kivy opengles2.0 in background.
-    Created to make future fast and quick. No builds losing time any more.
+    Based on kivy 2.0 python framework. GPL-3.0 License with available source code.
+    CrossK is a small but conspiratorial app engine based on kivy 2 / opengles 2.0 in background.
+    Created to make future fast and quick.
 
 ### Objective:
     - Create multiplatform target builds with real time net driver.
     Basic : 2D UI visual app creator. Future features player, networking, 3d/2d canvas based engine.
     Because html5 is excluded for now from this story maybe some real time networking makes fit for 
-    all platforms. 
-    In basic we can create server-client native application for any platform (desktops, android)
-
+    all platforms. In basic we can create server-client native application for any platform (desktops, android)
     - Create server part with also visual GUI approach.
     Strong implementation and relationship between creating server database entity with client
     automatic adaptation in preview mode.
@@ -34,58 +32,43 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 - Images example
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/cross-k.png)
 
-After cloning this project only need to install python3, pip3and kivy 2.0 framework
-You need first time to create `kivy_venv`:
-
-Windows command line
-```cmd
-python3 -m c kivy_venv
-```
-
-### Activate env before run engine
-
-Windows command
-```cmd
-kivy_venv\Scripts\activate
-```
-
-Bash command
-```bash
-source kivy_venv/Scripts/activate
-```
 
 ## Installation
 
-```js
-pip3 install kivy[full] kivy_examples
-pip3 install --upgrade pip wheel setuptools
-pip3 install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew --user
-pip3 install docutils pygments pypiwin32 kivy.deps.sdl2 kivy.deps.glew 
-             --extra-index-url https://kivy.org/downloads/packages/simple/
-pip3 install kivy
-pip3 install kivy.deps.gstreamer
-pip3 install kivy.deps.angle
-pip3 install --upgrade pyinstaller
-pip3 install python-for-android
+ - 1) After cloning this project only need to install python (current used 3.9.5 python version),
+      pip on you computer. Allow adding env variable during installation.
 
-cd submodules/
-docker build --tag=p4a --file Dockerfile .
+ - 2) Run this `pre-installation.bat`
 
-```
+ - 3) You need first time to create `kivy_venv`:
 
+  Windows command line
+  ```cmd
+    python -m pip install --upgrade --force-reinstall pip
+    python -m pip install --upgrade pip setuptools virtualenv
+    python -m virtualenv kivy_venv
+  ```
 
-If you have problem with:
-```js
-pip3 ...
-Then use this format
-pip3.9 install ...
-or
-python3 -m pip install
-```
+- 4) Activate env
+
+  Windows command
+  ```cmd
+  kivy_venv\Scripts\activate
+  ```
+
+  Bash command
+  ```bash
+  source kivy_venv/Scripts/activate
+  ```
+
+ - Now you can install last version of kivy 2.1.0 framework.
+
+  You can try this windows installation script `install-win.bat`
+  You can try this macox installation script `install-macos.sh`
+  You can try this linux installation script `install-ubuntu.sh`
+
 
 ## Run Engine:
-
-You can use it like this if have some `paths` problem `kivy_venv/Scripts/python.exe`.
 
 ```
 python main.py
@@ -103,48 +86,6 @@ kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_PROJECT1 --d
 ```
 
 [ANDROID] WIP
-
-```js
-docker run \
-    --interactive \
-    --tty \
-    --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/testapps \
-    p4a sh -c
-        '. venv/bin/activate \
-        && cd testapps \
-        && python setup_vispy.py apk \
-        --sdk-dir $ANDROID_SDK_HOME \
-        --ndk-dir $ANDROID_NDK_HOME'
-
-docker run --interactive --tty --volume "/G/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/submodules/python-for-android/testapps":/home/user/testapps p4a sh -c ". venv/bin/activate && cd testapps && python setup_testapp_python3_sqlite_openssl.py apk --package=nikola.car.sdl2 --name='nidzasdl2' --version=0.5 --bootstrap=sdl2 --sdk-dir $ANDROID_SDK_HOME --ndk-dir $ANDROID_NDK_HOME "
-
-Docker:
-
-p4a apk python3 setup_testapp_python3_sqlite_openssl.py --package=nikola.car.sdl2 --name='nidzasdl2' --version=0.5 --bootstrap=sdl2 --sdk-dir=/usr/lib/android-sdk --ndk-dir=/home/user/android-ndk/android-ndk-r20
-
-/usr/lib/android-sdk
-/home/user/android-ndk/android-ndk-r20
-
-wget -c https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip 
-unzip android-ndk-r20-linux-x86_64.zip 
-
-export ANDROIDSDK="/usr/lib/android-sdk"
-export ANDROIDNDK="/home/user/android-ndk/android-ndk-r20"
-export ANDROIDAPI="28"  # Target API version of your application
-export NDKAPI="20"  # Minimum supported API version of your application
-export ANDROIDNDKVER="r20"  # Version of the NDK you installed
-export PATH=/usr/lib/android-sdk/:$PATH
-export PATH=/usr/lib/android-sdk/cmdline-tools/3.0/bin/:$PATH
-source /etc/bash.bash
-source .bashrc
-
-sudo su
-
-docker cp C/Users/Nikola Lukic/Downloads/commandlinetools-linux.zip CONTAINER_ID:/usr/lib/android-sdk
-android tools still needed to install 
-docker commit 3ecefc2ff45d  crossk/android:ver2
-
-```
 
 
 ## STRUCTURE
@@ -200,11 +141,11 @@ BETA VERSION [0.4.0] STATUS
 [EDITOR]
 
  - Add option solution for dimension ref system
-   (use pixels, percents or combine)  
+   (use pixels, percents or combine)
 
  - Add option solution for frameLayout and 
    position hint also.
-   (use pixels, percents or combine)   
+   (use pixels, percents or combine)
 
  - Manage scene element
      - Details box with save options
