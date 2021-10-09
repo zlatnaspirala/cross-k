@@ -100,12 +100,12 @@ kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_PROJECT1 --d
 from MS Visual Code Editor.
 
 <pre>
-├── .cache/                        (Auto generated)
-├── .vscode/                       (VisualCode/debugger)
-├── components/                    (empty for now)
-├── demos/                         (not project files)
-├── main.py                        (Engine Instance)
-├── app.py                         (App Instance)
+├── .cache/                      (Auto generated)
+├── .vscode/                     (VisualCode/debugger)
+├── inactive/                    (not project files)
+├── projects/                    (Auto generated - Project files)
+├── main.py                      (App Instance - PackageProduction)
+├── crossk-editor.py             (Engine Editor Instance)
 ├── engine/
 |   ├── assets/
 |   ├── common/
@@ -129,7 +129,6 @@ from MS Visual Code Editor.
 |   ├── editor_main.py             Main Engine File
 |   ├── app_main.py                Main Final App File [Used for package proccess]
 |   ├── kivy_venv/                 (Auto generated - env libraries)
-|   ├── projects/                  (Auto generated - Project files)
 |   ├── shader-editor/             (non project files)
 </pre>
 
@@ -187,18 +186,14 @@ BETA VERSION [0.4.0] STATUS
 
 [PACKAGE-ANDROID]
 
+ - Preparing automatisation for window docker apk build  [WIP]
  - Test kivy solution                               [NOTESTED]
  - Test canvas solution (if ti posible)             [NOTESTED]
  - Test opengles2/3 in native canvas manir          [NOTESTED]
-
 </pre>
 
 
 ### Android WIP
 
-Best choose Linux Ubuntu
-```
-pip install python-for-android
-```
-
-For windows users use docker
+ First implementation for windows building android apk... wip
+ [0.5.0]

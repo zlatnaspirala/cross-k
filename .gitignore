@@ -14,4 +14,3 @@ win-env/
 venv/
 *.spec
 *.pyc
-.buildozer/android/platform/build-armeabi-v7a/build/bootstrap_builds/sdl2/ant.properties
