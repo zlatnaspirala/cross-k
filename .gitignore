@@ -1,4 +1,7 @@
 
+non-project-files/
+.buildozer/
+inactive/
 .cache/
 *.spec
 components/__pycache__/layout.cpython-39.pyc
@@ -11,3 +14,4 @@ win-env/
 venv/
 *.spec
 *.pyc
+.buildozer/android/platform/build-armeabi-v7a/build/bootstrap_builds/sdl2/ant.properties

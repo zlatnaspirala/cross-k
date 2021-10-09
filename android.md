@@ -1,44 +1,98 @@
 
 [ANDROID] WIP
 
-```js
-docker run \
-    --interactive \
-    --tty \
-    --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/testapps \
-    p4a sh -c
-        '. venv/bin/activate \
-        && cd testapps \
-        && python setup_vispy.py apk \
-        --sdk-dir $ANDROID_SDK_HOME \
-        --ndk-dir $ANDROID_NDK_HOME'
+## Requirements
 
-docker run --interactive --tty --volume "/G/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/submodules/python-for-android/testapps":/home/user/testapps p4a sh -c ". venv/bin/activate && cd testapps && python setup_testapp_python3_sqlite_openssl.py apk --package=nikola.car.sdl2 --name='nidzasdl2' --version=0.5 --bootstrap=sdl2 --sdk-dir $ANDROID_SDK_HOME --ndk-dir $ANDROID_NDK_HOME "
+  Installed Docker application.
 
-Docker:
+  For manual setup:
+   - https://guides.codepath.com/android/installing-android-sdk-tools
+   - https://androidsdkmanager.azurewebsites.net/Buildtools
 
-p4a apk python3 setup_testapp_python3_sqlite_openssl.py --package=nikola.car.sdl2 --name='nidzasdl2' --version=0.5 --bootstrap=sdl2 --sdk-dir=/usr/lib/android-sdk --ndk-dir=/home/user/android-ndk/android-ndk-r20
 
-/usr/lib/android-sdk
-/home/user/android-ndk/android-ndk-r20
+## AUTOMATISATION FLOW [WIP]
+### This can help for any host platform.
+```bash
 
+sudo apt-get install cython3
+sudo apt-get install autoconf
+sudo apt-get install automake
+sudo apt-get install g++
+sudo apt-get install libtool m4 automake
+sudo apt-get install lld
+
+pip3 install Cython
+pip3 install --upgrade Cython
+sudo apt-get install -y cython3
+
+pip3 install certifi
+pip3 install requests
+pip3 install python-for-android
+
+export ANDROID_SDK_HOME=/home/user/Android/android-sdk
+export ANDROID_HOME=/home/user/Android/android-sdk
+export ANDROIDSDK=/home/user/Android/android-sdk
+export ANDROID_NDK_HOME=/home/user/android-ndk-r21e
+export PATH=$ANDROID_HOME/cmdline-tools/3.0/bin:$PATH
+export PATH=$ANDROID_HOME/tools:$PATH
+export PATH=/home/user/.local/bin:$PATH
+
+# Defaults Paths can be different
+# tools/bin/sdkmanager "platforms;android-27" "build-tools;27.0.0"
+sdkmanager "platforms;android-27" "build-tools;27.0.0"
+
+# ACTIVATE KIVY PY ENV
+# . venv/bin/activate
+
+# DOWNLOAD PROCEDURE
+# wget https://dl.google.com/android/repository/build-tools_r27.0.3-linux.zip
+# unzip myzip.zip
+
+# Intro android sdk tools
+# ./android update sdk --no-ui
+```
+
+## Buildozer
+
+```bash
+git clone https://github.com/kivy/buildozer.git
+sudo python3 setup.py install
+buildozer init
+```
+
+## Docker part
+```
+docker run --interactive --tty --volume "/G/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/":/home/user/testapps
+```
+
+Test
+```bash
+p4a apk python3 setup_testapp_python3_sqlite_openssl.py --package=org.maximumroulette.crossktest1 --name "Crossk android application" --version 0.1 --bootstrap=sdl2 --requirements=python3,kivy --sdk-dir=$ANDROID_SDK_HOME
+
+p4a apk --package=org.maximumroulette.crossktest1 --name "Crossk android application" --version 0.1 --bootstrap=sdl2 --requirements=python3,kivy --sdk-dir=$ANDROID_SDK_HOME
+
+buildozer -v android debug
+```
+
+### Simple copy folder
+
+cp -R /usr/lib/android-sdk /home/user/Android
+Default path Not in use `/usr/lib/android-sdk` !
+
+
+### Download 19 , 20 or 21 Defautl 19.
+
+```bash
 wget -c https://dl.google.com/android/repository/android-ndk-r20-linux-x86_64.zip 
-unzip android-ndk-r20-linux-x86_64.zip 
+unzip android-ndk-r20-linux-x86_64.zip
+```
 
-export ANDROIDSDK="/usr/lib/android-sdk"
-export ANDROIDNDK="/home/user/android-ndk/android-ndk-r20"
-export ANDROIDAPI="28"  # Target API version of your application
-export NDKAPI="20"  # Minimum supported API version of your application
-export ANDROIDNDKVER="r20"  # Version of the NDK you installed
-export PATH=/usr/lib/android-sdk/:$PATH
-export PATH=/usr/lib/android-sdk/cmdline-tools/3.0/bin/:$PATH
-source /etc/bash.bash
-source .bashrc
+# Copy file from host to docker container
+# In case that you download from windows host and wanna put it intro docker ...
+# Optimal - better all works done in container then commit to new docker image!
 
-sudo su
-
+```bash
 docker cp C/Users/Nikola Lukic/Downloads/commandlinetools-linux.zip CONTAINER_ID:/usr/lib/android-sdk
-android tools still needed to install 
+# android tools still needed to install
 docker commit 3ecefc2ff45d  crossk/android:ver2
-
 ```

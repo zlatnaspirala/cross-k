@@ -60,6 +60,8 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
   Bash command
   ```bash
   source kivy_venv/Scripts/activate
+
+  kivy_venv/Scripts/activate
   ```
 
  - Now you can install last version of kivy 2.1.0 framework.

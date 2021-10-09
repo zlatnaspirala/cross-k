@@ -1,12 +1,5 @@
 
 import os
-
-#os.environ["KIVY_NO_ARGS"] = "1"
-#os.environ['KIVY_IMAGE'] = "pil,sdl2" # use pil instead of SDL2 image if you get the libpng16 error
-# you must add to the path the location of your SDL2 binaries
-#os.environ['PATH'] += ';' + os.path.expandvars('%AppData%\\Python\\share\\glew\\bin')
-#os.environ['PATH'] += ';' + os.path.expandvars('%AppData%\\Python\\share\\sdl2\\bin')
-
 import kivy
 from kivy.config import Config
 
@@ -20,26 +13,31 @@ from kivy.uix.button import Button
 
 Config.set('kivy', 'keyboard_mode', 'systemandmulti')
 
-from engine.editor_main import EditorMain
+# Replace here
+from engine.app_main import EditorMain
 
-Config.set('graphics', 'resizable', True)
+Config.set('graphics', 'resizable', True) 
 
 class MyApp(App):
 
-    def aboutCrossK(self, instance):
+    def aboutCrossK(self):
 
         print("-------------------------------------------------")
-        print("-CrossK engine 0.2.0                           .-")
-        print(" Version Beta                                  .-")
-        print(" - Support UI context [add/edit gui]           .-")
-        print("  ->Button, Layout, Label, PictureCliclable    .-")
-        print("  ->Scene container                            .-")
-        print(" - Bind Script [extend kivy2/python3.9]        .-")
-        print("-------------------------------------------------")
+        print("-CrossK engine App build 0.5.0 BETA            .-")
+        print("-This is build pack root class for final app     .-")
+        print("-build. Optimised and represent single target    .-")
+        print("-point. We build all platforms with this class   .-")
+        print("---------------------------------------------------")
+        print("- ACTION NEEDED                                  .-")
+        print("- NEEDS COPY OF PROJECTNAMEFOLDER WITH DATA.      -")
+        print("--------------------------------------------------")
+        print("-SUPPORT PACKAGE TARGETS: WIN, LINUX--------------")
+        print("--------------------------------------------------")
 
     def build(self):
-        self.title = 'CrossK Multiplatform App Engine'
-        return EditorMain()
+        self.title = 'CROSSK ENGINE'
+        self.aboutCrossK()
+        return EditorMain(pack="Project1")
 
 if __name__ == '__main__':
     MyApp().run()
