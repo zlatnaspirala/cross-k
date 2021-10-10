@@ -11,6 +11,6 @@ ubuntu-env/
 macos-env/
 win-env/
 venv/
-*.spec
+
 *.pyc
-bin/crosskproject1-0.1-armeabi-v7a-debug.apk
+bin/
