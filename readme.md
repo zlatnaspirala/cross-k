@@ -108,14 +108,15 @@ from MS Visual Code Editor.
 ├── inactive/                    (not project files)
 ├── projects/                    (Auto generated - Project files)
 ├── main.py                      (App Instance - PackageProduction)
-├── crossk-editor.py             (Engine Editor Instance)
+├── crossk.editor                (Engine Editor Instance - This is python file)
 ├── engine/
 |   ├── assets/
 |   ├── common/
 |   |   └── assetsEditor.py
 |   |   └── assetsEditorOperation.py
 |   |   └── commons.py
-|   |   └── enginePackage.py
+|   |   └── enginePackage.py           (Popup GUI for windows, linux, macos packing)
+|   |   └── enginePackageAndroid.py    (Popup GUI for android packing)
 |   |   └── modification.py
 |   |   └── operationBox.py
 |   |   └── operationButton.py
@@ -123,16 +124,16 @@ from MS Visual Code Editor.
 |   |   └── operationsPicture.py
 |   ├── editor/
 |   |   └── layout.py
-|   |   └── networking.py
+|   |   └── networking.py            For now kivy support only curl (http request)
 |   |   └── resources.py
-|   |   └── scripter.py            Future visual node sub editor,text script for now
+|   |   └── scripter.py              Future visual node sub editor,text script for now
 |   |   └── resourcesGUIContainer.py
-|   |   └── sceneGUIContainer.py
-|   ├── config.py                  (Engine editor config)
-|   ├── editor_main.py             Main Engine File
-|   ├── app_main.py                Main Final App File [Used for package proccess]
-|   ├── kivy_venv/                 (Auto generated - env libraries)
-|   ├── shader-editor/             (non project files)
+|   |   └── sceneGUIContainer.py     Visual Editor Asset GUI box
+|   ├── config.py                    (Engine editor config)
+|   ├── editor_main.py               Main Engine File
+|   ├── app_main.py                  Main Final App File [Used for package proccess]
+|   ├── kivy_venv/                   (Auto generated - env libraries)
+|   ├── shader-editor/               (non project files)
 </pre>
 
 # [CROSSK-STATUS-LIST]
@@ -141,7 +142,7 @@ from MS Visual Code Editor.
 
 ACTUAL VERSION [no release] BETA
 
-BETA VERSION [0.4.0] STATUS
+BETA VERSION [0.5.0] STATUS
 
 [EDITOR]
 
@@ -184,8 +185,9 @@ BETA VERSION [0.4.0] STATUS
 
  - Package for windows                             [SUPPORTED]
  - Package for Linux                               [SUPPORTED]
- - Package for android                             [NOTESTED]
+ - Package for android                             [SUPPORTED]
  - Package for macOS                               [NOTESTED]
+ - Package for iOS                                 [NOTESTED]
 
 [PACKAGE-ANDROID]
 
