@@ -62,6 +62,7 @@ from engine.common.operationsLabel import EditorOperationLabel
 from engine.common.operationsBox import EditorOperationBox
 from engine.common.operationsPicture import EditorOperationPicture
 from engine.common.enginePackage import PackagePopup
+from engine.common.enginePackageAndroid import PackagePopupAndroid
 from kivy.utils import platform
 #########################################################
 # CrossK App level dependency                           #
@@ -425,7 +426,15 @@ class EditorMain(BoxLayout):
             return None
 
         local = PackagePopup(engineConfig=self.engineConfig)
-        print("Package application for engine started.")
+        print("Package box for windows or linux started.")
+
+    def packageAndroidApp(self, instance):
+
+        if self.programStatus == 'FREE':
+            return None
+
+        local = PackagePopupAndroid(engineConfig=self.engineConfig)
+        print("Package box for Android started.")
 
     def __init__(self, **kwargs):
         super(EditorMain, self).__init__(**kwargs)
@@ -502,8 +511,15 @@ class EditorMain(BoxLayout):
                       # background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.packageWinApp)
+        packAndroid = Button(text='Make package for Android [docker]',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(1, None),  height=30, width=300,
+                      # background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                      on_press=self.packageAndroidApp)
         self.packageDropdown.add_widget(packWindows)
         self.packageDropdown.add_widget(packLinux)
+        self.packageDropdown.add_widget(packAndroid)
         self.editorMenuLayout.add_widget(self.packageDropdown)
 
         # Assets

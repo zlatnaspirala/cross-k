@@ -139,3 +139,8 @@ docker container run -d --name CROSSKDOCK --tty --volume "G:\web_server\xampp\ht
 docker run -a stdin -a stdout -i -t -v /g/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k:/home/user/crossk zlatnaspirala/crossk-android:beta /bin/bash
 
 docker run -a stdin -a stdout -i -t -v "G:/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/":/home/user/crossk zlatnaspirala/crossk-android:beta /bin/bash 
+
+sudo buildozer -v android debug
+
+# FIRST TIME SUDO
+docker run -a stdin -a stdout -i -t -v /g/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k:/home/user/crossk --workdir /home/user/crossk zlatnaspirala/crossk-android:beta ls && sudo buildozer -v android debug

@@ -26,7 +26,7 @@
       "name": "Windows Debugger",
       "type": "python",
       "request": "launch",
-      "program": "G:\\web_server\\xampp\\htdocs\\PRIVATE_SERVER\\PYTHON\\cross-k\\cross-k\\main.py",
+      "program": "G:\\web_server\\xampp\\htdocs\\PRIVATE_SERVER\\PYTHON\\cross-k\\cross-k\\crossk.editor",
       "console": "integratedTerminal"
     }
   ]
