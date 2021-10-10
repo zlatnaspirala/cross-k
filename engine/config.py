@@ -30,7 +30,7 @@ class EngineConfig:
 
     # RUNTIME USAGE IN APP LEVEL - PreDefinitions
     self.currentProjectPath = 'mynull'
-    self.currentProjectName = 'mynull'
+    self.currentEnginePath = 'mynull'
 
     self.platformRoles = {
       'showAboutBoxOnLoad': False,

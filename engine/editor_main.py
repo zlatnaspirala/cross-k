@@ -157,6 +157,9 @@ class EditorMain(BoxLayout):
             )
             return 0
 
+        CURRENT_ENGINE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+
+
         # print("LOAD PROJECT PROCEDURE")
         ###############################################################
         # App root layout instance
@@ -168,6 +171,7 @@ class EditorMain(BoxLayout):
         self.engineConfig.currentProjectName = self.projectName.text
         self.engineConfig.currentProjectPath = CURRENT_PATH
         self.engineConfig.currentProjectAssetPath = CURRENT_ASSET_PATH
+        self.engineConfig.currentEnginePath = CURRENT_ENGINE_PATH
         self.engineLayout.currentProjectPath=self.engineConfig.currentProjectPath
         self.engineLayout.currentProjectName=self.engineConfig.currentProjectName
 
