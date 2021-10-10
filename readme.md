@@ -37,6 +37,8 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 
  - 1) After cloning this project only need to install python (current used 3.9.5 python version),
       pip on you computer. Allow adding env variable during installation.
+      Install Docker on your system, i use version 20.10.8, build 3967b7d
+      After installation check in terminal `docker -v`.
 
  - 2) Run this `pre-installation.bat`
 
@@ -74,7 +76,7 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 ## Run Engine:
 
 ```
-python crossk-editor.editor
+python crossk.editor
 ```
 
 # Package System
@@ -88,8 +90,9 @@ Manual you can package whole engine not just application project.
 kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name CROSSK_PROJECT1 --distpath packages/projectTest --workpath .cache/ main.py
 ```
 
-[ANDROID] WIP
+[ANDROID]
 
+  
 
 ## STRUCTURE
 
@@ -197,3 +200,4 @@ BETA VERSION [0.4.0] STATUS
 
  First implementation for windows building android apk... wip
  [0.5.0]
+

@@ -122,7 +122,7 @@ docker run \
 
 
 docker run \
-     zlatnaspirala/crossk:packandroid1
+     zlatnaspirala/crossk-android:beta
     --interactive \
     --tty \
     --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/crossk \
@@ -132,3 +132,10 @@ docker run \
         && buildozer -v android debug'
 
 
+docker ${args_to_docker} run ${args_to_run} image_ref ${cmd_in_container}
+
+docker container run -d --name CROSSKDOCK --tty --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/crossk zlatnaspirala/crossk-android:beta /bin/bash cd.. && cd crossk && buildozer -v android debug
+
+docker run -a stdin -a stdout -i -t -v /g/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k:/home/user/crossk zlatnaspirala/crossk-android:beta /bin/bash
+
+docker run -a stdin -a stdout -i -t -v "G:/web_server/xampp/htdocs/PRIVATE_SERVER/PYTHON/cross-k/cross-k/":/home/user/crossk zlatnaspirala/crossk-android:beta /bin/bash 

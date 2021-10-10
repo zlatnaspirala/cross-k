@@ -22,7 +22,7 @@ source.include_exts = py,png,jpg,kv,atlas
 source.exclude_exts = spec, editor
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-source.exclude_dirs = submodules, tests, bin, venv , inactive, non-project-files, kivy_venv, .vscode, .cache, shader-editor, projects/Project1/Package
+source.exclude_dirs = submodules, tests, bin, venv , inactive, non-project-files, kivy_venv, .vscode, .cache, projects/Project1/Package
 
 # (list) List of exclusions using pattern matching
 #source.exclude_patterns = license,images/*/*.jpg,crossk-editor.py
