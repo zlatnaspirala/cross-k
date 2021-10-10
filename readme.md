@@ -74,7 +74,7 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 ## Run Engine:
 
 ```
-python main.py
+python crossk-editor.editor
 ```
 
 # Package System

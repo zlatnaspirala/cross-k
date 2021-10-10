@@ -1,7 +1,5 @@
 
-non-project-files/
 .buildozer/
-inactive/
 .cache/
 *.spec
 components/__pycache__/layout.cpython-39.pyc
@@ -14,3 +12,4 @@ win-env/
 venv/
 *.spec
 *.pyc
+bin/crosskproject1-0.1-armeabi-v7a-debug.apk

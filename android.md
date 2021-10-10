@@ -14,12 +14,16 @@
 ### This can help for any host platform.
 ```bash
 
+sudo apt-get update
+
 sudo apt-get install cython3
 sudo apt-get install autoconf
 sudo apt-get install automake
 sudo apt-get install g++
 sudo apt-get install libtool m4 automake
 sudo apt-get install lld
+
+sudo apt-get install libltdl-dev TEST
 
 pip3 install Cython
 pip3 install --upgrade Cython
@@ -72,7 +76,12 @@ p4a apk python3 setup_testapp_python3_sqlite_openssl.py --package=org.maximumrou
 p4a apk --package=org.maximumroulette.crossktest1 --name "Crossk android application" --version 0.1 --bootstrap=sdl2 --requirements=python3,kivy --sdk-dir=$ANDROID_SDK_HOME
 
 buildozer -v android debug
+
+
+ncurses5-compat-libs
+
 ```
+
 
 ### Simple copy folder
 
@@ -96,3 +105,30 @@ docker cp C/Users/Nikola Lukic/Downloads/commandlinetools-linux.zip CONTAINER_ID
 # android tools still needed to install
 docker commit 3ecefc2ff45d  crossk/android:ver2
 ```
+
+
+docker run \
+    --interactive \
+    --tty \
+    --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/crossk \
+    p4a sh -c
+        '. venv/bin/activate \
+        && cd testapps \
+        && python setup_vispy.py apk \
+        --sdk-dir $ANDROID_SDK_HOME \
+        --ndk-dir $ANDROID_NDK_HOME'
+
+
+
+
+docker run \
+     zlatnaspirala/crossk:packandroid1
+    --interactive \
+    --tty \
+    --volume "G:\web_server\xampp\htdocs\PRIVATE_SERVER\PYTHON\cross-k\cross-k\":/home/user/crossk \
+    sh -c
+        'cd.. \
+        && cd crossk \
+        && buildozer -v android debug'
+
+
