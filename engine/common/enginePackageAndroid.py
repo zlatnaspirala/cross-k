@@ -238,7 +238,7 @@ class PackagePopupAndroid():
                     shutil.copy2(path_file, finaldestdata, follow_symlinks=True)
 
 
-        bashCommand = "docker run -a stdin -a stdout -i -t -v " + self.engineConfig.currentEnginePath + ":/home/user/crossk --workdir /home/user/crossk zlatnaspirala/crossk-android:beta buildozer -v android debug"
+        bashCommand = "docker run -a stdin -a stdout -i -t -v " + self.engineConfig.currentEnginePath + ":/home/user/crossk --workdir /home/user/crossk zlatnaspirala/crossk-pack:beta buildozer -v android debug"
         # currentProjectPath
         # bashCommand = " --name ANDROIDPACK " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ "
         # bashCommand = "kivy_venv/Scripts/python.exe -m PyInstaller --onefile --name " + self.engineConfig.currentProjectName + " --distpath " + "projects/" + self.engineConfig.currentProjectName + "/Package/" + " --workpath .cache/ app.py"

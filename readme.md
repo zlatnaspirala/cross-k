@@ -185,7 +185,7 @@ BETA VERSION [0.5.0] STATUS
 
  - Package for windows                             [SUPPORTED]
  - Package for Linux                               [SUPPORTED]
- - Package for android                             [SUPPORTED]
+ - Package for android                             [SUPPORTED][DOCKER]
  - Package for macOS                               [NOTESTED]
  - Package for iOS                                 [NOTESTED]
 
@@ -198,8 +198,14 @@ BETA VERSION [0.5.0] STATUS
 </pre>
 
 
-### Android WIP
+### Android
 
  First implementation for windows building android apk... wip
  [0.5.0]
+ You need to have Docker app on your mashine also to pull `zlatnaspirala/crossk-pack:beta`
+ If yor already run pre-installation.bat you probably no need for this line.
+ 
+```
+ docker pull zlatnaspirala/crossk-pack:beta
+```
 

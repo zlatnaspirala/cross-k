@@ -6,8 +6,7 @@ class EngineConfig:
 
   def __init__(self, *args, **kwargs):
 
-    # Engine version 0.3.0 beta
-    self.version = "0.3.0"
+    self.version = "0.5.0.BETA"
     self.licence = "GPL v3"
 
     # Windows solution
