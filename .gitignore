@@ -2,7 +2,7 @@ non-project-files/
 inactive/
 .buildozer/
 .cache/
-*.spec
+
 components/__pycache__/layout.cpython-39.pyc
 *.pyc
 packages/*
