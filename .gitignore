@@ -1,5 +1,4 @@
-non-project-files/
-inactive/
+
 .buildozer/
 .cache/
 *.spec
