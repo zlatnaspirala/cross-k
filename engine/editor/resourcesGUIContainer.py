@@ -57,6 +57,8 @@ class ResourcesGUIContainer(ScrollView):
                 picture1 = Button(background_normal=item['path'], size_hint=(0.3, None), height=99)
             elif item['type'] == 'FontResource':
                 picture1 = Button(font_name=item['path'], text='Font', font_size=28, size_hint=(0.3, None), height=99)
+            elif item['type'] == 'JSONResource':
+                picture1 = Button(text="JSON { }", font_size=15, size_hint=(0.3, None), height=99)
 
             with picture1.canvas.before:
                 Color(0.3,0.3,0.4,1)

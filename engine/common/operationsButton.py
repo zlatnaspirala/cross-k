@@ -48,11 +48,16 @@ class EditorOperationButton():
                 height=30)
         content.add_widget(self.fontSizeBtn)
         
+        content.add_widget(Label(text='Font Family',  size_hint=(1,None),
+                height=30))
+        self.fontFamilyBtn = TextInput(text='Arial', halign="center",  size_hint=(1,None),
+                height=30)
+        content.add_widget(self.fontFamilyBtn)
+
         content.add_widget(Label(text='Button background color'))
         content.add_widget(clrPickerBackgroundColor)
         content.add_widget(Label(text='Button text color'))
         content.add_widget(clrPickerTextColor)
-        
 
         content.add_widget(Label(text='Position X in pixels', size_hint=(1,None),
                 height=30))
@@ -233,6 +238,7 @@ class EditorOperationButton():
             "type": "BUTTON",
             "text": self.buttonText.text,
             "fontSize": self.fontSizeBtn.text,
+            "fontFamily": self.fontFamilyBtn.text,
             "pos_x": self.buttonPositionX.text,
             "pos_y": self.buttonPositionY.text,
             "pos_hint_x": self.buttonPositionHintX.text,

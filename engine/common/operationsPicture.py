@@ -64,6 +64,12 @@ class EditorOperationPicture():
                 height=30)
         content.add_widget(self.pictureText)
 
+        content.add_widget(Label(text='Font Family',  size_hint=(1,None),
+               height=30))
+        self.fontFamilyBtn = TextInput(text='Arial', halign="center",  size_hint=(1,None),
+                height=30)
+        content.add_widget(self.fontFamilyBtn)
+
         content.add_widget(Label(text='Font size',  size_hint=(1,None),
                height=30))
         self.fontSizeBtn = TextInput(text='18', halign="center",  size_hint=(1,None),
@@ -274,6 +280,7 @@ class EditorOperationPicture():
             "type": "PICTURE_CLICKABLE",
             "image": 'engine/assets/nidzaBorder002.png',
             "text": self.pictureText.text,
+            "fontFamily": self.fontFamilyBtn.text,
             "fontSize": self.fontSizeBtn.text,
             "pos_x": self.picturePositionX.text,
             "pos_y": self.picturePositionY.text,

@@ -493,7 +493,7 @@ class EditorMain(BoxLayout):
         ################################################################
         # Main Editor Layout (left) menu.
         ################################################################
-        self.editorMenuLayout = BoxLayout(orientation='vertical', size_hint=(None, 1), width=300)
+        self.editorMenuLayout = BoxLayout(orientation='vertical', size_hint=(None, 1), width=300, spacing=1)
         self.add_widget(self.editorMenuLayout)
 
         # predefined var for Details
@@ -949,7 +949,30 @@ class EditorMain(BoxLayout):
         )
         self.editorElementDetails.add_widget(self.detailsPictureImage)
 
-        
+        # cool man
+        self.showFontAssetsDrop(self.editorElementDetails, 'PICTURE_CLICKABLE')
+
+        # FontFamily
+        if 'fontFamily' in detailData:
+            self.editorElementDetails.add_widget(
+                Button(
+                    text="Font family ",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                    background_normal= '',
+                    background_color=self.engineConfig.getThemeBackgroundColor()
+                ))
+
+            self.DetailsFontFamily = TextInput(
+                text=detailData['fontFamily'],
+                size_hint=(1, None),
+                height=30
+            )
+            self.editorElementDetails.add_widget(self.DetailsFontFamily)
+        else:
+            print("detailData['fontFamily'] NOT defined.")
+
         # FontSize
         self.editorElementDetails.add_widget(
             Button(
@@ -1074,6 +1097,27 @@ class EditorMain(BoxLayout):
         self.editorElementDetails.add_widget(self.detailsPictureImage)
 
 
+        # FontFamily
+        if 'fontFamily' in detailData:
+            self.editorElementDetails.add_widget(
+                Button(
+                    text="Font family ",
+                    size_hint=(1,None),
+                    height=30,
+                    color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                    background_normal= '',
+                    background_color=self.engineConfig.getThemeBackgroundColor()
+                ))
+
+            self.DetailsFontFamily = TextInput(
+                text=detailData['fontFamily'],
+                size_hint=(1, None),
+                height=30
+            )
+            self.editorElementDetails.add_widget(self.DetailsFontFamily)
+        else:
+            print("detailData['fontFamily'] NOT defined.")
+
         # FontSize
         self.editorElementDetails.add_widget(
             Button(
@@ -1091,6 +1135,7 @@ class EditorMain(BoxLayout):
             height=30
         )
         self.editorElementDetails.add_widget(self.buttonDetailsFontSize)
+
 
         localScripterGUIBox = BoxLayout()
         localScripterGUIBox.add_widget(Button(
@@ -1191,6 +1236,27 @@ class EditorMain(BoxLayout):
         self.checkboxIsBold = CheckBox(active=False, size_hint=(1,None),
                 height=30)
         self.editorElementDetails.add_widget(self.checkboxIsBold)
+
+        # cool man
+        self.showFontAssetsDrop(self.editorElementDetails, 'LABEL')
+
+        # FontSize
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Font Family ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
+
+        self.DetailsFontFamily = TextInput(
+            text=detailData['fontFamily'],
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.DetailsFontFamily)
 
         # FontSize
         self.editorElementDetails.add_widget(
@@ -1379,7 +1445,7 @@ class EditorMain(BoxLayout):
         self.editorElementDetails.add_widget(localBox)
         localBox.add_widget(Button(
                 markup=True,
-                text="[b]Add Btn[/b]",
+                text="[b]+ Btn[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -1390,7 +1456,7 @@ class EditorMain(BoxLayout):
         
         localBox.add_widget(Button(
             markup=True,
-            text="[b]Add Picture[/b]",
+            text="[b]Picture[/b]",
             size_hint=(0.2,None),
             height=30,
             color=self.engineConfig.getThemeTextColor(),
@@ -1402,7 +1468,7 @@ class EditorMain(BoxLayout):
         localBox.add_widget(
             Button(
                 markup=True,
-                text="[b]Add Label[/b]",
+                text="[b]Label[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -1414,7 +1480,7 @@ class EditorMain(BoxLayout):
         localBox.add_widget(
             Button(
                 markup=True,
-                text="[b]Add Layout[/b]",
+                text="[b]Layout[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -1426,7 +1492,7 @@ class EditorMain(BoxLayout):
         localBox.add_widget(
             Button(
                 markup=True,
-                text="[b]Add CheckBox[/b]",
+                text="[b]CheckBox[/b]",
                 size_hint=(0.2,None),
                 height=30,
                 color=self.engineConfig.getThemeTextColor(),
@@ -1871,7 +1937,7 @@ class EditorMain(BoxLayout):
 
     # Save details fast solution for now BUTTON
     def savePictureDetails(self, elementID, elementType,  instance):
-        print("Save detail for ->" , elementID)
+        print("Save detail (also for button) for ->" , elementID)
         # predefinition
         dimensionRole = "pixel"
         if self.checkboxDim.active == True: 
@@ -1908,6 +1974,7 @@ class EditorMain(BoxLayout):
             "image": self.detailsPictureImage.text,
             "text": self.detailsCommonText.text,
             "fontSize": self.buttonDetailsFontSize.text,
+            "fontFamily": self.DetailsFontFamily.text,
             "color": self.newDetailsColor,
             "bgColor": self.newDetailsBgColor,
             "width": self.detailsCommonWidth.text,
@@ -1988,8 +2055,9 @@ class EditorMain(BoxLayout):
             "name": self.commonDetailsNameText.text, # tag
             "type": elementType,
             "text": self.detailsCommonText.text,
+            "fontFamily": self.DetailsFontFamily.text,
             "fontSize": self.labelDetailsFontSize.text,
-            "bold": str(self.checkboxIsActive.active),
+            "bold": str(self.checkboxIsBold.active),
             "color": self.newDetailsColor,
             "bgColor": self.newDetailsBgColor,
             "width": self.detailsCommonWidth.text,
@@ -2270,6 +2338,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         # pos_hint=testLocalPosHint, # maybe disable
                         font_size=item['fontSize'],
+                        font_name=item['fontFamily'],
                         pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
                         text=item['text'],
                         color=item['color'],
@@ -2298,6 +2367,7 @@ class EditorMain(BoxLayout):
                         #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         text=item['text'],
                         font_size=item['fontSize'],
+                        font_name=item['fontFamily'],
                         color=item['color'],
                         background_normal= '',
                         background_color= item['bgColor'],
@@ -2322,6 +2392,7 @@ class EditorMain(BoxLayout):
                         pos_hint_x=float(item['pos_hint_x']),
                         pos_hint_y=float(item['pos_hint_y']),
                         font_size=item['fontSize'],
+                        font_name=item['fontFamily'],
                         text=item['text'],
                         color=item['color'],
                         background_normal= '',
@@ -2349,6 +2420,7 @@ class EditorMain(BoxLayout):
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
+                        font_name=item['fontFamily'],
                         bold=item['bold'],    # add
                         padding_x= 0, # test
                         padding_y= 0, # test
@@ -2385,6 +2457,7 @@ class EditorMain(BoxLayout):
                         text=item['text'],
                         color=item['color'],
                         font_size=item['fontSize'], # add
+                        font_name=item['fontFamily'],
                         bold=item['bold'],    # add
                         padding_x= 0, # test
                         padding_y= 0, # test
@@ -2419,6 +2492,7 @@ class EditorMain(BoxLayout):
                     test =  Label(
                         text=item['text'],
                         color=item['color'],
+                        font_name=item['fontFamily'],
                         font_size=item['fontSize'], # add
                         bold=item['bold'],    # add
                         padding_x= 0, # test
@@ -2623,6 +2697,7 @@ class EditorMain(BoxLayout):
                     constructedApplicationButton = Button(
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         # pos_hint=testLocalPosHint, # maybe disable
+                        font_name=item['fontFamily'],
                         font_size=item['fontSize'],
                         pos_hint={ 'x': float(item['pos_hint_x']), 'y': float(item['pos_hint_y'])}, # maybe disable
                         text=item['text'],
@@ -2651,6 +2726,7 @@ class EditorMain(BoxLayout):
                         pos=(float(item['pos_x']), float(item['pos_y'])),
                         #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
                         text=item['text'],
+                        font_name=item['fontFamily'],
                         font_size=item['fontSize'],
                         color=item['color'],
                         background_normal= item['image'],
@@ -2677,6 +2753,7 @@ class EditorMain(BoxLayout):
                         #pos_hint_y=float(item['pos_hint_y']),
                         #font_size=item['fontSize'],
                         text=item['text'],
+                        font_name=item['fontFamily'],
                         color=item['color'],
                         background_normal= item['image'],
                         background_color= item['bgColor'],
@@ -2821,7 +2898,7 @@ class EditorMain(BoxLayout):
         self.assetsStore = JsonStore('projects/' + self.engineConfig.currentProjectName + '/data/assets.json')
         loadElements = self.assetsStore.get('assetsComponentArray')['elements']
         self._updateDrop(container, loadElements, 'PICTURE_CLICKABLE')
-        print('ssssssss')
+        print('showAssetsDrop')
 
     def _updateDrop(self, container, loadElements, typeOFAsset):
 
@@ -2843,7 +2920,7 @@ class EditorMain(BoxLayout):
                     color=self.engineConfig.getThemeTextColor(),
                     background_normal= '',
                     background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
-                    on_press=partial(self.onSelectAsset, item),
+                    on_press=partial(self.onSelectAsset, item, assetDropdown),
                     size_hint=(1, None),
                     height=30
                 )
@@ -2855,7 +2932,51 @@ class EditorMain(BoxLayout):
         container.add_widget(test2)
         test2.bind(on_release=assetDropdown.open)
 
-    def onSelectAsset(self, currentAsset, instance):
+    def onSelectAsset(self, currentAsset, assetDropdown, instance):
         print('good currentAsset ', currentAsset['type'])
         self.detailsPictureImage.text = currentAsset['path']
-        self.assetsDropdown.dismiss()
+        assetDropdown.dismiss()
+
+    # UPDATE DROP FOR FONT FAMILY
+    def showFontAssetsDrop(self, container, typeOFAsset):
+        self.assetsStore = JsonStore('projects/' + self.engineConfig.currentProjectName + '/data/assets.json')
+        loadElements = self.assetsStore.get('assetsComponentArray')['elements']
+        self._updateDropFontFamily(container, loadElements, 'PICTURE_CLICKABLE')
+        print('showFontAssetsDrop')
+
+    def onSelectFontAsset(self, currentAsset, assetDropdown,  instance):
+        print('Selecting Font Family ', currentAsset['type'])
+        self.DetailsFontFamily.text = currentAsset['path']
+        assetDropdown.dismiss()
+
+    def _updateDropFontFamily(self, container, loadElements, typeOFAsset):
+
+        container.add_widget(Label(text='Select Font assets:', size_hint=(1, None), height=30))
+
+        test2 = Button(text='Select asset',size_hint=(1, None), height=30)
+        assetDropdown = DropDown()
+        assetDropdown.dismiss()
+
+        for _index, item in enumerate(loadElements):
+            if item['type'] == 'FontResource':
+                localBox = BoxLayout(size_hint=(1, None), height=30)
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    padding_x= 5,
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b][u][i] FontFamily[/i][/u]',
+                    color=self.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineConfig.getThemeBgSceneBtnColor()),
+                    on_press=partial(self.onSelectFontAsset, item, assetDropdown),
+                    size_hint=(1, None),
+                    height=30
+                )
+                localBox.add_widget(test)
+                assetDropdown.add_widget(localBox)
+                test.bind(size=test.setter('text_size'))
+
+        container.add_widget(assetDropdown)
+        container.add_widget(test2)
+        test2.bind(on_release=assetDropdown.open)

@@ -66,6 +66,11 @@ class EditorOperationLabel():
                 height=30)
         content.add_widget(self.fontSizeBtn)
 
+        content.add_widget(Label(text='Font Family', halign="center"))
+        self.fontFamilyBtn = TextInput(text='Arial', halign="center", size_hint=(1,None),
+                height=30)
+        content.add_widget(self.fontFamilyBtn)
+
         # Bold check box
         #myCheckBold = BoxLayout()
         # myCheckBold.add_widget(Label(text='Use Bold'))
@@ -198,6 +203,7 @@ class EditorOperationLabel():
             "pos_y": self.buttonPositionY.text,
             "pos_hint_x": self.buttonPositionHintX.text,
             "pos_hint_y": self.buttonPositionHintY.text,
+            "fontFamily": self.fontFamilyBtn.text,
             "fontSize": self.fontSizeBtn.text,
             "bold": str(self.checkBoxBold.active),
             "color": self.newLabelColor,

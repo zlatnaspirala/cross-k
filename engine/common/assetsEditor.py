@@ -335,6 +335,16 @@ class AssetsEditorPopup():
             self.previewPicture.size = (5,5)
             self.previewFont.size_hint = (1,1)
             self.previewFont.font_name=item['path']
+        elif item['type'] == 'JSONResource':
+            if self.isFreeRigthBox == True:
+                self.box.add_widget(self.imageResourceGUIBox)
+                self.isFreeRigthBox = False
+            self.assetName.text = item['name']
+            self.selectedPathLabel.text = item['source']
+            self.selectedRelativePathLabel.text = item['path']
+            self.previewPicture.size_hint = (0,0)
+            self.previewPicture.size = (5,5)
+            self.previewFont.size_hint = (1,1)
 
     def copyToClipBoard(self, instance):
         Clipboard.copy(self.selectedRelativePathLabel.text)
@@ -501,7 +511,9 @@ class AssetsEditorPopup():
                 localBox.add_widget(localPrevListBox)
             elif item['type'] == 'FontResource':
                 localBox.add_widget( Label(font_name=item['path'], size_hint=(0.4, None) , height=90, text = 'Font' ))
-            
+            elif item['type'] == 'JSONResource':
+                localBox.add_widget( Label(size_hint=(0.4, None) , height=90, text = 'JSON DATA' ))
+
             localBox.add_widget(Button(
                 markup=True,
                 halign="left", valign="middle",
