@@ -111,6 +111,24 @@ class SceneGUIContainer(ScrollView):
                 container.add_widget(test)
                 test.bind(size=test.setter('text_size'))
 
+            if item['type'] == 'CHECKBOX':
+                test = Button(
+                    markup=True,
+                    halign="left", valign="middle",
+                    padding_x= self.deepTest * 10,
+                    font_size=15,
+                    text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]CheckBox[/u]',
+                    color=self.engineRoot.engineConfig.getThemeTextColor(),
+                    background_normal= '',
+                    background_color=(self.engineRoot.engineConfig.getThemeBgSceneBoxColor()),
+                    on_press=partial(self.engineRoot.showCommonDetails, item),
+                    size_hint=(1, None),
+                    height=30
+                    )
+
+                test.bind(size=test.setter('text_size'))
+                container.add_widget(test)
+
 
             if (_index==len(loadElements)-1):
                 self.deepTest=0

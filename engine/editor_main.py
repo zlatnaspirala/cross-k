@@ -19,6 +19,8 @@ import uuid
 import kivy
 from kivy.config import Config
 
+from engine.common.operationsCheckBox import EditorOperationCheckBox
+
 print(kivy.__version__)
 kivy.require('2.0.0')
 
@@ -571,11 +573,18 @@ class EditorMain(BoxLayout):
                       #background_normal= '',
                       background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
                       on_press=self.addNewPictureGUI)
+        toolsAddCheckBox = Button(text='Add CheckBox',
+                      color=(self.engineConfig.getThemeTextColor()),
+                      size_hint=(None, None),  height=30, width=300,
+                      #background_normal= '',
+                      background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                      on_press=self.addNewCheckBoxGUI)
 
         self.currentProjectMenuDropdown.add_widget(toolsAddBox)
         self.currentProjectMenuDropdown.add_widget(toolsAddBtn)
         self.currentProjectMenuDropdown.add_widget(toolsAddText)
         self.currentProjectMenuDropdown.add_widget(toolsAddPicture)
+        self.currentProjectMenuDropdown.add_widget(toolsAddCheckBox)
 
         self.editorMenuLayout.add_widget(self.currentProjectMenuDropdown)
 
@@ -683,6 +692,14 @@ class EditorMain(BoxLayout):
     def addNewPictureGUI(self, instance):
         print('PICTURE.....................................')
         operationAddTest = EditorOperationPicture(
+            store=self.store,
+            currentLayout='SCENE_ROOT',
+            engineRoot=self
+        )
+
+    def addNewCheckBoxGUI(self, instance):
+        print('CHECK BUTTON................................')
+        operationAddTest = EditorOperationCheckBox(
             store=self.store,
             currentLayout='SCENE_ROOT',
             engineRoot=self
@@ -904,6 +921,8 @@ class EditorMain(BoxLayout):
             self.showButtonDetails(detailData)
         elif  str(detailData['type']) == "LABEL":
             self.showLabelDetails(detailData)
+        elif  str(detailData['type']) == "CHECKBOX":
+            self.showCheckBoxDetails(detailData)
         elif  str(detailData['type']) == "PICTURE_CLICKABLE":
             self.showPictureDetails(detailData)
 
@@ -1163,7 +1182,6 @@ class EditorMain(BoxLayout):
 
     # LABEL Block
     def showLabelDetails(self, detailData):
- 
 
         print("LABEL detailData-> ", detailData)
         self.editorElementDetails.add_widget(Label(text='Use Bold', 
@@ -1238,6 +1256,83 @@ class EditorMain(BoxLayout):
             ))
 
     # End of Label block
+
+    # CHECKBOX Block
+    def showCheckBoxDetails(self, detailData):
+
+        print("CHECKBOX detailData-> ", detailData)
+        self.editorElementDetails.add_widget(Label(text='Is Active', 
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                size_hint=(1,None), height=30))
+
+        self.checkboxIsActive = CheckBox(active=False, size_hint=(1,None),
+                height=30)
+        self.editorElementDetails.add_widget(self.checkboxIsActive)
+
+        # FontSize
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Font size ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=self.engineConfig.getThemeBackgroundColor()
+            ))
+
+        self.labelDetailsFontSize = TextInput(
+            text=detailData['fontSize'],
+            size_hint=(1, None),
+            height=30
+        )
+        self.editorElementDetails.add_widget(self.labelDetailsFontSize)
+
+
+        self.editorElementDetails.add_widget(
+            Label(
+                text="Delete CheckBox '" + detailData['name'] + "' ",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor')
+                # on_press=partial(self.saveDetails, str(detailData['id']), str(detailData['type']) ))
+            ))
+
+        self.editorElementDetails.add_widget(
+            Button(
+                text="Delete CheckBox",
+                size_hint=(1,None),
+                height=30,
+                color=self.engineConfig.getThemeCustomColor('engineBtnsColor'),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.delete, str(detailData['id']), str(detailData['type']) ))
+            )
+
+        self.editorElementDetails.add_widget(
+            Button(
+                markup=True,
+                text="[b]Save changes[/b]",
+                size_hint=(1,None),
+                height=120,
+                on_press=partial(self.saveLabelDetails, str(detailData['id']), str(detailData['type']) ),
+                color=self.engineConfig.getThemeTextColor(),
+                #background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+            ))
+
+        self.editorElementDetails.add_widget(
+            Button(
+                markup=True,
+                text="[b]Cancel[/b]",
+                size_hint=(1,None),
+                height=120,
+                color=self.engineConfig.getThemeTextColor(),
+                #background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')),
+                on_press=self.closeWithNoSaveDetails
+            ))
+
+    # End of CheckBox block
 
     def showBoxLayoutDetails(self, detailData):
 
@@ -1326,6 +1421,18 @@ class EditorMain(BoxLayout):
                 background_normal= '',
                 background_color=(self.engineConfig.getThemeCustomColor('warn')),
                 on_press=partial(self.callAddNewLayoutGUIBox, detailData))
+            )
+
+        localBox.add_widget(
+            Button(
+                markup=True,
+                text="[b]Add CheckBox[/b]",
+                size_hint=(0.2,None),
+                height=30,
+                color=self.engineConfig.getThemeTextColor(),
+                background_normal= '',
+                background_color=(self.engineConfig.getThemeCustomColor('warn')),
+                on_press=partial(self.callAddNewCheckBoxGUIBox, detailData))
             )
 
         ## ANCHOR 
@@ -1500,6 +1607,13 @@ class EditorMain(BoxLayout):
 
     def callAddNewLayoutGUIBox(self, currentData, instance):
         operationAddTest = EditorOperationBox(
+            store=self.store,
+            currentLayoutId=currentData['id'],
+            engineRoot=self,
+        )
+
+    def callAddNewCheckBoxGUIBox(self, currentData, instance):
+        operationAddTest = EditorOperationCheckBox(
             store=self.store,
             currentLayoutId=currentData['id'],
             engineRoot=self,
@@ -1875,7 +1989,7 @@ class EditorMain(BoxLayout):
             "type": elementType,
             "text": self.detailsCommonText.text,
             "fontSize": self.labelDetailsFontSize.text,
-            "bold": str(self.checkboxIsBold.active),
+            "bold": str(self.checkboxIsActive.active),
             "color": self.newDetailsColor,
             "bgColor": self.newDetailsBgColor,
             "width": self.detailsCommonWidth.text,
@@ -1908,6 +2022,81 @@ class EditorMain(BoxLayout):
         self.remove_widget(self.editorElementDetails)
         self.currentProjectMenuDropdown.open(self)
 
+    # Save details fast solution for now
+    def saveCheckBoxDetails(self, elementID, elementType,  instance):
+
+        print("Save detail for ->" , elementID)
+        # predefinition
+        dimensionRole = "pixel"
+        if self.checkboxDim.active == True: 
+            local_size_hintX = None
+            local_size_hintY = None
+            # print("SET HINT NONE")
+        elif self.checkboxPer.active == True:
+            # print(" SET HINT ")
+            if self.commonHintXDetail.text == "None":
+                local_size_hintX = None
+            else:
+                local_size_hintX = float(self.commonHintXDetail.text)
+            if self.commonHintYDetail.text == "None":
+                local_size_hintY = None
+            else:
+                local_size_hintY = float(self.commonHintYDetail.text)
+            dimensionRole = "hint"
+        elif self.checkboxCombine.active == True:
+            print(" SET COMBINE ")
+            if self.commonHintXDetail.text == "None":
+                local_size_hintX = None
+            else:
+                local_size_hintX = float(self.commonHintXDetail.text)
+            if self.commonHintYDetail.text == "None":
+                local_size_hintY = None
+            else:
+                local_size_hintY = float(self.commonHintYDetail.text)
+            dimensionRole = "combine"
+
+        # CrossK Element Data Interface
+        calculatedLabelData = {
+            "id": elementID,
+            "name": self.commonDetailsNameText.text, # tag
+            "type": elementType,
+            # "text": self.detailsCommonText.text,
+            # "fontSize": self.labelDetailsFontSize.text,
+            "active": bool(self.checkboxIsActive.active),
+            "color": self.newDetailsColor,
+            "bgColor": self.newDetailsBgColor,
+            "width": self.detailsCommonWidth.text,
+            "height": self.detailsCommonHeight.text,
+            "size_hint_x": self.commonHintXDetail.text,
+            "size_hint_y": self.commonHintYDetail.text,
+            "dimensionRole": dimensionRole,
+            "pos_x": self.detailsCommonPositionX.text,
+            "pos_y": self.detailsCommonPositionY.text,
+            "pos_hint_x": self.detailsCommonPositionXHint.text,
+            "pos_hint_y": self.detailsCommonPositionYHint.text,
+        }
+
+        # Collect data
+        print(" CONSTRUCTED " , calculatedLabelData)
+
+        # Load fresh data then replace for specific id and save it
+        self.store = JsonStore(self.engineLayout.currentProjectPath + '/' + self.projectName.text + '.json')
+        loadElements = self.store.get('renderComponentArray')['elements']
+        
+        TEST = self._add(loadElements, calculatedLabelData , elementID)
+        print("AFTER ADD SAVE DETAIL S ELEMENTAR", TEST)
+
+        print("SAVE -> " , loadElements)
+        self.store.put('renderComponentArray', elements=loadElements)
+
+        self.updateScene()
+        self.sceneGUIContainer.selfUpdate()
+
+        self.remove_widget(self.editorElementDetails)
+        self.currentProjectMenuDropdown.open(self)
+
+
+    ####################
     # Save details fast solution for now
     def saveLayoutDetails(self, detailData,  instance):
         print("Save detail layout for " , detailData['type'])
@@ -2499,6 +2688,118 @@ class EditorMain(BoxLayout):
                     )
 
                 currentCointainer.add_widget(constructedApplicationButton)
+
+            if item != None and item['type'] == 'CHECKBOX':
+
+                local_size_hintX = None
+                local_size_hintY= None
+
+                if item['dimensionRole'] == "pixel":
+
+                    local_size_hintX = None
+                    local_size_hintY= None
+                    test = CheckBox(
+                        # multiline=True,
+                        # active=item['active'],
+                        # text=item['text'],
+                        color=item['color'],
+                        # font_size=item['fontSize'], # add
+                        # bold=item['bold'],    # add
+                        # padding_x= 0, # test
+                        # padding_y= 0, # test
+                        # center=(1,1), # test
+                        # font_blended= True, # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
+                elif item['dimensionRole'] == "hint":
+
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    test = CheckBox(
+                        # text=item['text'],
+                        # active=item['active'],
+                        color=item['color'],
+                        # font_size=item['fontSize'], # add
+                        # bold=item['bold'],    # add
+                        # padding_x= 0, # test
+                        # padding_y= 0, # test
+                        center=(1,1), # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY)
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
+                elif item['dimensionRole'] == "combine":
+
+                    if item['size_hint_x'] == "None":
+                        local_size_hintX = None
+                    else:
+                        local_size_hintX = item['size_hint_x']
+
+                    if item['size_hint_y'] == "None":
+                        local_size_hintY = None
+                    else:
+                        local_size_hintY = item['size_hint_y']
+
+                    test =  CheckBox(
+                        # text=item['text'],
+                        # active=item['active'],
+                        color=item['color'],
+                        # font_size=item['fontSize'], # add
+                        # bold=item['bold'],    # add
+                        # padding_x= 0, # test
+                        # padding_y= 0, # test
+                        center=(1,1), # test
+                        pos=(float(item['pos_x']), float(item['pos_y'])),
+                        #pos_hint=(float(item['pos_hint_x']), float(item['pos_hint_y'])), # maybe disable
+                        #foreground_color=item['color'],
+                        #background_color= item['bgColor'],
+                        size_hint_x=local_size_hintX,
+                        size_hint_y=local_size_hintY,
+                        height=item['height'],
+                        width=item['width'])
+                    with test.canvas.before:
+                        Color(item['bgColor'][0],item['bgColor'][1],item['bgColor'][2],item['bgColor'][3])
+                        test.rect = Rectangle(size=test.size,
+                        pos=test.pos)
+                    def update_rect(instance, value):
+                        instance.rect.pos = instance.pos
+                        instance.rect.size = instance.size
+
+                    currentCointainer.add_widget(test)
+                    test.bind(pos=update_rect, size=update_rect)
+
 
     def updateScene(self):
 
