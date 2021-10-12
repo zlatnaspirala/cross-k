@@ -1,7 +1,7 @@
 
 #########################################################
 # CrossK Editor                                         #
-# Version: 0.2.0 Beta/WIP                               #
+# Version: 0.5.0 Beta/WIP                               #
 # Under GPL V3  - Nikola Lukic @zlatnaspirala           #
 #########################################################
 
@@ -78,7 +78,6 @@ if (platform == 'win'):
 
 # Storage/Files operations
 # from jnius import autoclass  # SDcard Android
-
 
 # Editor main is only editor not inpact projects files.
 class EditorMain(BoxLayout):

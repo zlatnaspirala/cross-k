@@ -171,14 +171,16 @@ BETA VERSION [0.5.0] STATUS
  - Layouts ( Details commands:
                       - Add button
                       - Add Label
-                      - Add layout )
+                      - Add layout
+                      - add checkbox)
  - CrossK Scripter, Basic script bind attacher for live (app) buttons.
 
 [ASSETS EDITOR]
 
  - Operation ( Type of Asset:
                           - imageResource,
-                          - fontResource)
+                          - fontResource
+                          - JSONResource - read only root keys
  - OperationAdd
 
 [PACKAGE-SYSTEM]
