@@ -21,13 +21,31 @@ from kivy.storage.jsonstore import JsonStore
 from engine.common.commons import PictureAPath, getMessageBoxYesNo
 from engine.common.jsonN import JsonN
 
+from kivy.core.window import Window
+
 class AssetsEditorPopupAdd():
+
+    # 0.5.0 TEST EVENTS
+    def on_mouse_pos(self, window, pos):
+        for item in self.leftBox.children:
+            print("MOUSE EVENTS >>>>>>>>" + item.__class__.__name__)
+            if item.__class__.__name__ == "Button":
+                if item.collide_point(*pos):
+                    print('POINT :::>>:' + item.text)
+                    item.background_color =(self.engineConfig.getThemeTextColor())
+                    item.color = (self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                else:
+                    item.color = (self.engineConfig.getThemeTextColor())
+                    item.background_color = (self.engineConfig.getThemeCustomColor('engineBtnsBackground'))
+                    # do something here
 
     def __init__(self, **kwargs):
 
         self.engineConfig = kwargs.get("engineConfig")
         self.engineRoot = kwargs.get("engineRoot")
         self.currentAsset = kwargs.get("currentAsset")
+
+        Window.bind(mouse_pos=self.on_mouse_pos)
 
         self.operationStatus = True
         self.isFreeRigthBox = True
@@ -150,6 +168,8 @@ class AssetsEditorPopupAdd():
                                 size_hint=(1, None),  height=60,
                                 background_normal= '',
                                 background_color=(self.engineConfig.getThemeCustomColor('engineBtnsBackground')))
+        
+                                
 
         self.leftBox.add_widget(self.addImageRes)
 

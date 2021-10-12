@@ -29,10 +29,11 @@ class MyApp(App):
     def aboutCrossK(self, instance):
 
         print("-------------------------------------------------")
-        print("-CrossK engine 0.2.0                           .-")
+        print("-CrossK engine 0.5.0                           .-")
         print(" Version Beta                                  .-")
         print(" - Support UI context [add/edit gui]           .-")
-        print("  ->Button, Layout, Label, PictureCliclable    .-")
+        print("  ->Button, Layout, Label, PictureCliclable,   .-")
+        print("  ->CheckBox                                   .-")
         print("  ->Scene container                            .-")
         print(" - Bind Script [extend kivy2/python3.9]        .-")
         print("-------------------------------------------------")

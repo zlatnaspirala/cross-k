@@ -19,8 +19,6 @@ import uuid
 import kivy
 from kivy.config import Config
 
-from engine.common.operationsCheckBox import EditorOperationCheckBox
-
 print(kivy.__version__)
 kivy.require('2.0.0')
 
@@ -34,11 +32,10 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.pagelayout import PageLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.textinput import TextInput
 from kivy.uix.dropdown import DropDown
 from kivy.metrics import dp, sp, pt
 from kivy.core.window import Window
-from kivy.uix.image import Image, AsyncImage 
+from kivy.uix.image import Image, AsyncImage
 from kivy.uix.textinput import TextInput
 from kivy.uix.colorpicker import ColorPicker
 from kivy.uix.checkbox import CheckBox
@@ -46,10 +43,12 @@ from kivy.uix.dropdown import DropDown
 from kivy.storage.jsonstore import JsonStore
 from kivy.app import App
 from kivy.graphics import Color, Rectangle
+from kivy.utils import platform
 
 #########################################################
 # CrossK Editor dependency                              #
 #########################################################
+from engine.common.operationsCheckBox import EditorOperationCheckBox
 from engine.editor.layout import EngineLayout
 from engine.editor.sceneGUIContainer import SceneGUIContainer
 from engine.editor.resourcesGUIContainer import ResourcesGUIContainer
@@ -65,7 +64,7 @@ from engine.common.operationsBox import EditorOperationBox
 from engine.common.operationsPicture import EditorOperationPicture
 from engine.common.enginePackage import PackagePopup
 from engine.common.enginePackageAndroid import PackagePopupAndroid
-from kivy.utils import platform
+
 #########################################################
 # CrossK App level dependency                           #
 #########################################################

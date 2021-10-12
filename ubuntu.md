@@ -5,22 +5,21 @@
 New dep: 
 ```  psutil   ```
 
-
  - Create and activate env
 
 ```
-python3 -m venv ubuntu-env 
+python3 -m venv ubuntu-env
 
-cd ./ubuntu-env 
+cd ./ubuntu-env
 . ./bin/activate
 ```
 
-or 
+or
 
 ```
-python3 -m venv ubuntu-env 
+python3 -m venv ubuntu-env
 
-cd ./ubuntu-env 
+cd ./ubuntu-env
 source ./bin/activate
 ```
 

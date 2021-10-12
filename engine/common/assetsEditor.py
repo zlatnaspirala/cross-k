@@ -333,9 +333,11 @@ class AssetsEditorPopup():
             self.selectedRelativePathLabel.text = item['path']
             self.previewPicture.size_hint = (0,0)
             self.previewPicture.size = (5,5)
+            self.previewFont.text="Font [b]Bold[/b]!"
             self.previewFont.size_hint = (1,1)
             self.previewFont.font_name=item['path']
         elif item['type'] == 'JSONResource':
+            self.fileBrowser.filters = ["*.json"]
             if self.isFreeRigthBox == True:
                 self.box.add_widget(self.imageResourceGUIBox)
                 self.isFreeRigthBox = False
@@ -345,6 +347,15 @@ class AssetsEditorPopup():
             self.previewPicture.size_hint = (0,0)
             self.previewPicture.size = (5,5)
             self.previewFont.size_hint = (1,1)
+            # nikola 0.5.0
+            localStore = JsonStore(item['path'])
+            print(">>>>>>>>>>>>>>>" + localStore.get('name'))
+            self.previewFont.font_size = "10";
+            self.previewFont.text = "JSON root keys: \n "
+            for key in localStore._data.keys():
+                self.previewFont.text += " " + key + "\n";
+                #  localStore.get('name') 
+                print(key)
 
     def copyToClipBoard(self, instance):
         Clipboard.copy(self.selectedRelativePathLabel.text)
