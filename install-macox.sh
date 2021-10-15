@@ -13,5 +13,5 @@ pip3 install kivy
 #pip3 install kivy.deps.angle
 pip3 install --upgrade pyinstaller
 #pip3 install python-for-android
-
+pip3 install psutil
 brew install pkg-config sdl2 sdl2_image sdl2_ttf sdl2_mixer gstreamer

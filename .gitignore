@@ -13,3 +13,4 @@ win-env/
 venv/
 *.pyc
 bin/
+.DS_Store
