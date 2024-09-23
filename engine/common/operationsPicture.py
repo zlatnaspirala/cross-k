@@ -46,7 +46,7 @@ class EditorOperationPicture():
         else:
             user_path = expanduser('~') + '/' + 'Documents'
         browser = FileChooserListView(# select_string='Select', dirselect: True
-              path=self.engineRoot.engineConfig.currentProjectName + '/data/',
+              path= 'projects/' + self.engineRoot.engineConfig.currentProjectName + '/data/',
               size_hint=(1,3)
            )
 
