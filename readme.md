@@ -33,7 +33,7 @@ https://www.youtube.com/watch?v=Ci8GNd3FDHw&ab_channel=javascriptfanatic
 ![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/cross-k.png)
 
  - Script editor 
-![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/scripter.png)
+![](https://github.com/zlatnaspirala/cross-k/blob/master/non-project-files/script.png)
 
 ## Installation
 
