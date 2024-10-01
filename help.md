@@ -44,3 +44,8 @@ python -m pip install --upgrade pyinstaller
 ```
 
 If you got error log with sdl2 try to (Potencial fix) add env YOUR_PYTHONPATH + \share\sdl2\bin
+
+
+## About code
+
+- operati prefix py files indicate `add new control` forms.

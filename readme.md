@@ -142,7 +142,7 @@ from MS Visual Code Editor.
 
 ACTUAL VERSION [no release] BETA
 
-BETA VERSION [0.5.0] STATUS
+BETA VERSION [0.6.0] STATUS  2024
 
 [EDITOR]
 
@@ -165,7 +165,7 @@ BETA VERSION [0.5.0] STATUS
        - Button element
        - Label element
        - CheckBox element
-       - Picture Clickable
+       - Picture Clickable (bg img , pressed bg img)
        - Layouts (dinamic with props) element
  - Layouts - Handle sub components
  - Layouts ( Details commands:
@@ -174,6 +174,14 @@ BETA VERSION [0.5.0] STATUS
                       - Add layout
                       - add checkbox)
  - CrossK Scripter, Basic script bind attacher for live (app) buttons.
+
+Example for CrossK scripting:
+Access element by array id.
+```python
+      print( self.E([1,0])['text'] , "  Look at 0 1 ")
+```
+
+
 
 [ASSETS EDITOR]
 

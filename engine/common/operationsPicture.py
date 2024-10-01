@@ -279,6 +279,7 @@ class EditorOperationPicture():
             "name": self.pictureNameText.text,
             "type": "PICTURE_CLICKABLE",
             "image": 'engine/assets/nidzaBorder002.png',
+            "imageDown": 'engine/assets/nidzaBorder002.png',
             "text": self.pictureText.text,
             "fontFamily": self.fontFamilyBtn.text,
             "fontSize": self.fontSizeBtn.text,

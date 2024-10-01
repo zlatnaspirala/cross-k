@@ -103,6 +103,7 @@ class SceneGUIContainer(ScrollView):
                     text='[b]' + item['name'] + '[/b][i]['+ str(_index) + '][/i] [u]Picture[/u]',
                     color=self.engineRoot.engineConfig.getThemeTextColor(),
                     background_normal= item['image'],
+                    background_down=item['imageDown'],
                     background_color=(self.engineRoot.engineConfig.getThemeBgSceneBtnColor()),
                     on_press=partial(self.engineRoot.showCommonDetails, item),
                     size_hint=(1, None),
