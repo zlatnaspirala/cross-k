@@ -64,8 +64,8 @@ class EngineLayout(BoxLayout):
                     res =  testContainer.children[::-1]
                     if len(res) == 0:
                         # TEST NEW probvably is not container
-                        return testContainer
-                        # return None
+                        # return testContainer
+                        return None
                     return res[item]
                 else:
                     # print("Test next deep Container -> ", testContainer)

@@ -33,10 +33,10 @@ class Networking():
                 print(' ---> {} '.format(item))
                 if (type(item) is tuple) == True:
                     for sIndex, sItem in enumerate(item):
-                        print(' sIndex ', sIndex)
-                        print(' sInde ' , sItem)
+                        print('Index: ', sIndex)
+                        print('Item: ' , sItem)
                         if "<UrlRequest" not in str(sItem):
-                            self.callbackAnalyzeJson(sItem)
+                            self.onAnalyzeJson(sItem)
 
         else:
             print('net res => Not tuple')

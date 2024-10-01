@@ -101,6 +101,11 @@ class EventsEngineLayout(FloatLayout):
         self.bind(on_touch_down=self.on_touch_down)
         self.bind(pos=self.mypos)
         self.bind(size=self._update_rect, pos=self._update_rect)
+        
+        
+        # TEST
+        self.net = Networking()
+        self.net.getJson()
 
     # Definition for update call bg
     def _update_rect(self, instance, value):
